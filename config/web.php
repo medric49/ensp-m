@@ -2,6 +2,7 @@
 
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
+$routes = require __DIR__ . '/routes.php';
 
 $config = [
     'id' => 'basic',
@@ -51,6 +52,7 @@ $config = [
             ],
         ],
         */
+        'routes' => $routes
     ],
     'params' => $params,
 ];
