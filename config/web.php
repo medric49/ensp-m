@@ -3,11 +3,13 @@
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 $routes = require __DIR__ . '/routes.php';
-
 $config = [
-    'id' => 'basic',
+    'id' => 'ensp-m',
+    'name' => 'ensp-m',
+    'language'=> 'fr',
+    'defaultRoute' => 'guest/accueil',
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
+    'bootstrap' => ['log','routes'],
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
@@ -52,7 +54,7 @@ $config = [
             ],
         ],
 
-        'routes' => $routes
+        'routes' => $routes,
     ],
     'params' => $params,
 ];

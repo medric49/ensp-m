@@ -6,7 +6,7 @@ class RouteManager {
 
     public $routes = [
 
-        'welcome' => '/',
+        'welcome' => 'guest/accueil',
     ];
 
     public function __construct()
