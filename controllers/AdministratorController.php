@@ -22,5 +22,6 @@ class AdministratorController extends Controller
 
     public function actionAccueil() {
 
+        return $this->render('home');
     }
 }

@@ -7,10 +7,15 @@ $this->title = "Mutuelle - ENSP"
     <!DOCTYPE html>
     <html lang="<?= Yii::$app->language ?>">
     <head>
-        <? include Yii::getAlias("@app")."/includes/links.php" ;?>
+        <?php include Yii::getAlias("@app") . "/includes/links.php"; ?>
 
-        <title><?= Html::encode($this->title) ?></title>
-
+        <title>
+            <?php if (isset($this->blocks['title'])): ?>
+                <?= $this->blocks['title'] ?>
+            <?php else: ?>
+                <?= Html::encode($this->title) ?>
+            <?php endif; ?>
+        </title>
 
         <?php if (isset($this->blocks['style'])): ?>
             <?= $this->blocks['title'] ?>
@@ -19,10 +24,11 @@ $this->title = "Mutuelle - ENSP"
     <body>
     <?php $this->beginBody() ?>
 
+
     <?= $content ?>
 
 
-    <? include Yii::getAlias("@app")."/includes/scripts.php" ;?>
+    <?php include Yii::getAlias("@app") . "/includes/scripts.php"; ?>
     <?php if (isset($this->blocks['script'])): ?>
         <?= $this->blocks['script'] ?>
     <?php endif; ?>

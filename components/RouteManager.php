@@ -9,15 +9,18 @@ class RouteManager {
         // ============================ ESPACE ETRANGER ===============================
         'guest.welcome' => '/guest/accueil',
         'guest.connection' => "/guest/connexion",
-        'guest.member' => "/guest/membre",
-        'guest.administrator' => '/guest/administrateur'
+
+        'guest.member_form' => "/guest/member-form",
+        'guest.administrator_form' => '/guest/administrator-form',
 
         // ============================ ESPACE ADMINSTRATEUR ==========================
 
 
+        'administrator.home' => '/administrator/accueil',
+
 
         // ============================ ESPACE MEMBRE =================================
-
+        'member.home' => '/member/accueil',
 
     ];
 

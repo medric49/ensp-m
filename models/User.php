@@ -6,15 +6,6 @@ use yii\db\ActiveRecord;
 
 class User extends ActiveRecord implements \yii\web\IdentityInterface
 {
-    public $id;
-    public $pseudo;
-    public $password;
-    public $name;
-    public $first_name;
-    public $tel;
-    public $email;
-    public $created_at;
-
 
     /**
      * {@inheritdoc}
@@ -32,17 +23,6 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
         return null;
     }
 
-    /**
-     * Finds user by username
-     *
-     * @param string $username
-     * @return static|null
-     */
-    public static function findByPseudo($username)
-    {
-
-        return static::findOne(['pseudo'=> $username]);
-    }
 
     /**
      * {@inheritdoc}
