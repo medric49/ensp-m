@@ -23,8 +23,18 @@ class GuestController extends Controller
     }
 
     public function actionAccueil() {
-
         return $this->render('home');
     }
 
+    public function actionConnexion() {
+        return $this->render('connection');
+    }
+
+    public function actionMembre() {
+        return $this->render('member');
+    }
+
+    public function actionAdministrateur() {
+        return $this->render('administrator');
+    }
 }

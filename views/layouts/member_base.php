@@ -16,10 +16,10 @@ $this->title = "Mutuelle - ENSP"
             <?= $this->blocks['title'] ?>
         <?php endif; ?>
     </head>
-    <?php $this->beginBody() ?>
     <body>
+    <?php $this->beginBody() ?>
 
-
+    <?= $content ?>
 
 
     <? include Yii::getAlias("@app")."/includes/scripts.php" ;?>
@@ -27,8 +27,8 @@ $this->title = "Mutuelle - ENSP"
         <?= $this->blocks['script'] ?>
     <?php endif; ?>
 
-
-    </body>
     <?php $this->endBody(); ?>
+    </body>
+
     </html>
 <?php $this->endPage(); ?>
