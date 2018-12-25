@@ -15,6 +15,7 @@ class m181222_174013_create_member_table extends Migration
         $this->createTable('member', [
             'id' => $this->primaryKey()->unsigned(),
             'user_id' => $this->integer()->unsigned(),
+            'username' =>$this->string()->unique(),
             'administrator_id' => $this->integer()->unsigned()
         ]);
     }
