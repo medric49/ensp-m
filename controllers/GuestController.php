@@ -29,7 +29,8 @@ class GuestController extends Controller
 
 
         if (!\Yii::$app->user->getIsGuest()) {
-            if (\Yii::$app->user->type = "ADMINISTRATOR") {
+            $user = User::findOne(Yii::$app->user->getId());
+            if ($user->type == "ADMINISTRATOR") {
                 return $this->redirect("@administrator.home");
             }
             else {
