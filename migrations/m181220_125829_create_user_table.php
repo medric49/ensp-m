@@ -19,6 +19,7 @@ class m181220_125829_create_user_table extends Migration
             'tel' => $this->string(),
             'email' =>$this->string(),
             'type' => $this->string(),
+            'avatar' => $this->string(),
             'password' =>$this->string(),
             'created_at'=> $this->dateTime()->defaultExpression('CURRENT_TIMESTAMP')
         ]);

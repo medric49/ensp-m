@@ -44,7 +44,7 @@ Connexion
     <div class="modal-dialog" role="document">
 
         <form class="modal-content" action="<?= Yii::getAlias("@guest.member_form")?>" method="post">
-            <input id="form-token" type="hidden" name="<?=Yii::$app->request->csrfParam?>" value="<?=Yii::$app->request->csrfToken?>"/>
+            <input type="hidden" name="<?=Yii::$app->request->csrfParam?>" value="<?=Yii::$app->request->csrfToken?>"/>
             <div class="modal-header text-center">
                 <h4 class="modal-title w-100 font-weight-bold">Connexion - Membre</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -80,7 +80,7 @@ Connexion
      aria-hidden="true">
     <div class="modal-dialog" role="document" >
         <form class="modal-content" method="post" action="<?= Yii::getAlias("@guest.administrator_form")?>">
-            <input id="form-token" type="hidden" name="<?=Yii::$app->request->csrfParam?>" value="<?=Yii::$app->request->csrfToken?>"/>
+            <input type="hidden" name="<?=Yii::$app->request->csrfParam?>" value="<?=Yii::$app->request->csrfToken?>"/>
             <div class="modal-header text-center">
                 <h4 class="modal-title w-100 font-weight-bold">Connexion - Administrateur</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">

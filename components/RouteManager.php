@@ -4,7 +4,7 @@ namespace app\components;
 
 class RouteManager {
 
-    public $routes = [
+    private $routes = [
 
         // ============================ ESPACE ETRANGER ===============================
         'guest.welcome' => '/guest/accueil',
@@ -17,17 +17,27 @@ class RouteManager {
 
 
         'administrator.home' => '/administrator/accueil',
-
+        'administrator.disconnection' => '/administrator/deconnexion',
 
         // ============================ ESPACE MEMBRE =================================
         'member.home' => '/member/accueil',
+        'member.disconnection' => '/member/deconnexion',
 
+    ];
+
+    private $paths = [
+        'admin_avatar_path' => '/avatar/admin/',
+        'member_avatar_path' => '/avatar/member/'
     ];
 
     public function __construct()
     {
         foreach ($this->routes as $index=>$route ) {
-            \Yii::setAlias($index,"/ensp-m/web".$route);
+            \Yii::setAlias($index,$route);
+        }
+
+        foreach ($this->paths as $index=>$path ) {
+            \Yii::setAlias($index,$path);
         }
     }
 

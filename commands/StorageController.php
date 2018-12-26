@@ -7,6 +7,7 @@
 
 namespace app\commands;
 
+use Codeception\Util\FileSystem;
 use yii\console\Controller;
 use yii\console\ExitCode;
 
@@ -18,17 +19,20 @@ use yii\console\ExitCode;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class HelloController extends Controller
+class StorageController extends Controller
 {
     /**
      * This command echoes what you have entered as the message.
      * @param string $message the message to be echoed.
      * @return int Exit code
      */
-    public function actionIndex($message = 'hello world')
+    public function actionLink()
     {
-        echo $message . "\n";
+        if (!is_dir(\Yii::$app->getBasePath()."/storage"))
+            mkdir(\Yii::$app->getBasePath()."/storage");
 
+        symlink(\Yii::$app->getBasePath()."/storage",\Yii::$app->getBasePath().'/web/storage');
+        echo "Storage link is created !";
         return ExitCode::OK;
     }
 }
