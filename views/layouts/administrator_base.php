@@ -79,7 +79,7 @@ $this->title = "Mutuelle - ENSP";
                     <!-- Right -->
                     <ul class="navbar-nav nav-flex-icons">
                         <li class="nav-item mr-auto">
-                            <a href="#" class="nav-link waves-effect">
+                            <a href="<?= Yii::getAlias("@administrator.profile") ?>" class="nav-link waves-effect">
                                 <img src="<?= \app\managers\FileManager::loadAvatar($this->params['user'])?>" class="profile-icon" alt="<?= $this->params['administrator']->username ?>">
                                 <span><?= $this->params['administrator']->username ?></span>
                             </a>
@@ -111,13 +111,13 @@ $this->title = "Mutuelle - ENSP";
                 <a href="#" class="list-group-item active waves-effect">
                     <i class="fas fa-chart-pie mr-3"></i>Tableau de bord
                 </a>
-                <a href="#" class="list-group-item list-group-item-action waves-effect">
+                <a href="<?= Yii::getAlias("@administrator.profile")?>" class="list-group-item list-group-item-action waves-effect">
                     <i class="fas fa-user mr-3"></i>Profil</a>
                 <a href="<?= Yii::getAlias("@administrator.members") ?>" class="list-group-item list-group-item-action waves-effect">
                     <i class="fas fa-users mr-3"></i>Membres</a>
                 <a href="#" class="list-group-item list-group-item-action waves-effect">
                     <i class="fas fa-robot mr-3"></i>Administrateurs</a>
-                <a href="#" class="list-group-item list-group-item-action waves-effect">
+                <a href="<?= Yii::getAlias("@administrator.help_types") ?>" class="list-group-item list-group-item-action waves-effect">
                     <i class="fas fa-hand-holding-heart mr-3"></i>Type d'aides</a>
             </div>
 

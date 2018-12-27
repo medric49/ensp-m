@@ -21,7 +21,17 @@ class RouteManager {
         'administrator.members' => '/administrator/membres',
         'administrator.new_member' => '/administrator/nouveau-membre',
         'administrator.add_member' => '/administrator/ajouter-member',
+        'administrator.profile' => '/administrator/profil',
+        'administrator.update_profile' => '/administrator/modifier-profil',
+        'administrator.update_social_information' => '/administrator/modifier-information-sociale',
+        'administrator.update_password' => '/administrator/modifier-mot-de-passe',
 
+        'administrator.help_types' => '/administrator/types-aide',
+        'administrator.new_help_type' => '/administrator/nouveau-type-aide',
+        'administrator.update_help_type' => '/administrator/modifier-type-aide',
+        'administrator.add_help_type' => '/administrator/ajouter-type-aide',
+        'administrator.apply_help_type_update' => '/administrator/appliquer-modification-type-aide',
+        'administrator.delete_help_type' => '/administrator/supprimer-type-aide',
         // ============================ ESPACE MEMBRE =================================
         'member.home' => '/member/accueil',
         'member.disconnection' => '/member/deconnexion',

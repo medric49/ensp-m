@@ -9,6 +9,7 @@
 namespace app\controllers;
 
 
+use app\managers\RedirectionManager;
 use app\models\Member;
 use app\models\User;
 use yii\web\Controller;
@@ -42,7 +43,7 @@ class MemberController extends Controller
                 }
             }
             else
-                \Yii::$app->end(404);
+                return RedirectionManager::abort($this);
         }
         else
         {
@@ -60,6 +61,8 @@ class MemberController extends Controller
             \Yii::$app->user->logout();
             return $this->redirect('@guest.connection');
         }
-        return $this->redirect('@member.home');
+        {
+            return $this->redirect('@member.home');
+        }
     }
 }

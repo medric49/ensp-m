@@ -5,3 +5,4 @@
 <link rel="icon" href="<?= Yii::getAlias("@web")."/img/icon.png"?>">
 <link rel="stylesheet" href="<?= Yii::getAlias("@web")."/css/bootstrap/bootstrap.min.css"?>">
 <link rel="stylesheet" href="<?= Yii::getAlias("@web")."/css/mdb.min.css"?>">
+<link rel="stylesheet" href="<?= Yii::getAlias("@web")."/css/main.css"?>">
