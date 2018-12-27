@@ -9,6 +9,7 @@
 namespace app\controllers;
 
 
+use app\managers\AdministratorSessionManager;
 use app\managers\FileManager;
 use app\managers\RedirectionManager;
 use app\models\Administrator;
@@ -16,7 +17,6 @@ use app\models\forms\HelpTypeForm;
 use app\models\forms\NewMemberForm;
 use app\models\forms\UpdatePasswordForm;
 use app\models\forms\UpdateSocialInformationForm;
-use app\models\Help;
 use app\models\HelpType;
 use app\models\Member;
 use app\models\User;
@@ -61,13 +61,16 @@ class AdministratorController extends Controller
 
 
     public function actionAccueil() {
+        AdministratorSessionManager::setHome();
         return $this->render('home');
     }
 
     public function actionProfil() {
+        AdministratorSessionManager::setProfile();
         return $this->render('profile');
     }
     public function actionModifierProfil() {
+        AdministratorSessionManager::setProfile();
         $socialModel = new UpdateSocialInformationForm();
         $passwordModel = new UpdatePasswordForm();
 
@@ -144,6 +147,7 @@ class AdministratorController extends Controller
 
 
     public function actionTypesAide() {
+        AdministratorSessionManager::setHelps();
         $helpTypes = HelpType::find()->all();
         return $this->render('help_types',compact('helpTypes'));
     }
@@ -208,6 +212,7 @@ class AdministratorController extends Controller
     }
 
     public function actionNouveauTypeAide() {
+        AdministratorSessionManager::setHelps();
         $model = new HelpTypeForm();
         return $this->render('new_help_type',compact('model'));
     }
@@ -244,11 +249,13 @@ class AdministratorController extends Controller
     }
 
     public function actionMembres() {
+        AdministratorSessionManager::setMembers();
         $members = Member::find()->all();
         return $this->render('members',compact('members'));
     }
 
     public function actionNouveauMembre() {
+        AdministratorSessionManager::setMembers();
         $model = new NewMemberForm();
         return $this->render('new_member',['model'=> $model]);
     }
@@ -289,6 +296,11 @@ class AdministratorController extends Controller
             return RedirectionManager::abort($this);
         }
 
+    }
+
+    public function actionAdministrateurs() {
+        AdministratorSessionManager::setAdministrators();
+        return $this->render("administrators");
     }
 
 }

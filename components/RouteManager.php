@@ -32,6 +32,7 @@ class RouteManager {
         'administrator.add_help_type' => '/administrator/ajouter-type-aide',
         'administrator.apply_help_type_update' => '/administrator/appliquer-modification-type-aide',
         'administrator.delete_help_type' => '/administrator/supprimer-type-aide',
+        'administrator.administrators' => '/administrator/administrateurs',
         // ============================ ESPACE MEMBRE =================================
         'member.home' => '/member/accueil',
         'member.disconnection' => '/member/deconnexion',
