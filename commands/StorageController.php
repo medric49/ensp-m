@@ -7,7 +7,6 @@
 
 namespace app\commands;
 
-use Codeception\Util\FileSystem;
 use yii\console\Controller;
 use yii\console\ExitCode;
 
@@ -31,8 +30,21 @@ class StorageController extends Controller
         if (!is_dir(\Yii::$app->getBasePath()."/storage"))
             mkdir(\Yii::$app->getBasePath()."/storage");
 
-        symlink(\Yii::$app->getBasePath()."/storage",\Yii::$app->getBasePath().'/web/storage');
+
+        if (!is_dir(\Yii::$app->getBasePath()."/storage/avatar"))
+            mkdir(\Yii::$app->getBasePath()."/storage/avatar");
+        if (!is_dir(\Yii::$app->getBasePath()."/storage/avatar/admin"))
+            mkdir(\Yii::$app->getBasePath()."/storage/avatar/admin");
+        if (!is_dir(\Yii::$app->getBasePath()."/storage/avatar/member"))
+            mkdir(\Yii::$app->getBasePath()."/storage/avatar/member");
+
+
+        if (!is_dir(\Yii::$app->getBasePath().'/web/storage'))
+            symlink(\Yii::$app->getBasePath()."/storage",\Yii::$app->getBasePath().'/web/storage');
         echo "Storage link is created !";
+
+
+
         return ExitCode::OK;
     }
 }

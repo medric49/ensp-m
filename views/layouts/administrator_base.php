@@ -1,8 +1,6 @@
 <?php
 use yii\helpers\Html;
 $this->title = "Mutuelle - ENSP";
-$user = \app\models\User::findOne(Yii::$app->user->getId());
-$administrator = \app\models\Administrator::findOne(['user_id' => $user->id]);
 ?>
 
 <?php $this->beginPage() ?>
@@ -35,7 +33,7 @@ $administrator = \app\models\Administrator::findOne(['user_id' => $user->id]);
         </style>
 
         <?php if (isset($this->blocks['style'])): ?>
-            <?= $this->blocks['title'] ?>
+            <?= $this->blocks['style'] ?>
         <?php endif; ?>
     </head>
     <body  class="grey lighten-3">
@@ -82,8 +80,8 @@ $administrator = \app\models\Administrator::findOne(['user_id' => $user->id]);
                     <ul class="navbar-nav nav-flex-icons">
                         <li class="nav-item mr-auto">
                             <a href="#" class="nav-link waves-effect">
-                                <img src="<?= \app\managers\FileManager::loadAvatar($user)?>" class="profile-icon" alt="<?= $administrator->username ?>">
-                                <span><?= $administrator->username ?></span>
+                                <img src="<?= \app\managers\FileManager::loadAvatar($this->params['user'])?>" class="profile-icon" alt="<?= $this->params['administrator']->username ?>">
+                                <span><?= $this->params['administrator']->username ?></span>
                             </a>
                         </li>
                         <li class="nav-item">
@@ -115,7 +113,7 @@ $administrator = \app\models\Administrator::findOne(['user_id' => $user->id]);
                 </a>
                 <a href="#" class="list-group-item list-group-item-action waves-effect">
                     <i class="fas fa-user mr-3"></i>Profil</a>
-                <a href="#" class="list-group-item list-group-item-action waves-effect">
+                <a href="<?= Yii::getAlias("@administrator.members") ?>" class="list-group-item list-group-item-action waves-effect">
                     <i class="fas fa-users mr-3"></i>Membres</a>
                 <a href="#" class="list-group-item list-group-item-action waves-effect">
                     <i class="fas fa-robot mr-3"></i>Administrateurs</a>
@@ -135,17 +133,19 @@ $administrator = \app\models\Administrator::findOne(['user_id' => $user->id]);
     </main>
     <!--Main layout-->
 
-    <!--Footer-->
-    <footer class="page-footer text-center font-small primary-color-dark darken-2 mt-4 wow fadeIn">
+    <!--Footer
+    <footer class="page-footer text-center font-small primary-color-dark darken-2 mt-4 wow fadeIn ">
 
-        <!--Copyright-->
         <div class="footer-copyright py-3">
             © 2018 Copyright: Groupe DEC
         </div>
-        <!--/.Copyright-->
 
     </footer>
+    -->
+
     <!--/.Footer-->
+
+
     <?php include Yii::getAlias("@app") . "/includes/scripts.php"; ?>
 
     <!-- Initializations -->

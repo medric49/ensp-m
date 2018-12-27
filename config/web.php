@@ -45,6 +45,10 @@ $config = [
                 ],
             ],
         ],
+        'formatter' => [
+            'dateFormat' => 'dd.MM.y',
+            'datetimeFormat' => 'HH:mm:ss dd.MM.y'
+        ],
         'db' => $db,
 
         'urlManager' => [

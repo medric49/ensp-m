@@ -18,6 +18,9 @@ class RouteManager {
 
         'administrator.home' => '/administrator/accueil',
         'administrator.disconnection' => '/administrator/deconnexion',
+        'administrator.members' => '/administrator/membres',
+        'administrator.new_member' => '/administrator/nouveau-membre',
+        'administrator.add_member' => '/administrator/ajouter-member',
 
         // ============================ ESPACE MEMBRE =================================
         'member.home' => '/member/accueil',

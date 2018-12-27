@@ -6,25 +6,23 @@
  * Time: 17:43
  */
 
-namespace app\models;
+namespace app\models\forms;
 
 
 use yii\base\Model;
 
-class MemberConnectionForm extends Model
+class AdministratorConnectionForm extends Model
 {
     public $username;
     public $password;
-    public $rememberMe;
+    public $remember;
 
     public function rules()
     {
         return [
             [['username','password'],'required'],
             [['username','password'],'string'],
-            ['rememberMe','boolean'],
+            [['remember'],'boolean'],
         ];
     }
-
-
 }

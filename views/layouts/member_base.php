@@ -1,8 +1,6 @@
 <?php
 use yii\helpers\Html;
 $this->title = "Mutuelle - ENSP";
-$user = \app\models\User::findOne(Yii::$app->user->getId());
-$member = \app\models\Member::findOne(['user_id' => $user->id]);
 ?>
 
 <?php $this->beginPage() ?>
@@ -33,7 +31,7 @@ $member = \app\models\Member::findOne(['user_id' => $user->id]);
         </style>
 
         <?php if (isset($this->blocks['style'])): ?>
-            <?= $this->blocks['title'] ?>
+            <?= $this->blocks['style'] ?>
         <?php endif; ?>
     </head>
     <body  class="grey lighten-3">
@@ -80,8 +78,8 @@ $member = \app\models\Member::findOne(['user_id' => $user->id]);
                     <ul class="navbar-nav nav-flex-icons">
                         <li class="nav-item mr-auto">
                             <a href="#" class="nav-link waves-effect">
-                                <img src="<?= \app\managers\FileManager::loadAvatar($user)?>" class="profile-icon" alt="<?= $member->username ?>">
-                                <span><?= $member->username ?></span>
+                                <img src="<?= \app\managers\FileManager::loadAvatar($this->params['user'])?>" class="profile-icon" alt="<?= $this->params['member']->username ?>">
+                                <span><?= $this->params['member']->username ?></span>
                             </a>
                         </li>
                         <li class="nav-item">

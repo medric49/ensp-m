@@ -6,15 +6,15 @@
  * Time: 9:06 PM
  */
 
+
+
 namespace app\managers;
-
-
 
 use app\models\User;
 use Yii;
 use yii\web\UploadedFile;
 
-abstract class FileManager
+class FileManager
 {
     static $format = [256,512,1024];
 
@@ -26,30 +26,46 @@ abstract class FileManager
     }
 
     public static function storeImage(UploadedFile $image,$path,$name) {
-
+        if ($path[strlen($path)-1] != '/' )
+            $path .= '/';
         $link = self::getBase().$path.$name.'.'.$image->getExtension();
         $image->saveAs($link);
 
         self::create_format_folder($path);
         foreach (self::$format as $item){
-            self::put_image($image,$item,$link,$path);
+            self::put_image($image,$item,$link,$path,$name.'.'.$image->getExtension());
         }
         return $name.'.'.$image->getExtension();
     }
 
     public static function loadImage($file_name,$path,$format="") {
+        if ($path[strlen($path)-1] != '/' )
+            $path .= '/';
+
         return self::getWeb().$path. ($format!=""?$format."/":"") .$file_name;
     }
 
     public static function deleteImage($file_name,$path) {
+        if ($path[strlen($path)-1] != '/' )
+            $path .= '/';
+
         unlink(self::getBase().$path.$file_name);
         foreach (self::$format as $item) {
             unlink(self::getBase().$path.$item."/".$file_name);
         }
     }
 
+    public static function storeAvatar(UploadedFile $image, $username, $type) {
+        if ($type == 'ADMINISTRATOR') {
+            return self::storeImage($image,Yii::getAlias("@admin_avatar_path"),$username);
+        }
+        if ($type == 'MEMBER') {
+            return self::storeImage($image,Yii::getAlias("@member_avatar_path"),$username);
+        }
+    }
+
     public static function loadAvatar(User $user, $format = "256") {
-        if ($user->type = 'ADMINISTRATOR') {
+        if ($user->type === 'ADMINISTRATOR') {
             if ($user->avatar)
                 return self::loadImage($user->avatar,Yii::getAlias("@admin_avatar_path"),$format);
             else
@@ -63,9 +79,9 @@ abstract class FileManager
         }
     }
 
-    private static function put_image(UploadedFile $image,$size,$link,$path) {
-        $img1024 = self::resize_image($image,$size,$size);
-        $path = self::getBase().$path.$size."/".$link;
+    private static function put_image(UploadedFile $image,$size,$link,$path,$name) {
+        $img1024 = self::resize_image($image,$link,$size,$size);
+        $path = self::getBase().$path.$size."/".$name;
         switch (strtoupper($image->getExtension()) ) {
             case "PNG":
                 imagepng($img1024,$path);
@@ -84,18 +100,18 @@ abstract class FileManager
                 break;
         }
     }
+
     private static function create_format_folder($path) {
-
         $path = self::getBase().$path;
-
         foreach (FileManager::$format as $item) {
             $a = $path.$item;
             if (!is_dir($a))
                 mkdir($a);
         }
     }
-    private static function resize_image(UploadedFile $file, $w, $h, $crop=FALSE) {
-        list($width, $height) = getimagesize($file);
+
+    private static function resize_image(UploadedFile $file,$link, $w, $h, $crop=FALSE) {
+        list($width, $height) = getimagesize($link);
         $r = $width / $height;
         if ($crop) {
             if ($width > $height) {
@@ -115,21 +131,22 @@ abstract class FileManager
             }
         }
 
+
         switch (strtoupper($file->getExtension())) {
             case "PNG" :
-                $src = imagecreatefrompng($file);
+                $src = imagecreatefrompng($link);
                 break;
             case "JPG":
-                $src = imagecreatefromjpeg($file);
+                $src = imagecreatefromjpeg($link);
                 break;
             case "JPEG":
-                $src = imagecreatefromjpeg($file);
+                $src = imagecreatefromjpeg($link);
                 break;
             case "GIF":
-                $src = imagecreatefromgif($file);
+                $src = imagecreatefromgif($link);
                 break;
             default:
-                $src = imagecreatefrompng($file);
+                $src = imagecreatefrompng($link);
                 break;
         }
 
