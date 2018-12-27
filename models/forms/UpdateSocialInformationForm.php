@@ -26,7 +26,7 @@ class UpdateSocialInformationForm extends Model
             [['username','name','first_name','tel','email'],'required'],
             [['username','name','first_name','tel'],'string'],
             ['email','email'],
-            ['avatar','image','isEmpty' => false]
+            ['avatar','image']
         ];
     }
 }

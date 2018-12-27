@@ -88,6 +88,17 @@ class AdministratorController extends Controller
             $passwordModel = new UpdatePasswordForm();
 
             if ($socialModel->load(\Yii::$app->request->post()) &&  $socialModel->validate()) {
+                $this->user->name = $socialModel->name;
+                $this->user->first_name = $socialModel->first_name;
+                $this->user->tel = $socialModel->tel;
+                $this->user->email = $socialModel->email;
+                if (UploadedFile::getInstance($socialModel,"avatar"))
+                    $this->user->avatar = FileManager::storeAvatar( UploadedFile::getInstance($socialModel,"avatar"),$socialModel->username,"ADMINISTRATOR");
+
+                $this->user->save();
+                $this->administrator->username = $socialModel->username;
+                $this->administrator->save();
+                return $this->redirect("@administrator.profile");
             }
             else
                 return $this->render('update_profile',compact('socialModel','passwordModel'));
@@ -102,8 +113,25 @@ class AdministratorController extends Controller
     public function actionModifierMotDePasse() {
         if (\Yii::$app->request->getIsPost()) {
             $socialModel = new UpdateSocialInformationForm();
+            $socialModel->attributes = [
+                'username' => $this->administrator->username,
+                'name' => $this->user->name,
+                'first_name' => $this->user->first_name,
+                'tel' => $this->user->tel,
+                'email' => $this->user->email,
+            ];
+
             $passwordModel = new UpdatePasswordForm();
             if ($passwordModel->load(\Yii::$app->request->post()) &&  $passwordModel->validate()) {
+                if ($this->user->validatePassword($passwordModel->password)) {
+                    $this->user->password = Yii::$app->getSecurity()->generatePasswordHash($passwordModel->new_password);
+                    $this->user->save();
+                    return $this->redirect("@administrator.profile");
+                }
+                else {
+                    $passwordModel->addError('password','Le mot de passe ne correspond pas.');
+                    return $this->render('update_profile',compact('socialModel','passwordModel'));
+                }
 
             }
             else
@@ -239,7 +267,8 @@ class AdministratorController extends Controller
                     $user->email = $model->email;
                     $user->type = "MEMBER";
                     $user->password = (new Security())->generatePasswordHash($model->password);
-                    $user->avatar = FileManager::storeAvatar(UploadedFile::getInstance($model,'avatar'),$model->username,'MEMBER');
+                    if (UploadedFile::getInstance($model,'avatar'))
+                        $user->avatar = FileManager::storeAvatar(UploadedFile::getInstance($model,'avatar'),$model->username,'MEMBER');
                     $user->save();
 
 

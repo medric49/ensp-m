@@ -23,7 +23,7 @@ Profil
         <?= $form1->field($socialModel,'name')->input('text',['required' => 'required'])->label('Nom') ?>
         <?= $form1->field($socialModel,'tel')->input('tel',['required'=>'required'])->label("Téléphone") ?>
         <?= $form1->field($socialModel,'email')->input('email',['required'=> 'required'])->label('Email')?>
-        <?= $form1->field($socialModel,'avatar')->fileInput(['required'=> 'required','accept'=>'.png,.jpg,.jpeg,.gif'])->label('Photo de profil')?>
+        <?= $form1->field($socialModel,'avatar')->fileInput(['accept'=>'.png,.jpg,.jpeg,.gif'])->label('Photo de profil')?>
 
         <div class="form-group text-right">
             <button type="submit" class="btn btn-primary">Enregistrer</button>

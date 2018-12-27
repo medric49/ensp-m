@@ -27,7 +27,7 @@ class NewMemberForm extends Model
             [['username','name','first_name','tel','password'],'string'],
             [['username','name','first_name','tel','password','email'],'required'],
             [['email'],'email'],
-            [['avatar'],'image','isEmpty' => false],
+            [['avatar'],'image'],
         ];
     }
 }
