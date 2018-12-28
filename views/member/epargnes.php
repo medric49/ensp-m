@@ -46,7 +46,7 @@ Epargnes membre
             <tr>
                 <td><?= Html::encode("{$exercise->year}") ?></td>
                 <td><?= Html::encode("{$session->date}") ?></td>
-                <td><?= Html::encode("{$saving->amount}") ?></td>
+                <td><?= Html::encode("{$saving->amount} XAF") ?></td>
                 <td><?= Html::encode("{$admin->username}") ?></td>
                 <td><?= Html::encode("{$saving->created_at}") ?></td>
             </tr>

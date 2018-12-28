@@ -40,7 +40,7 @@ class RouteManager {
         'member.profil' => '/member/profil',
         'member.epargnes' => '/member/epargnes',
         'member.emprunts' => '/member/emprunts',
-        'member.types_aide' => '/member/types_aide',
+        'member.typesaide' => '/member/typesaide',
         'member.contributions' => '/member/contributions',
         'member.modifier_profil' => '/member/modifiersonprofil',
 

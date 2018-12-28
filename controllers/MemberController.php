@@ -166,4 +166,10 @@ class MemberController extends Controller
         return $this->render('types_aide',compact('helptype'));
     }
 
+    public function actionMembres() {
+     
+        $members = Member::find()->all();
+        return $this->render('members',compact('members'));
+    }
+
 }

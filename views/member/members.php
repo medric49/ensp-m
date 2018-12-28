@@ -34,7 +34,7 @@ Types_aide membre
             
         </tr>
             
-        <?php foreach ($helptype as $ht): ?>
+        <?php foreach ($members as $member): ?>
 
             <tr>
                 <td><?= Html::encode("{$ht->title} ") ?></td>

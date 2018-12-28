@@ -50,7 +50,7 @@ Emprunts membre
             <tr>
                 <td><?= Html::encode("{$exercise->year}") ?></td>
                 <td><?= Html::encode("{$session->date}") ?></td>
-                <td><?= Html::encode("{$borrowing->amount}") ?></td>
+                <td><?= Html::encode("{$borrowing->amount} XAF") ?></td>
                 <td><?= Html::encode("{$borrowing->interest}") ?></td>
                 <td><?= Html::encode("{$borrowing->created_at}") ?></td>
                 <td><?= Html::encode("{$borrowing->limit_date}") ?></td> 

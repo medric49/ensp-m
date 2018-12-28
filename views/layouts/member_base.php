@@ -115,7 +115,7 @@ $this->title = "Mutuelle - ENSP";
                     <i class="fas fa-users mr-3"></i>Membres</a>
                 <a href="#" class="list-group-item list-group-item-action waves-effect">
                     <i class="fas fa-robot mr-3"></i>Administrateurs</a>
-                <a href="<?= Yii::getAlias("@member.types_aide") ?>" class="list-group-item list-group-item-action waves-effect">
+                <a href="<?= Yii::getAlias("@member.typesaide") ?>" class="list-group-item list-group-item-action waves-effect">
                     <i class="fas fa-hand-holding-heart mr-3"></i>Type d'aides</a>
             </div>
 
