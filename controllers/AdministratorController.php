@@ -9,12 +9,23 @@
 namespace app\controllers;
 
 
+use app\managers\AdministratorSessionManager;
 use app\managers\FileManager;
+use app\managers\RedirectionManager;
 use app\models\Administrator;
+use app\models\Exercise;
+use app\models\forms\HelpTypeForm;
+use app\models\forms\IdForm;
 use app\models\forms\NewMemberForm;
+use app\models\forms\NewSessionForm;
+use app\models\forms\UpdatePasswordForm;
+use app\models\forms\UpdateSocialInformationForm;
+use app\models\HelpType;
 use app\models\Member;
+use app\models\Session;
 use app\models\User;
-use yii\base\Module;
+use DateTime;
+use Yii;
 use yii\base\Security;
 use yii\web\Controller;
 use yii\web\UploadedFile;
@@ -45,7 +56,7 @@ class AdministratorController extends Controller
                 \Yii::$app->response->redirect("@member.home");
             }
             else
-                \Yii::$app->end(404);
+                return RedirectionManager::abort($this);;
         }
         else {
             \Yii::$app->response->redirect("@guest.connection");
@@ -55,23 +66,271 @@ class AdministratorController extends Controller
 
 
     public function actionAccueil() {
-        return $this->render('home');
+        AdministratorSessionManager::setHome();
+        $session = Session::findOne(['active' => true]);
+        $idModel = new IdForm();
+        if ($session)
+            $idModel->id = $session->id;
+        $model = new NewSessionForm();
+        return $this->render('home',compact('session','model','idModel'));
     }
+
+    public function actionNouvelleSession() {
+        if (Yii::$app->request->getIsPost()) {
+            $idModel = new IdForm();
+            $model = new NewSessionForm();
+            $session = null;
+            if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+                // Traitement de l'exercice
+                $exercise = Exercise::findOne(['active' => true]);
+                if ($exercise){
+                    // S'il y a un exercice en cours
+
+                    if (  count( Session::findAll(['exercise_id'=> $exercise->id]))>=12 ) {
+                        // S'il ya deja 12 exercise pour cette exercice
+                        $exercise->active == false;
+                        $exercise->save();
+
+                        $exercise = new Exercise();
+                        $exercise->year = (int) (new DateTime())->format("y");
+                        $exercise->save();
+                    }
+                }
+                else {
+                    // S'il n'y a pas, on le crée
+                    $exercise = new Exercise();
+                    $exercise->administrator_id = $this->administrator->id;
+                    $exercise->year = (int) (new DateTime())->format("y");
+                    $exercise->save();
+                }
+
+                $session = new Session();
+                $session->administrator_id = $this->administrator->id;
+                $session->exercise_id = $exercise->id;
+                $session->date = $model->date;
+                $session->save();
+
+                return $this->redirect("@administrator.home");
+            }
+            else {
+                return $this->render('home',compact('session','model','idModel'));
+            }
+        }
+        else
+            return RedirectionManager::abort($this);
+    }
+
+
+
+    public function actionDesactiveSession() {
+        if (Yii::$app->request->getIsPost()) {
+            $idModel = new IdForm();
+            if ($idModel->load(Yii::$app->request->post()) && $idModel->validate()) {
+                $session = Session::findOne($idModel->id);
+
+                $session->active = false;
+                $session->save();
+
+                return $this->redirect("@administrator.home");
+            }
+            else
+                return RedirectionManager::abort($this);
+        }
+        else
+            return RedirectionManager::abort($this);
+    }
+
+    public function actionProfil() {
+        AdministratorSessionManager::setProfile();
+        return $this->render('profile');
+    }
+    public function actionModifierProfil() {
+        AdministratorSessionManager::setProfile();
+        $socialModel = new UpdateSocialInformationForm();
+        $passwordModel = new UpdatePasswordForm();
+
+        $socialModel->attributes = [
+            'username' => $this->administrator->username,
+            'name' => $this->user->name,
+            'first_name' => $this->user->first_name,
+            'tel' => $this->user->tel,
+            'email' => $this->user->email,
+        ];
+
+        return $this->render('update_profile',compact('socialModel','passwordModel'));
+    }
+
+    public function actionModifierInformationSociale() {
+        if (\Yii::$app->request->getIsPost()) {
+            $socialModel = new UpdateSocialInformationForm();
+            $passwordModel = new UpdatePasswordForm();
+
+            if ($socialModel->load(\Yii::$app->request->post()) &&  $socialModel->validate()) {
+                $this->user->name = $socialModel->name;
+                $this->user->first_name = $socialModel->first_name;
+                $this->user->tel = $socialModel->tel;
+                $this->user->email = $socialModel->email;
+                if (UploadedFile::getInstance($socialModel,"avatar"))
+                    $this->user->avatar = FileManager::storeAvatar( UploadedFile::getInstance($socialModel,"avatar"),$socialModel->username,"ADMINISTRATOR");
+
+                $this->user->save();
+                $this->administrator->username = $socialModel->username;
+                $this->administrator->save();
+                return $this->redirect("@administrator.profile");
+            }
+            else
+                return $this->render('update_profile',compact('socialModel','passwordModel'));
+
+        }
+        else
+        {
+            return RedirectionManager::abort($this);;
+        }
+    }
+
+    public function actionModifierMotDePasse() {
+        if (\Yii::$app->request->getIsPost()) {
+            $socialModel = new UpdateSocialInformationForm();
+            $socialModel->attributes = [
+                'username' => $this->administrator->username,
+                'name' => $this->user->name,
+                'first_name' => $this->user->first_name,
+                'tel' => $this->user->tel,
+                'email' => $this->user->email,
+            ];
+
+            $passwordModel = new UpdatePasswordForm();
+            if ($passwordModel->load(\Yii::$app->request->post()) &&  $passwordModel->validate()) {
+                if ($this->user->validatePassword($passwordModel->password)) {
+                    $this->user->password = Yii::$app->getSecurity()->generatePasswordHash($passwordModel->new_password);
+                    $this->user->save();
+                    return $this->redirect("@administrator.profile");
+                }
+                else {
+                    $passwordModel->addError('password','Le mot de passe ne correspond pas.');
+                    return $this->render('update_profile',compact('socialModel','passwordModel'));
+                }
+
+            }
+            else
+                return $this->render('update_profile',compact('socialModel','passwordModel'));
+
+        }
+        else
+            return RedirectionManager::abort($this);;
+    }
+
+
+    public function actionTypesAide() {
+        AdministratorSessionManager::setHelps();
+        $helpTypes = HelpType::find()->all();
+        return $this->render('help_types',compact('helpTypes'));
+    }
+    public function actionModifierTypeAide($q=0) {
+        if ($q) {
+            $model = new HelpTypeForm();
+
+            $helpType = HelpType::findOne($q);
+            if ($helpType) {
+                $model->id = $helpType->id;
+                $model->title = $helpType->title;
+                $model->amount = $helpType->amount;
+                return $this->render('update_help_type',compact('model'));
+            }
+            else {
+                return RedirectionManager::abort($this);
+            }
+        }
+        else{
+            return RedirectionManager::abort($this);
+        }
+    }
+
+    public function actionAppliquerModificationTypeAide() {
+        if (Yii::$app->request->getIsPost()) {
+            $model = new HelpTypeForm();
+
+            if ($model->load(Yii::$app->request->post()) && $model->validate()){
+                $helpType = HelpType::findOne($model->id);
+                $helpType->title = $model->title;
+                $helpType->amount = $model->amount;
+                $helpType->save();
+                return $this->redirect("@administrator.help_types");
+            }
+            else{
+                return $this->render('update_help_type',compact('model'));
+            }
+        }
+        else
+            return RedirectionManager::abort($this);
+    }
+
+    public function actionSupprimerTypeAide() {
+        if (Yii::$app->request->getIsPost()) {
+            $model = new HelpTypeForm();
+            $model->load(Yii::$app->request->post());
+            if ($model->id) {
+                $helpType = HelpType::findOne($model->id);
+                if ($helpType)
+                {
+                    $helpType->delete();
+                    return $this->redirect("@administrator.help_types");
+                }
+                else
+                    return RedirectionManager::abort($this);
+            }
+            else
+                return RedirectionManager::abort($this);
+        }
+        else
+            return RedirectionManager::abort($this);
+    }
+
+    public function actionNouveauTypeAide() {
+        AdministratorSessionManager::setHelps();
+        $model = new HelpTypeForm();
+        return $this->render('new_help_type',compact('model'));
+    }
+    public function actionAjouterTypeAide() {
+        if (\Yii::$app->request->getIsPost()) {
+            $model = new HelpTypeForm();
+
+            if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+                $helpType = new HelpType();
+                $helpType->title = $model->title;
+                $helpType->amount=  $model->amount;
+                $helpType->save();
+                return $this->redirect('@administrator.help_types');
+            }
+            else
+                return $this->render('new_help_type',compact('model'));
+
+        }
+        else {
+            return RedirectionManager::abort($this);
+        }
+    }
+
+
 
     public function actionDeconnexion() {
         if (\Yii::$app->request->post()) {
             \Yii::$app->user->logout();
             return $this->redirect('@guest.connection');
         }
-        return \Yii::$app->end(404);
+        else{
+            return RedirectionManager::abort($this);
+        }
     }
 
     public function actionMembres() {
+        AdministratorSessionManager::setMembers();
         $members = Member::find()->all();
         return $this->render('members',compact('members'));
     }
 
     public function actionNouveauMembre() {
+        AdministratorSessionManager::setMembers();
         $model = new NewMemberForm();
         return $this->render('new_member',['model'=> $model]);
     }
@@ -90,7 +349,8 @@ class AdministratorController extends Controller
                     $user->email = $model->email;
                     $user->type = "MEMBER";
                     $user->password = (new Security())->generatePasswordHash($model->password);
-                    $user->avatar = FileManager::storeAvatar(UploadedFile::getInstance($model,'avatar'),$model->username,'MEMBER');
+                    if (UploadedFile::getInstance($model,'avatar'))
+                        $user->avatar = FileManager::storeAvatar(UploadedFile::getInstance($model,'avatar'),$model->username,'MEMBER');
                     $user->save();
 
 
@@ -107,8 +367,15 @@ class AdministratorController extends Controller
             return $this->render('new_member',compact('model'));
 
         }
-        return \Yii::$app->end(404);
+        else{
+            return RedirectionManager::abort($this);
+        }
 
+    }
+
+    public function actionAdministrateurs() {
+        AdministratorSessionManager::setAdministrators();
+        return $this->render("administrators");
     }
 
 }
