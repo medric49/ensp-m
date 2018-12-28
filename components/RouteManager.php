@@ -47,6 +47,7 @@ class RouteManager {
 
     public function __construct()
     {
+        \Yii::$app->getErrorHandler()->errorAction = "page/error";
         foreach ($this->routes as $index=>$route ) {
             \Yii::setAlias($index,$route);
         }
