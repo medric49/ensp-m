@@ -27,7 +27,7 @@ Type d'aide
     <?php if (count($helpTypes)):?>
     <div class="row">
         <div class="col-12 white-block">
-            <div class="row table-head">
+            <div class="row table-head py-2">
                 <h3 class="col-8">
                     Titre
                 </h3>
@@ -37,7 +37,7 @@ Type d'aide
             </div>
 
             <?php foreach($helpTypes as $helpType): ?>
-                <div class="row my-3" style="border-bottom: 1px solid #e6e6e6">
+                <div class="row py-3" style="border-bottom: 1px solid #e6e6e6">
                     <div class="col-8">
                         <a href="<?= Yii::getAlias("@administrator.update_help_type")."?q=".$helpType->id?>" class="link"><?= $helpType->title ?></a>
                     </div>

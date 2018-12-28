@@ -13,13 +13,18 @@ use app\managers\AdministratorSessionManager;
 use app\managers\FileManager;
 use app\managers\RedirectionManager;
 use app\models\Administrator;
+use app\models\Exercise;
 use app\models\forms\HelpTypeForm;
+use app\models\forms\IdForm;
 use app\models\forms\NewMemberForm;
+use app\models\forms\NewSessionForm;
 use app\models\forms\UpdatePasswordForm;
 use app\models\forms\UpdateSocialInformationForm;
 use app\models\HelpType;
 use app\models\Member;
+use app\models\Session;
 use app\models\User;
+use DateTime;
 use Yii;
 use yii\base\Security;
 use yii\web\Controller;
@@ -62,7 +67,77 @@ class AdministratorController extends Controller
 
     public function actionAccueil() {
         AdministratorSessionManager::setHome();
-        return $this->render('home');
+        $session = Session::findOne(['active' => true]);
+        $idModel = new IdForm();
+        if ($session)
+            $idModel->id = $session->id;
+        $model = new NewSessionForm();
+        return $this->render('home',compact('session','model','idModel'));
+    }
+
+    public function actionNouvelleSession() {
+        if (Yii::$app->request->getIsPost()) {
+            $idModel = new IdForm();
+            $model = new NewSessionForm();
+            $session = null;
+            if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+                // Traitement de l'exercice
+                $exercise = Exercise::findOne(['active' => true]);
+                if ($exercise){
+                    // S'il y a un exercice en cours
+
+                    if (  count( Session::findAll(['exercise_id'=> $exercise->id]))>=12 ) {
+                        // S'il ya deja 12 exercise pour cette exercice
+                        $exercise->active == false;
+                        $exercise->save();
+
+                        $exercise = new Exercise();
+                        $exercise->year = (int) (new DateTime())->format("y");
+                        $exercise->save();
+                    }
+                }
+                else {
+                    // S'il n'y a pas, on le crée
+                    $exercise = new Exercise();
+                    $exercise->administrator_id = $this->administrator->id;
+                    $exercise->year = (int) (new DateTime())->format("y");
+                    $exercise->save();
+                }
+
+                $session = new Session();
+                $session->administrator_id = $this->administrator->id;
+                $session->exercise_id = $exercise->id;
+                $session->date = $model->date;
+                $session->save();
+
+                return $this->redirect("@administrator.home");
+            }
+            else {
+                return $this->render('home',compact('session','model','idModel'));
+            }
+        }
+        else
+            return RedirectionManager::abort($this);
+    }
+
+
+
+    public function actionDesactiveSession() {
+        if (Yii::$app->request->getIsPost()) {
+            $idModel = new IdForm();
+            if ($idModel->load(Yii::$app->request->post()) && $idModel->validate()) {
+                $session = Session::findOne($idModel->id);
+
+                $session->active = false;
+                $session->save();
+
+                return $this->redirect("@administrator.home");
+            }
+            else
+                return RedirectionManager::abort($this);
+        }
+        else
+            return RedirectionManager::abort($this);
     }
 
     public function actionProfil() {
