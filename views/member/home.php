@@ -1,7 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: medric
- * Date: 23/12/18
- * Time: 22:12
- */
+use yii\helpers\Html;
+?>
+<div class="container mt-5 mb-5">
+<strong>Bienvenue dans la page d accueil!</strong>
+</div>

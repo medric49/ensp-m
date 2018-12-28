@@ -11,6 +11,10 @@ namespace app\controllers;
 
 use app\models\Member;
 use app\models\User;
+use app\models\Saving;
+use app\models\Help_type;
+use app\models\Contribution;
+use app\models\Borrowing;
 use yii\web\Controller;
 
 class MemberController extends Controller
@@ -62,4 +66,101 @@ class MemberController extends Controller
         }
         return $this->redirect('@member.home');
     }
+
+    public function actionProfil() {
+        
+        
+            $user = User::findOne(\Yii::$app->user->getId());
+
+            
+                $member = Member::findOne(['user_id'=> $user->id]);
+
+                $this->user = $user;
+                $this->member = $member;
+                $this->view->params = ['user'=> $this->user,'member'=> $this->member];
+                return $this->render('profil',['member'=> $member, 'user'=> $user]);
+            
+        
+    }
+
+    public function actionModifierProfil() {
+        
+        $model = new NewMemberForm();
+            $user = User::findOne(\Yii::$app->user->getId());
+
+                $member = Member::findOne(['user_id'=> $user->id]);
+
+                $this->user = $user;
+                $this->member = $member;
+                $this->view->params = ['user'=> $this->user,'member'=> $this->member];
+                return $this->render('modifier_profil',['member'=> $member, 'user'=> $user,'model'=> $model]);
+            
+        
+    }
+
+    public function actionEnregistrermodificationProfil() {
+
+        $user = User::findOne(\Yii::$app->user->getId());
+
+        $member = Member::findOne(['user_id'=> $user->id]);
+
+        $this->user = $user;
+        $this->member = $member;
+        $this->view->params = ['user'=> $this->user,'member'=> $this->member];
+
+        if (\Yii::$app->request->post()) {
+            $model = new NewMemberForm();
+
+            if ($model->load(\Yii::$app->request->post()) && $model->validate()) {
+                
+                    $user->name = $model->name;
+                    $user->first_name = $model->first_name;
+                    $user->tel = $model->tel;
+                    $user->email = $model->email;
+                    $user->password = (new Security())->generatePasswordHash($model->password);
+                    $user->avatar = FileManager::storeAvatar(UploadedFile::getInstance($model,'avatar'),$model->username,'MEMBER');
+                    $user->save();
+
+                    $member->username = $model->username;
+                    $member->save();
+                    return $this->render('profil',['member'=> $member, 'user'=> $user]);
+                
+            }
+            return $this->redirect('@member.modifier_profil');
+
+        }
+        return \Yii::$app->end(404);
+
+    }
+
+    public function actionEpargnes() {
+     
+        $user = User::findOne(\Yii::$app->user->getId());
+        $member = Member::findOne(['user_id'=> $user->id]);
+        $savings = Saving::find()->where(['member_id'=> $member->id])->all();
+        return $this->render('epargnes',compact('savings'));
+    }
+
+    public function actionEmprunts() {
+     
+        $user = User::findOne(\Yii::$app->user->getId());
+        $member = Member::findOne(['user_id'=> $user->id]);
+        $borrowings = Borrowing::find()->where(['member_id'=> $member->id])->all();
+        return $this->render('emprunts',compact('borrowings'));
+    }
+
+    public function actionContributions() {
+     
+        $user = User::findOne(\Yii::$app->user->getId());
+        $member = Member::findOne(['user_id'=> $user->id]);
+        $contributions = Contribution::find()->where(['member_id'=> $member->id])->all();
+        return $this->render('contributions',compact('contributions'));
+    }
+
+    public function actionTypesaide() {
+     
+        $helptype = Help_type::find()->all();
+        return $this->render('types_aide',compact('helptype'));
+    }
+
 }

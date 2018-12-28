@@ -13,7 +13,7 @@ class RouteManager {
         'guest.member_form' => "/guest/member-form",
         'guest.administrator_form' => '/guest/administrator-form',
 
-        // ============================ ESPACE ADMINSTRATEUR ==========================
+        // ============================ ESPACE ADMINISTRATEUR ==========================
 
 
         'administrator.home' => '/administrator/accueil',
@@ -25,6 +25,12 @@ class RouteManager {
         // ============================ ESPACE MEMBRE =================================
         'member.home' => '/member/accueil',
         'member.disconnection' => '/member/deconnexion',
+        'member.profil' => '/member/profil',
+        'member.epargnes' => '/member/epargnes',
+        'member.emprunts' => '/member/emprunts',
+        'member.types_aide' => '/member/types_aide',
+        'member.contributions' => '/member/contributions',
+        'member.modifier_profil' => '/member/modifiersonprofil',
 
     ];
 

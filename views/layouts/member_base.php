@@ -61,13 +61,13 @@ $this->title = "Mutuelle - ENSP";
                     <!-- Left -->
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item active">
-                            <a class="nav-link waves-effect" href="#">Epargnes</a>
+                            <a href="<?= Yii::getAlias("@member.epargnes") ?>" class="nav-link waves-effect" href="#">Mes épargnes</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link waves-effect" href="#">Emprunts</a>
+                            <a href="<?= Yii::getAlias("@member.emprunts") ?>" class="nav-link waves-effect" href="#">Mes emprunts</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link waves-effect" href="#">Aides</a>
+                            <a href="<?= Yii::getAlias("@member.contributions") ?>" class="nav-link waves-effect" href="#">Mes contributions</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link waves-effect" href="#">Sessions</a>
@@ -77,7 +77,7 @@ $this->title = "Mutuelle - ENSP";
                     <!-- Right -->
                     <ul class="navbar-nav nav-flex-icons">
                         <li class="nav-item mr-auto">
-                            <a href="#" class="nav-link waves-effect">
+                            <a href="<?= Yii::getAlias("@member.profil") ?>" class="nav-link waves-effect">
                                 <img src="<?= \app\managers\FileManager::loadAvatar($this->params['user'])?>" class="profile-icon" alt="<?= $this->params['member']->username ?>">
                                 <span><?= $this->params['member']->username ?></span>
                             </a>
@@ -109,13 +109,13 @@ $this->title = "Mutuelle - ENSP";
                 <a href="#" class="list-group-item active waves-effect">
                     <i class="fas fa-chart-pie mr-3"></i>Tableau de bord
                 </a>
-                <a href="#" class="list-group-item list-group-item-action waves-effect">
-                    <i class="fas fa-user mr-3"></i>Profil</a>
+                <a href="<?= Yii::getAlias("@member.profil") ?>" class="list-group-item list-group-item-action waves-effect">
+                    <i class="fas fa-user mr-3"></i>Mon profil</a>
                 <a href="#" class="list-group-item list-group-item-action waves-effect">
                     <i class="fas fa-users mr-3"></i>Membres</a>
                 <a href="#" class="list-group-item list-group-item-action waves-effect">
                     <i class="fas fa-robot mr-3"></i>Administrateurs</a>
-                <a href="#" class="list-group-item list-group-item-action waves-effect">
+                <a href="<?= Yii::getAlias("@member.types_aide") ?>" class="list-group-item list-group-item-action waves-effect">
                     <i class="fas fa-hand-holding-heart mr-3"></i>Type d'aides</a>
             </div>
 
