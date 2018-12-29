@@ -22,7 +22,7 @@ class NewSavingForm extends Model
         return [
             [['member_id','amount','session_id' ],'required'],
             [['member_id','session_id'],'integer','min' => 1],
-            ['amount','integer','min' => 0]
+            ['amount','integer','min' => 1]
         ];
     }
 }

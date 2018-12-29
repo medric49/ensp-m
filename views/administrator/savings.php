@@ -22,9 +22,9 @@ Epargnes
                     <h3>épargnés</h3>
                 </div>
                 <?php if ($activeSession->state == "SAVING"): ?>
-                    <button class="btn btn-primary btn-add" data-toggle="modal" data-target="#modalLRFormDemo"><i
+                    <button class="btn <?= $model->hasErrors()?'in':''?> btn-primary btn-add" data-toggle="modal" data-target="#modalLRFormDemo"><i
                                 class="fas fa-plus"></i></button>
-                    <div class="modal <?= $model->hasErrors()?'in':''?> fade" id="modalLRFormDemo" tabindex="-1" role="dialog"
+                    <div class="modal fade" id="modalLRFormDemo" tabindex="-1" role="dialog"
                          aria-labelledby="myModalLabel"
                          aria-hidden="true">
                         <div class="modal-dialog" role="document">

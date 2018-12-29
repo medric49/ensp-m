@@ -22,12 +22,14 @@ use app\models\forms\HelpTypeForm;
 use app\models\forms\IdForm;
 use app\models\forms\NewBorrowingForm;
 use app\models\forms\NewMemberForm;
+use app\models\forms\NewRefundForm;
 use app\models\forms\NewSavingForm;
 use app\models\forms\NewSessionForm;
 use app\models\forms\UpdatePasswordForm;
 use app\models\forms\UpdateSocialInformationForm;
 use app\models\HelpType;
 use app\models\Member;
+use app\models\Refund;
 use app\models\Saving;
 use app\models\Session;
 use app\models\User;
@@ -448,7 +450,85 @@ class AdministratorController extends Controller
 
     public function actionRemboursements() {
         AdministratorSessionManager::setHome("refund");
-        return $this->render("refunds");
+
+        $model = new NewRefundForm();
+
+        $query = Session::find();
+        $pagination = new Pagination([
+            'defaultPageSize' => 5,
+            'totalCount' => $query->count(),
+        ]);
+
+        $sessions = $query->orderBy(['created_at'=> SORT_DESC])
+            ->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+
+        return $this->render("refunds",compact("model","sessions","pagination"));
+    }
+
+    public function actionNouveauRemboursement() {
+        if (Yii::$app->request->getIsPost()) {
+
+            $query = Session::find();
+            $pagination = new Pagination([
+                'defaultPageSize' => 5,
+                'totalCount' => $query->count(),
+            ]);
+
+            $sessions = $query->orderBy(['created_at'=> SORT_DESC])
+                ->offset($pagination->offset)
+                ->limit($pagination->limit)
+                ->all();
+
+            $model = new NewRefundForm();
+            if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
+                $member = Member::findOne($model->member_id);
+                $session = Session::findOne($model->session_id);
+                if ($member && $session && ($session->state =="REFUND")) {
+
+                    $borrowing = Borrowing::findOne(['member_id' => $member->id,'state' => true]);
+                    $refundedAmount = FinanceManager::borrowingRefundedAmount($borrowing);
+
+                    $intendedAmount = FinanceManager::intendedAmountFromBorrowing($borrowing);
+
+                    if ( $model->amount+$refundedAmount <  $intendedAmount){
+                        $refund = new Refund();
+                        $refund->borrowing_id = $borrowing->id;
+                        $refund->session_id = $model->session_id;
+                        $refund->amount = $model->amount;
+                        $refund->administrator_id = $this->administrator->id;
+                        $refund->save();
+
+                        return $this->redirect("@administrator.refunds");
+
+                    }
+                    elseif ($model->amount+$refundedAmount ==  $intendedAmount) {
+                        $refund = new Refund();
+                        $refund->borrowing_id = $borrowing->id;
+                        $refund->session_id = $model->session_id;
+                        $refund->amount = $model->amount;
+                        $refund->administrator_id = $this->administrator->id;
+                        $refund->save();
+
+                        $borrowing->state = false;
+                        $borrowing->save();
+                        return $this->redirect("@administrator.refunds");
+                    }
+                    else
+                    {
+                        $model->addError('amount','Le montant déborde le reste à payer pour cette dette.');
+                        return $this->render("refunds",compact("model","pagination","sessions"));
+                    }
+                }
+                else
+                    return RedirectionManager::abort($this);
+            }
+            else return $this->render("refunds",compact("model","pagination","sessions"));
+        }
+        else
+            return RedirectionManager::abort($this);
+
     }
 
     public function actionEmprunts() {
@@ -623,7 +703,13 @@ class AdministratorController extends Controller
         if ($q) {
             $session = Session::findOne($q);
             if ($session && $session->active) {
-                Yii::$app->db->createCommand()->delete('refund',['session_id'=> $q])->execute();
+                $refunds = Refund::findAll(['session_id' => $q]);
+                foreach ($refunds as $refund) {
+                    $borrowing = Borrowing::findOne($refund->borrowing_id);
+                    $borrowing->state = true;
+                    $borrowing->save();
+                    $refund->delete();
+                }
 
                 $session->state = "SAVING";
                 $session->save();

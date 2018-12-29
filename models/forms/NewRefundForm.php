@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: medric
  * Date: 29/12/18
- * Time: 19:56
+ * Time: 22:37
  */
 
 namespace app\models\forms;
@@ -11,7 +11,7 @@ namespace app\models\forms;
 
 use yii\base\Model;
 
-class NewBorrowingForm extends Model
+class NewRefundForm extends Model
 {
     public $member_id;
     public $amount;
@@ -25,4 +25,5 @@ class NewBorrowingForm extends Model
             ['amount','integer','min' => 1]
         ];
     }
+
 }

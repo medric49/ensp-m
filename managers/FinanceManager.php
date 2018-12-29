@@ -11,9 +11,11 @@ namespace app\managers;
 
 use app\models\Borrowing;
 use app\models\Exercise;
+use app\models\Member;
 use app\models\Refund;
 use app\models\Saving;
 use app\models\Session;
+use app\models\User;
 
 class FinanceManager
 {
@@ -58,5 +60,30 @@ class FinanceManager
         return Saving::find()->where(['session_id' => $sessions])->all();
     }
 
+    public static function exerciseActiveBorrowings() {
+        $exercise = Exercise::findOne(['active' => true]);
+        $sessions = Session::find()->select('id')->where(['exercise_id' => $exercise->id])->column();
+        return Borrowing::find()->where(['session_id' => $sessions,'state'=> true])->all();
+    }
+
+    public static function MembersAndUsersWithBorrowings() {
+        $users = [];
+        $members = [];
+        foreach (self::exerciseActiveBorrowings() as $borrowing) {
+            $member = Member::findOne($borrowing->member_id);
+            $members[] =$member;
+            $users[] = (User::findOne( $member->user_id));
+        }
+
+        return compact('users','members');
+    }
+
+    public static function borrowingRefundedAmount(Borrowing $borrowing) {
+        return Refund::find()->where(['borrowing_id' => $borrowing->id])->sum('amount');
+    }
+
+    public static function intendedAmountFromBorrowing(Borrowing $borrowing) {
+        return $borrowing->amount + ($borrowing->amount*$borrowing->interest)/100.0;
+    }
 
 }

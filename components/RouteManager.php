@@ -41,6 +41,7 @@ class RouteManager {
         'administrator.helps' => '/administrator/aides',
         'administrator.sessions' => '/administrator/sessions',
         'administrator.refunds' => '/administrator/remboursements',
+        'administrator.new_refund' => '/administrator/nouveau-remboursement',
 
         'administrator.go_to_refunds' => '/administrator/passer-aux-remboursements',
         'administrator.go_to_borrowings' => '/administrator/passer-aux-emprunts',
