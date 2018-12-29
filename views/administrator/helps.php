@@ -1,7 +1,4 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: medric
- * Date: 28/12/18
- * Time: 22:28
- */
+<div class="container mt-5 mb-5">
+
+    <?= \app\managers\FinanceManager::exerciseAmount() ?>
+</div>

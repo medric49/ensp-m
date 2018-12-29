@@ -37,6 +37,7 @@ class RouteManager {
         'administrator.savings' => '/administrator/epargnes',
         'administrator.new_saving'=> '/administrator/nouvelle-epargne',
         'administrator.borrowings' => '/administrator/emprunts',
+        'administrator.new_borrowing' => '/administrator/nouvelle-emprunt',
         'administrator.helps' => '/administrator/aides',
         'administrator.sessions' => '/administrator/sessions',
 

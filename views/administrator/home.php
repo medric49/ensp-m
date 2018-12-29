@@ -120,7 +120,7 @@ Accueil
                 <?php endif;?>
             <?php else: ?>
                 <h3 class="mb-3">Aucune session en activité</h3>
-                <button class="btn btn-primary" data-toggle="modal" data-target="#modalLRFormDemo">Lancer une nouvelle session</button>
+                <button class="btn btn-primary <?= $model->hasErrors()?'in':''?>" data-toggle="modal" data-target="#modalLRFormDemo">Lancer une nouvelle session</button>
 
                 <div class="modal fade" id="modalLRFormDemo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
                      aria-hidden="true">

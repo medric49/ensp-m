@@ -18,19 +18,25 @@ $this->beginBlock('title') ?>
                 <?php $borrowingAmount = \app\models\Borrowing::find()->where(['session_id' => $activeSession->id])->sum('amount'); ?>
                 <div class="col-12 white-block text-center mb-5">
                     <h3>Session active</h3>
-                    <h1 class="blue-text"><?= $savingAmount ? $savingAmount : 0 ?> XAF</h1>
-                    <h3>emprntés</h3>
+                    <h1 class="blue-text"><?= $borrowingAmount ? $borrowingAmount : 0 ?> XAF</h1>
+                    <h3>empruntés</h3>
+
+                    <?php if (\app\managers\FinanceManager::numberOfSession()==12): ?>
+                    <p class="mt-4 text-secondary">
+                       Aucun nouvel emprunt ne peut être fait car nous sommes à la dernière session de l'exercice.
+                    </p>
+
+                    <?php endif; ?>
                 </div>
-                <?php if ($activeSession->state == "SAVING"): ?>
-                    <button class="btn btn-primary btn-add" data-toggle="modal" data-target="#modalLRFormDemo"><i
+                <?php if ($activeSession->state == "BORROWING" && \app\managers\FinanceManager::numberOfSession()<12): ?>
+                    <button class="btn <?= $model->hasErrors()?'in':''?> btn-primary btn-add" data-toggle="modal" data-target="#modalLRFormDemo"><i
                             class="fas fa-plus"></i></button>
-                    <div class="modal fade" id="modalLRFormDemo" tabindex="-1" role="dialog"
+                    <div class="modal  fade" id="modalLRFormDemo" tabindex="-1" role="dialog"
                          aria-labelledby="myModalLabel"
                          aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <?php $members = \app\models\Member::find()->all() ?>
-
 
                                 <?php if (count($members)): ?>
 
@@ -45,7 +51,7 @@ $this->beginBlock('title') ?>
                                     <?php $form = \yii\widgets\ActiveForm::begin([
                                         'errorCssClass' => 'text-secondary',
                                         'method' => 'post',
-                                        'action' => '@administrator.new_saving',
+                                        'action' => '@administrator.new_borrowing',
                                         'options' => ['class' => 'modal-body']
                                     ]) ?>
                                     <?= $form->field($model, 'member_id')->dropDownList($items)->label("Membre") ?>
@@ -84,15 +90,15 @@ $this->beginBlock('title') ?>
             <?php endif; ?>
 
             <?php foreach ($sessions as $session): ?>
-                <?php $savings = \app\models\Saving::findAll(['session_id' => $session->id]) ?>
+                <?php $borrowings = \app\models\Borrowing::findAll(['session_id' => $session->id]) ?>
 
                 <div class="col-12 white-block mb-2">
-                    <?php $savingAmount = \app\models\Saving::find()->where(['session_id' => $session->id])->sum('amount'); ?>
+                    <?php $borrowingAmount = \app\models\Borrowing::find()->where(['session_id' => $session->id])->sum('amount'); ?>
                     <h5 class="mb-4">Session du <span
                             class="text-secondary"><?= (new DateTime($session->date))->format("d-m-Y") ?> <?= $session->active ? '(active)' : '' ?></span>
-                        : <span class="blue-text"><?= $savingAmount ? $savingAmount : 0 ?> XAF</span></h5>
+                        : <span class="blue-text"><?= $borrowingAmount ? $borrowingAmount : 0 ?> XAF</span></h5>
 
-                    <?php if (count($savings)): ?>
+                    <?php if (count($borrowings)): ?>
                         <table class="table table-hover">
                             <thead class="blue-grey lighten-4">
                             <tr>
@@ -104,16 +110,16 @@ $this->beginBlock('title') ?>
 
                             </thead>
                             <tbody>
-                            <?php foreach ($savings as $index => $saving): ?>
-                                <?php $member = \app\models\Member::findOne($saving->member_id);
+                            <?php foreach ($borrowings as $index => $borrowing): ?>
+                                <?php $member = \app\models\Member::findOne($borrowing->member_id);
                                 $memberUser = \app\models\User::findOne($member->user_id);
-                                $administrator = \app\models\Administrator::findOne($saving->administrator_id);
+                                $administrator = \app\models\Administrator::findOne($borrowing->administrator_id);
                                 $administratorUser = \app\models\User::findOne($administrator->id);
                                 ?>
                                 <tr>
                                     <th scope="row"><?= $index + 1 ?></th>
                                     <td class="text-capitalize"><?= $memberUser->name . " " . $memberUser->first_name ?></td>
-                                    <td class="blue-text"><?= $saving->amount ?> XAF</td>
+                                    <td class="blue-text"><?= $borrowing->amount ?> XAF</td>
                                     <td class="text-capitalize"><?= $administratorUser->name . " " . $administratorUser->first_name ?></td>
                                 </tr>
                             <?php endforeach; ?>
@@ -121,7 +127,7 @@ $this->beginBlock('title') ?>
                         </table>
 
                     <?php else: ?>
-                        <h3 class="text-center text-muted">Aucune épargne à cette session</h3>
+                        <h3 class="text-center text-muted">Aucun emprunt à cette session</h3>
                     <?php endif; ?>
 
 

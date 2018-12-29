@@ -11,12 +11,16 @@ namespace app\controllers;
 
 use app\managers\AdministratorSessionManager;
 use app\managers\FileManager;
+use app\managers\FinanceManager;
 use app\managers\RedirectionManager;
+use app\managers\SettingManager;
 use app\models\Administrator;
 use app\models\Borrowing;
+use app\models\BorrowingSaving;
 use app\models\Exercise;
 use app\models\forms\HelpTypeForm;
 use app\models\forms\IdForm;
+use app\models\forms\NewBorrowingForm;
 use app\models\forms\NewMemberForm;
 use app\models\forms\NewSavingForm;
 use app\models\forms\NewSessionForm;
@@ -407,8 +411,6 @@ class AdministratorController extends Controller
     public function actionNouvelleEpargne() {
         if (Yii::$app->request->getIsPost()) {
 
-            $model = new NewSavingForm();
-
             $query = Session::find();
             $pagination = new Pagination([
                 'defaultPageSize' => 5,
@@ -448,8 +450,88 @@ class AdministratorController extends Controller
 
     public function actionEmprunts() {
         AdministratorSessionManager::setHome("borrowing");
-        return $this->render("borrowings");
+
+        $model = new NewBorrowingForm();
+
+        $query = Session::find();
+        $pagination = new Pagination([
+            'defaultPageSize' => 5,
+            'totalCount' => $query->count(),
+        ]);
+
+        $sessions = $query->orderBy(['created_at'=> SORT_DESC])
+            ->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+
+        return $this->render("borrowings",compact("model","sessions","pagination"));
     }
+
+    public function actionNouvelleEmprunt() {
+        if (Yii::$app->request->getIsPost()) {
+            $query = Session::find();
+            $pagination = new Pagination([
+                'defaultPageSize' => 5,
+                'totalCount' => $query->count(),
+            ]);
+
+            $sessions = $query->orderBy(['created_at'=> SORT_DESC])
+                ->offset($pagination->offset)
+                ->limit($pagination->limit)
+                ->all();
+
+            $model = new NewBorrowingForm();
+
+            if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+                $member = Member::findOne($model->member_id);
+                $session = Session::findOne($model->session_id);
+                if ($member && $session && $session->state == "BORROWING") {
+                    if (! Borrowing::findOne(['member_id' => $member->id,'state' => true]) ) {
+                        if ($model->amount <= FinanceManager::exerciseAmount()) {
+                            $borrowing = new Borrowing();
+
+                            $borrowing->interest = SettingManager::getInterest();
+                            $borrowing->amount = $model->amount;
+                            $borrowing->member_id = $model->member_id;
+                            $borrowing->administrator_id = $this->administrator->id;
+                            $borrowing->session_id = $model->session_id;
+                            $borrowing->save();
+
+
+                            $totalSavedAmount = FinanceManager::totalSavedAmount();
+
+                            foreach (FinanceManager::exerciseSavings() as $saving) {
+                                $borrowingSaving = new BorrowingSaving();
+                                $borrowingSaving->saving_id = $saving->id;
+                                $borrowingSaving->borrowing_id = $borrowing->id;
+                                $borrowingSaving->percent =100.0*((double)$saving->amount)/ $totalSavedAmount;
+                                $borrowingSaving->save();
+                            }
+                            return $this->redirect('@administrator.borrowings');
+                        }
+                        else
+                        {
+                            $model->addError('amount','Le montant demandé est supérieur au montant en caisse.');
+                            return $this->render("borrowings",compact("model","sessions","pagination"));
+                        }
+
+                    }
+                    else
+                    {
+                        $model->addError('member_id','Ce membre a déjà fait un emprunt.');
+                        return $this->render("borrowings",compact("model","sessions","pagination"));
+                    }
+                }
+                else
+                    return RedirectionManager::abort($this);
+            }
+            else
+                return $this->render("borrowings",compact("model","sessions","pagination"));
+        }
+        else
+            return RedirectionManager::abort($this);
+    }
+
 
     public function actionAides() {
         AdministratorSessionManager::setHome("help");
