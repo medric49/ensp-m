@@ -19,7 +19,7 @@ $this->beginBlock('title') ?>
                 <div class="col-12 white-block text-center mb-5">
                     <h3>Session active</h3>
                     <h1 class="blue-text"><?= $savingAmount ? $savingAmount : 0 ?> XAF</h1>
-                    <h3>empruntés</h3>
+                    <h3>emprntés</h3>
                 </div>
                 <?php if ($activeSession->state == "SAVING"): ?>
                     <button class="btn btn-primary btn-add" data-toggle="modal" data-target="#modalLRFormDemo"><i
