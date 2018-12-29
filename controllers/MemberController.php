@@ -8,13 +8,17 @@
 
 namespace app\controllers;
 
-
+use app\models\forms\UpdateSocialInformationForm;
+use app\models\forms\UpdatePasswordForm;
+use app\models\forms\NewMemberForm;
 use app\managers\RedirectionManager;
 use app\models\Member;
 use app\models\User;
 use app\models\Saving;
+use app\models\Administrator;
 use app\models\Help_type;
 use app\models\Contribution;
+use app\models\Session;
 use app\models\Borrowing;
 use yii\web\Controller;
 
@@ -74,8 +78,6 @@ class MemberController extends Controller
         
         
             $user = User::findOne(\Yii::$app->user->getId());
-
-            
                 $member = Member::findOne(['user_id'=> $user->id]);
 
                 $this->user = $user;
@@ -86,53 +88,72 @@ class MemberController extends Controller
         
     }
 
+    public function actionProfilMembre($m=0, $n=0) {
+        
+       if($m){
+            $member = Member::findOne($n);
+            $user = User::findOne($m);
+            
+            return $this->render('profilmembre',['member'=> $member, 'user'=> $user]);
+       }
+    }
+
+    public function actionProfilAdmin($m=0, $n=0) {
+        
+        if($m){
+             $admin = Administrator::findOne($n);
+             $user = User::findOne($m);
+             
+             return $this->render('profiladmin',['admin'=> $admin, 'user'=> $user]);
+        }
+     }
+
     public function actionModifierProfil() {
         
-        $model = new NewMemberForm();
-            $user = User::findOne(\Yii::$app->user->getId());
+        $user = User::findOne(\Yii::$app->user->getId());
+        $member = Member::findOne(['user_id'=> $user->id]);
+        $socialModel = new UpdateSocialInformationForm();
+        $passwordModel = new UpdatePasswordForm();
 
-                $member = Member::findOne(['user_id'=> $user->id]);
+        $socialModel->attributes = [
+            'username' => $this->member->username,
+            'name' => $this->user->name,
+            'first_name' => $this->user->first_name,
+            'tel' => $this->user->tel,
+            'email' => $this->user->email,
+        ];
 
-                $this->user = $user;
-                $this->member = $member;
-                $this->view->params = ['user'=> $this->user,'member'=> $this->member];
-                return $this->render('modifier_profil',['member'=> $member, 'user'=> $user,'model'=> $model]);
-            
+        return $this->render('modifier_profil',compact('socialModel','passwordModel'));
         
     }
 
-    public function actionEnregistrermodificationProfil() {
+    public function actionEnregistrerModifierProfil() {
 
-        $user = User::findOne(\Yii::$app->user->getId());
+        if (\Yii::$app->request->getIsPost()) {
+            $socialModel = new UpdateSocialInformationForm();
+            $passwordModel = new UpdatePasswordForm();
 
-        $member = Member::findOne(['user_id'=> $user->id]);
+            if ($socialModel->load(\Yii::$app->request->post()) &&  $socialModel->validate()) {
+                $this->user->name = $socialModel->name;
+                $this->user->first_name = $socialModel->first_name;
+                $this->user->tel = $socialModel->tel;
+                $this->user->email = $socialModel->email;
+                if (UploadedFile::getInstance($socialModel,"avatar"))
+                    $this->user->avatar = FileManager::storeAvatar( UploadedFile::getInstance($socialModel,"avatar"),$socialModel->username,"MEMBER");
 
-        $this->user = $user;
-        $this->member = $member;
-        $this->view->params = ['user'=> $this->user,'member'=> $this->member];
-
-        if (\Yii::$app->request->post()) {
-            $model = new NewMemberForm();
-
-            if ($model->load(\Yii::$app->request->post()) && $model->validate()) {
-                
-                    $user->name = $model->name;
-                    $user->first_name = $model->first_name;
-                    $user->tel = $model->tel;
-                    $user->email = $model->email;
-                    $user->password = (new Security())->generatePasswordHash($model->password);
-                    $user->avatar = FileManager::storeAvatar(UploadedFile::getInstance($model,'avatar'),$model->username,'MEMBER');
-                    $user->save();
-
-                    $member->username = $model->username;
-                    $member->save();
-                    return $this->render('profil',['member'=> $member, 'user'=> $user]);
-                
+                $this->user->save();
+                $this->member->username = $socialModel->username;
+                $this->member->save();
+                return $this->redirect("@member.profil");
             }
-            return $this->redirect('@member.modifier_profil');
+            else
+                return $this->render('modifier_profil',compact('socialModel','passwordModel'));
 
         }
-        return \Yii::$app->end(404);
+        else
+        {
+            return RedirectionManager::abort($this);;
+        }
 
     }
 
@@ -160,7 +181,7 @@ class MemberController extends Controller
         return $this->render('contributions',compact('contributions'));
     }
 
-    public function actionTypesaide() {
+    public function actionTypesAide() {
      
         $helptype = Help_type::find()->all();
         return $this->render('types_aide',compact('helptype'));
@@ -168,8 +189,29 @@ class MemberController extends Controller
 
     public function actionMembres() {
      
-        $members = Member::find()->all();
+        $user = User::findOne(\Yii::$app->user->getId());
+        $member = Member::findOne(['user_id'=> $user->id]);
+        $members = Member::findBySql('Select * from member where id != '.$member->id)->all();
         return $this->render('members',compact('members'));
     }
 
+    public function actionAdministrators() {
+     
+        $admins = Administrator::find()->all();
+        return $this->render('administrators',compact('admins'));
+    }
+
+    public function actionSessions() {
+     
+        $sessions = Session::find()->all();
+        return $this->render('sessions',compact('sessions'));
+    }
+
+    public function actionDetailSession($m = "") {
+        
+        if($m){
+             $session = Session::findOne(['id'=> $m]);
+             return $this->render('detailsession',['session'=> $session]);
+        }
+     }
 }

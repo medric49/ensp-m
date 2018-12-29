@@ -70,7 +70,7 @@ $this->title = "Mutuelle - ENSP";
                             <a href="<?= Yii::getAlias("@member.contributions") ?>" class="nav-link waves-effect" href="#">Mes contributions</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link waves-effect" href="#">Sessions</a>
+                            <a class="nav-link waves-effect" href="<?= Yii::getAlias("@member.sessions") ?>">Sessions</a>
                         </li>
                     </ul>
 
@@ -111,9 +111,9 @@ $this->title = "Mutuelle - ENSP";
                 </a>
                 <a href="<?= Yii::getAlias("@member.profil") ?>" class="list-group-item list-group-item-action waves-effect">
                     <i class="fas fa-user mr-3"></i>Mon profil</a>
-                <a href="#" class="list-group-item list-group-item-action waves-effect">
+                <a href="<?= Yii::getAlias("@member.members") ?>" class="list-group-item list-group-item-action waves-effect">
                     <i class="fas fa-users mr-3"></i>Membres</a>
-                <a href="#" class="list-group-item list-group-item-action waves-effect">
+                <a href="<?= Yii::getAlias("@member.administrators")?>" class="list-group-item list-group-item-action waves-effect">
                     <i class="fas fa-robot mr-3"></i>Administrateurs</a>
                 <a href="<?= Yii::getAlias("@member.typesaide") ?>" class="list-group-item list-group-item-action waves-effect">
                     <i class="fas fa-hand-holding-heart mr-3"></i>Type d'aides</a>
@@ -131,17 +131,6 @@ $this->title = "Mutuelle - ENSP";
     </main>
     <!--Main layout-->
 
-    <!--Footer-->
-    <footer class="page-footer text-center font-small primary-color-dark darken-2 mt-4 wow fadeIn">
-
-        <!--Copyright-->
-        <div class="footer-copyright py-3">
-            © 2018 Copyright: Groupe DEC
-        </div>
-        <!--/.Copyright-->
-
-    </footer>
-    <!--/.Footer-->
     <?php include Yii::getAlias("@app") . "/includes/scripts.php"; ?>
 
     <!-- Initializations -->

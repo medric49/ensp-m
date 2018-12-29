@@ -38,11 +38,18 @@ class RouteManager {
         'member.home' => '/member/accueil',
         'member.disconnection' => '/member/deconnexion',
         'member.profil' => '/member/profil',
+        'member.profilmembre' => '/member/profil-membre',
+        'member.profiladmin' => '/member/profil-admin',
         'member.epargnes' => '/member/epargnes',
         'member.emprunts' => '/member/emprunts',
-        'member.typesaide' => '/member/typesaide',
+        'member.members' => '/member/membres',
+        'member.administrators' => '/member/administrators',
+        'member.sessions' => '/member/sessions',
+        'member.detailsession' => '/member/detail-session',
+        'member.typesaide' => '/member/types-aide',
         'member.contributions' => '/member/contributions',
-        'member.modifier_profil' => '/member/modifiersonprofil',
+        'member.modifier_profil' => '/member/modifier-profil',
+        'member.enregistrer_modifier_profil' => '/member/enregistrer-modifier-profil'
 
     ];
 

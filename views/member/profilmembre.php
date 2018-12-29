@@ -1,5 +1,5 @@
 <?php $this->beginBlock('title') ?>
-Mon profil
+Profil <?= $member->username?>
 <?php $this->endBlock()?>
 
 <?php $this->beginBlock('style')?>
@@ -31,9 +31,9 @@ Mon profil
     <div class="row">
         <div class="col-md-4 text-center">
             <div class="img-container">
-                <img src="<?= \app\managers\FileManager::loadAvatar($this->params['user'],"512")?>" alt="">
+                <img src="<?= \app\managers\FileManager::loadAvatar($user,"512")?>" alt="">
             </div>
-            <h2 class="mt-2 text-capitalize"><?= $this->params['member']->username?></h2>
+            <h2 class="mt-2 text-capitalize"><?= $member->username?></h2>
         </div>
         <div class="col-md-8 white-block">
             <div class="row labels">
@@ -41,32 +41,28 @@ Mon profil
                     Nom
                 </div>
                 <div class="col-7">
-                    <?= $this->params['user']->name ?>
+                    <?= $user->name ?>
                 </div>
                 <div class="col-5">
                     Prénom
                 </div>
                 <div class="col-7">
-                    <?= $this->params['user']->first_name ?>
+                    <?= $user->first_name ?>
                 </div>
                 <div class="col-5">
                     Téléphone
                 </div>
                 <div class="col-7">
-                    <?= $this->params['user']->tel ?>
+                    <?= $user->tel ?>
                 </div>
                 <div class="col-5">
                     Email
                 </div>
                 <div class="col-7">
-                    <?= $this->params['user']->email ?>
+                    <?= $user->email ?>
                 </div>
             </div>
-            <div class="row mt-5">
-                <div class="col-12 text-center">
-                    <a href="<?= Yii::getAlias("@member.modifier_profil") ?>" class="btn btn-primary">Modifier</a>
-                </div>
-            </div>
+            
         </div>
     </div>
 </div>

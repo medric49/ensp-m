@@ -1,5 +1,5 @@
 <?php $this->beginBlock('title') ?>
-Types d'aide
+Administrateurs
 <?php $this->endBlock()?>
 <?php $this->beginBlock('style')?>
 <style>
@@ -13,25 +13,19 @@ Types d'aide
 
 <div class="container mt-5 mb-5">
 
-    <?php if (count($helptype)):?>
+    <?php if (count($admins)):?>
     <div class="row">
         <div class="col-12 white-block">
             <div class="row table-head py-2">
                 <h3 class="col-8">
-                    Titre
-                </h3>
-                <h3 class="col-4">
-                    Montant
+                    Administrateur
                 </h3>
             </div>
 
-            <?php foreach($helptype as $ht): ?>
+            <?php foreach($admins as $admin): ?>
                 <div class="row py-3" style="border-bottom: 1px solid #e6e6e6">
                     <div class="col-8">
-                        <?= $ht->title ?>
-                    </div>
-                    <div class="col-4">
-                        <?= $ht->amount ?> XAF
+                        <a href="<?= Yii::getAlias("@member.profiladmin")."?m=".$admin->user_id."&n=".$admin->id?>" class="link"><?= $admin->username ?></a>
                     </div>
                 </div>
             <?php endforeach;?>
@@ -42,7 +36,7 @@ Types d'aide
 
     <?php else: ?>
         <div class="row">
-            <h1 class="col-12 text-center text-muted">Aucun type d'aide enregistré.</h1>
+            <h1 class="col-12 text-center text-muted">Aucun administrateur!</h1>
         </div>
     <?php endif;?>
 

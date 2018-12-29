@@ -1,46 +1,44 @@
-<?php
-use yii\helpers\Html;
-
-?>
 <?php $this->beginBlock('title') ?>
-Types_aide membre
+Membres
 <?php $this->endBlock()?>
-<?php $this->beginBlock('style') ?>
+<?php $this->beginBlock('style')?>
 <style>
-    table{
-    border-collapse: collapse;
-    border: 1px solid black;
-    padding: 10px;
-    width: 50%;
-    text-align: center;
-    }
-
-    td, th {
-    border: 1px solid black;
-    padding: 10px;
-    width: 50%;
-    text-align: center;
+    .table-head {
+        background-color: rgba(30, 144, 255, 0.31);
+        border-bottom: 1px solid dodgerblue;
     }
 </style>
 <?php $this->endBlock()?>
 
 
 <div class="container mt-5 mb-5">
-    
-    <table>
-        <tr>
-            <th>Titre </th>
-            <th>Montant</th>
-            
-        </tr>
-            
-        <?php foreach ($members as $member): ?>
 
-            <tr>
-                <td><?= Html::encode("{$ht->title} ") ?></td>
-                <td><?= Html::encode("{$ht->amount} XAF") ?></td>
-                
-            </tr>
-        <?php endforeach; ?>
-    </table>
+    <?php if (count($members)):?>
+    <div class="row">
+        <div class="col-12 white-block">
+            <div class="row table-head py-2">
+                <h3 class="col-8">
+                    Membre
+                </h3>
+            </div>
+
+            <?php foreach($members as $member): ?>
+                <div class="row py-3" style="border-bottom: 1px solid #e6e6e6">
+                    <div class="col-8">
+                        <a href="<?= Yii::getAlias("@member.profilmembre")."?m=".$member->user_id."&n=".$member->id?>" class="link">
+                        <?= $member->username ?>
+                    </div>
+                </div>
+            <?php endforeach;?>
+        </div>
+    </div>
+
+
+
+    <?php else: ?>
+        <div class="row">
+            <h1 class="col-12 text-center text-muted">Aucun autre membre!</h1>
+        </div>
+    <?php endif;?>
+
 </div>
