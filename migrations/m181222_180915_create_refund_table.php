@@ -18,6 +18,7 @@ class m181222_180915_create_refund_table extends Migration
             'date' => $this->dateTime(),
             'borrowing_id' => $this->integer()->unsigned(),
             'administrator_id' => $this->integer()->unsigned(),
+            'session_id' => $this->integer()->unsigned(),
             'created_at' => $this->dateTime()->defaultExpression('CURRENT_TIMESTAMP')
         ]);
     }

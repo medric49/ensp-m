@@ -34,6 +34,19 @@ class RouteManager {
         'administrator.delete_help_type' => '/administrator/supprimer-type-aide',
         'administrator.administrators' => '/administrator/administrateurs',
         'administrator.new_session' => '/administrator/nouvelle-session',
+        'administrator.savings' => '/administrator/epargnes',
+        'administrator.new_saving'=> '/administrator/nouvelle-epargne',
+        'administrator.borrowings' => '/administrator/emprunts',
+        'administrator.helps' => '/administrator/aides',
+        'administrator.sessions' => '/administrator/sessions',
+
+        'administrator.go_to_refunds' => '/administrator/passer-aux-remboursements',
+        'administrator.go_to_borrowings' => '/administrator/passer-aux-emprunts',
+        'administrator.cloture_session' => '/administrator/cloturer-session',
+        'administrator.back_to_refunds' => '/administrator/rentrer-aux-remboursements',
+        'administrator.back_to_savings' => '/administrator/rentrer-aux-epargnes',
+
+
         // ============================ ESPACE MEMBRE =================================
         'member.home' => '/member/accueil',
         'member.disconnection' => '/member/deconnexion',

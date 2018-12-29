@@ -13,20 +13,25 @@ use app\managers\AdministratorSessionManager;
 use app\managers\FileManager;
 use app\managers\RedirectionManager;
 use app\models\Administrator;
+use app\models\Borrowing;
 use app\models\Exercise;
 use app\models\forms\HelpTypeForm;
 use app\models\forms\IdForm;
 use app\models\forms\NewMemberForm;
+use app\models\forms\NewSavingForm;
 use app\models\forms\NewSessionForm;
 use app\models\forms\UpdatePasswordForm;
 use app\models\forms\UpdateSocialInformationForm;
 use app\models\HelpType;
 use app\models\Member;
+use app\models\Saving;
 use app\models\Session;
 use app\models\User;
 use DateTime;
 use Yii;
 use yii\base\Security;
+use yii\data\Pagination;
+use yii\db\Query;
 use yii\web\Controller;
 use yii\web\UploadedFile;
 
@@ -377,5 +382,175 @@ class AdministratorController extends Controller
         AdministratorSessionManager::setAdministrators();
         return $this->render("administrators");
     }
+
+    public function actionEpargnes() {
+        AdministratorSessionManager::setHome("saving");
+        $model = new NewSavingForm();
+
+        $query = Session::find();
+        $pagination = new Pagination([
+            'defaultPageSize' => 5,
+            'totalCount' => $query->count(),
+        ]);
+
+        $sessions = $query->orderBy(['created_at'=> SORT_DESC])
+            ->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+
+
+
+        return $this->render("savings",compact("model","sessions","pagination"));
+    }
+
+
+    public function actionNouvelleEpargne() {
+        if (Yii::$app->request->getIsPost()) {
+
+            $model = new NewSavingForm();
+
+            $query = Session::find();
+            $pagination = new Pagination([
+                'defaultPageSize' => 5,
+                'totalCount' => $query->count(),
+            ]);
+
+            $sessions = $query->orderBy(['created_at'=> SORT_DESC])
+                ->offset($pagination->offset)
+                ->limit($pagination->limit)
+                ->all();
+
+            $model = new NewSavingForm();
+            if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
+                $member = Member::findOne($model->member_id);
+                $session = Session::findOne($model->session_id);
+                if ($member && $session && ($session->state =="SAVING")) {
+                    $saving = new Saving();
+
+                    $saving->member_id = $model->member_id;
+                    $saving->session_id = $model->session_id;
+                    $saving->amount = $model->amount;
+                    $saving->administrator_id = $this->administrator->id;
+                    $saving->save();
+
+                    return $this->redirect("@administrator.savings");
+                }
+                else
+                    return RedirectionManager::abort($this);
+            }
+            else return $this->render("savings",compact("model","pagination","sessions"));
+        }
+        else
+            return RedirectionManager::abort($this);
+    }
+
+
+
+    public function actionEmprunts() {
+        AdministratorSessionManager::setHome("borrowing");
+        return $this->render("borrowings");
+    }
+
+    public function actionAides() {
+        AdministratorSessionManager::setHome("help");
+        return $this->render("helps");
+    }
+
+    public function actionSessions() {
+        AdministratorSessionManager::setHome("session");
+
+        return $this->render("sessions");
+    }
+
+    public function actionPasserAuxRemboursements($q=0) {
+        if ($q) {
+            $session = Session::findOne($q);
+            if ($session && $session->active) {
+                $session->state = "REFUND";
+                $session->save();
+
+                return $this->redirect("@administrator.home");
+            }
+            else
+                return RedirectionManager::abort($this);
+        }
+        else
+            return RedirectionManager::abort($this);
+    }
+
+    public function actionPasserAuxEmprunts($q=0) {
+        if ($q) {
+            $session = Session::findOne($q);
+            if ($session && $session->active) {
+                $session->state = "BORROWING";
+                $session->save();
+                return $this->redirect("@administrator.home");
+            }
+            else
+                return RedirectionManager::abort($this);
+        }
+        else
+            return RedirectionManager::abort($this);
+
+    }
+
+    public function actionCloturerSession($q=0) {
+        if ($q) {
+            $session = Session::findOne($q);
+            if ($session && $session->active) {
+                $session->state = "END";
+                $session->active = false;
+                $session->save();
+                return $this->redirect("@administrator.home");
+            }
+            else
+                return RedirectionManager::abort($this);
+        }
+        else
+            return RedirectionManager::abort($this);
+
+    }
+
+    public function actionRentrerAuxRemboursements($q=0) {
+        if ($q) {
+            $session = Session::findOne($q);
+            if ($session && $session->active) {
+                $borrowings = Borrowing::findAll(['session_id' => $session->id]);
+                foreach ($borrowings as $borrowing) {
+                    Yii::$app->db->createCommand()->delete('borrowing_saving',['borrowing_id'=> $borrowing->id])->execute();
+                    $borrowing->delete();
+                }
+
+                $session->state = "REFUND";
+                $session->save();
+
+                return $this->redirect("@administrator.home");
+            }
+            else
+                return RedirectionManager::abort($this);
+        }
+        else
+            return RedirectionManager::abort($this);
+
+    }
+
+    public function actionRentrerAuxEpargnes($q=0) {
+        if ($q) {
+            $session = Session::findOne($q);
+            if ($session && $session->active) {
+                Yii::$app->db->createCommand()->delete('refund',['session_id'=> $q])->execute();
+
+                $session->state = "SAVING";
+                $session->save();
+                return $this->redirect("@administrator.home");
+            }
+            else
+                return RedirectionManager::abort($this);
+        }
+        else
+            return RedirectionManager::abort($this);
+
+    }
+
 
 }
