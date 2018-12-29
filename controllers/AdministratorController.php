@@ -446,7 +446,10 @@ class AdministratorController extends Controller
             return RedirectionManager::abort($this);
     }
 
-
+    public function actionRemboursements() {
+        AdministratorSessionManager::setHome("refund");
+        return $this->render("refunds");
+    }
 
     public function actionEmprunts() {
         AdministratorSessionManager::setHome("borrowing");

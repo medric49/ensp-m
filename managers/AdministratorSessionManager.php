@@ -48,6 +48,9 @@ class AdministratorSessionManager
     public static function isHeadSaving() {
         return \Yii::$app->session->get(self::head) == "saving";
     }
+    public static function isHeadRefund() {
+        return \Yii::$app->session->get(self::head) == "refund";
+    }
     public static function isHeadBorrowing() {
         return \Yii::$app->session->get(self::head) == "borrowing";
     }

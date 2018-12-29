@@ -70,6 +70,9 @@ $this->title = "Mutuelle - ENSP";
                             <a class="nav-link waves-effect <?= AdministratorSessionManager::isHeadSaving()?'blue-text':'' ?>" href="<?= Yii::getAlias("@administrator.savings")?>">Epargnes</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link waves-effect <?= AdministratorSessionManager::isHeadRefund()?'blue-text':'' ?>" href="<?= Yii::getAlias("@administrator.refunds")?>">Remboursements</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link waves-effect <?= AdministratorSessionManager::isHeadBorrowing()?'blue-text':'' ?>" href="<?= Yii::getAlias("@administrator.borrowings")?>">Emprunts</a>
                         </li>
                         <li class="nav-item">
