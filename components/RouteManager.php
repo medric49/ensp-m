@@ -53,6 +53,7 @@ class RouteManager {
         'administrator.back_to_refunds' => '/administrator/rentrer-aux-remboursements',
         'administrator.back_to_savings' => '/administrator/rentrer-aux-epargnes',
         'administrator.cloture_exercise' => '/administrator/cloturer-exercice',
+        'administrator.treat_debt' => '/administrator/traiter-dette',
 
         // ============================ ESPACE MEMBRE =================================
         'member.home' => '/member/accueil',

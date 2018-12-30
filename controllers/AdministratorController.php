@@ -823,5 +823,18 @@ class AdministratorController extends Controller
 
     }
 
-
+    public function actionTraiterDette($q =0) {
+        if ($q) {
+            $refund = Refund::findOne($q);
+            if ($refund && $refund->exercise_id) {
+                $refund->exercise_id = null;
+                $refund->save();
+                return $this->redirect("@administrator.exercise_debts");
+            }
+            else
+                return RedirectionManager::abort($this);
+        }
+        else
+            return RedirectionManager::abort($this);
+    }
 }
