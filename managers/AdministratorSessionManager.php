@@ -60,6 +60,12 @@ class AdministratorSessionManager
     public static function isHeadSession() {
         return \Yii::$app->session->get(self::head) == "session";
     }
+    public static function isHeadExercise() {
+        return \Yii::$app->session->get(self::head) == "exercise";
+    }
+    public static function isHeadExerciseDebt() {
+        return \Yii::$app->session->get(self::head) == "exercise_debt";
+    }
 
 
     public static function isHome() {

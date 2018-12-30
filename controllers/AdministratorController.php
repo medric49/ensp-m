@@ -103,7 +103,7 @@ class AdministratorController extends Controller
                         $exercise->save();
 
                         $exercise = new Exercise();
-                        $exercise->year = (int) (new DateTime())->format("y");
+                        $exercise->year = (int) (new DateTime())->format("Y");
                         $exercise->save();
                     }
                 }
@@ -568,7 +568,7 @@ class AdministratorController extends Controller
             if ($model->load(Yii::$app->request->post()) && $model->validate()) {
                 $member = Member::findOne($model->member_id);
                 $session = Session::findOne($model->session_id);
-                if ($member && $session && $session->state == "BORROWING") {
+                if ($member && $session && $session->state == "BORROWING" && FinanceManager::numberOfSession()<12) {
                     if (! Borrowing::findOne(['member_id' => $member->id,'state' => true]) ) {
                         if ($model->amount <= FinanceManager::exerciseAmount()) {
                             $borrowing = new Borrowing();
@@ -624,7 +624,40 @@ class AdministratorController extends Controller
     public function actionSessions() {
         AdministratorSessionManager::setHome("session");
 
-        return $this->render("sessions");
+        $query = Exercise::find();
+        $pagination = new Pagination([
+            'defaultPageSize' => 1,
+            'totalCount' => $query->count(),
+        ]);
+
+        $exercises = $query->orderBy(['created_at'=> SORT_DESC])
+            ->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+        return $this->render("sessions",compact('exercises','pagination'));
+    }
+
+    public function actionDetailsSession($q=0) {
+        if ($q) {
+            $session = Session::findOne($q);
+            if ($session) {
+                return $this->render("details_session",compact('session'));
+            }
+            else
+                return RedirectionManager::abort($this);
+        }
+        else
+            return RedirectionManager::abort($this);
+    }
+
+    public function actionExercices() {
+        AdministratorSessionManager::setHome("exercise");
+        return $this->render('exercises');
+    }
+
+    public function actionDettesExercices() {
+        AdministratorSessionManager::setHome("exercise_debt");
+        return $this->render('exercise_debts');
     }
 
     public function actionPasserAuxRemboursements($q=0) {
@@ -666,6 +699,13 @@ class AdministratorController extends Controller
                 $session->state = "END";
                 $session->active = false;
                 $session->save();
+
+                Yii::$app->db->createCommand('UPDATE borrowing SET interest=interest+:val WHERE session_id!=:session_id AND state=1 ', [
+                    ':val' => SettingManager::getInterest(),
+                    ':session_id' => $session->id,
+                ])->execute();
+
+
                 return $this->redirect("@administrator.home");
             }
             else
@@ -674,6 +714,65 @@ class AdministratorController extends Controller
         else
             return RedirectionManager::abort($this);
 
+    }
+
+    public function actionClotureExercise($q = 0) {
+        if ($q) {
+            $session = Session::findOne($q);
+            if ($session && $session->active) {
+                if (FinanceManager::numberOfSession() == 12) {
+                    $exercise = Exercise::findOne(['active' => true]);
+                    $lastSession = Session::find()->orderBy(['created_at' => SORT_DESC])->where(['exercise_id' => $exercise])->one();
+                    if ($lastSession->id == $session->id) {
+                        foreach (FinanceManager::notRefundedBorrowings() as $borrowing) {
+                            $intendedAmount = FinanceManager::intendedAmountFromBorrowing($borrowing);
+                            $refundedAmount = FinanceManager::borrowingRefundedAmount($borrowing);
+
+                            $refund = new Refund();
+
+                            $refund->borrowing_id = $borrowing->id;
+                            $refund->session_id = $session->id;
+                            $refund->administrator_id = $this->administrator->id;
+                            $refund->amount = $intendedAmount-$refundedAmount;
+                            $refund->exercise_id = $exercise->id;
+                            $refund->save();
+
+                            $borrowing->state = false;
+                            $borrowing->save();
+
+                            $totalSavedAmount = FinanceManager::totalSavedAmount();
+
+                            foreach (FinanceManager::exerciseSavings() as $saving) {
+                                $borrowingSaving = new BorrowingSaving();
+                                $borrowingSaving->saving_id = $saving->id;
+                                $borrowingSaving->borrowing_id = $borrowing->id;
+                                $borrowingSaving->percent =100.0*((double)$saving->amount)/ $totalSavedAmount;
+                                $borrowingSaving->save();
+                            }
+
+                        }
+
+                        $session->active = false;
+                        $session->state = "END";
+
+                        $session->save();
+
+                        $exercise->active = false;
+
+                        $exercise->save();
+                        return $this->redirect("@administrator.home");
+                    }
+                    else
+                        return RedirectionManager::abort($this);
+                }
+                else
+                    return RedirectionManager::abort($this);
+            }
+            else
+                return RedirectionManager::abort($this);
+        }
+        else
+            return RedirectionManager::abort($this);
     }
 
     public function actionRentrerAuxRemboursements($q=0) {

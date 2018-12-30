@@ -42,13 +42,17 @@ class RouteManager {
         'administrator.sessions' => '/administrator/sessions',
         'administrator.refunds' => '/administrator/remboursements',
         'administrator.new_refund' => '/administrator/nouveau-remboursement',
+        'administrator.exercises' => '/administrator/exercices',
+        'administrator.exercise_debts' => '/administrator/dettes-exercices',
+
+        'administrator.session_details' => '/administrator/details-session',
 
         'administrator.go_to_refunds' => '/administrator/passer-aux-remboursements',
         'administrator.go_to_borrowings' => '/administrator/passer-aux-emprunts',
         'administrator.cloture_session' => '/administrator/cloturer-session',
         'administrator.back_to_refunds' => '/administrator/rentrer-aux-remboursements',
         'administrator.back_to_savings' => '/administrator/rentrer-aux-epargnes',
-
+        'administrator.cloture_exercise' => '/administrator/cloturer-exercise',
 
         // ============================ ESPACE MEMBRE =================================
         'member.home' => '/member/accueil',

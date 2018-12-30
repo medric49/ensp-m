@@ -26,24 +26,35 @@ class FinanceManager
 
     public static function totalSavedAmount() {
         $exercise = Exercise::findOne(['active' => true]);
-        $sessions = Session::find()->select('id')->where(['exercise_id' => $exercise->id])->column();
-        return Saving::find()->where(['session_id' => $sessions])->sum('amount') ;
+        if ($exercise) {
+            $sessions = Session::find()->select('id')->where(['exercise_id' => $exercise->id])->column();
+            return Saving::find()->where(['session_id' => $sessions])->sum('amount') ;
+        }
+        return 0;
     }
 
     public static function totalBorrowedAmount() {
+
         $exercise = Exercise::findOne(['active' => true]);
+        if ($exercise){
+            $sessions = Session::find()->select('id')->where(['exercise_id' => $exercise->id])->column();
+            return Borrowing::find()->where(['session_id' => $sessions])->sum('amount') ;
+        }
+        else
+            return 0;
 
-        $sessions = Session::find()->select('id')->where(['exercise_id' => $exercise->id])->column();
-
-        return Borrowing::find()->where(['session_id' => $sessions])->sum('amount') ;
     }
 
     public static function totalRefundedAmount() {
         $exercise = Exercise::findOne(['active' => true]);
+        if ($exercise)
+        {
+            $sessions = Session::find()->select('id')->where(['exercise_id' => $exercise->id])->column();
 
-        $sessions = Session::find()->select('id')->where(['exercise_id' => $exercise->id])->column();
-
-        return Refund::find()->where(['session_id' => $sessions])->sum('amount') ;
+            return Refund::find()->where(['session_id' => $sessions])->sum('amount') ;
+        }
+        else
+            return 0;
     }
 
     public static function numberOfSession(){
@@ -84,6 +95,12 @@ class FinanceManager
 
     public static function intendedAmountFromBorrowing(Borrowing $borrowing) {
         return $borrowing->amount + ($borrowing->amount*$borrowing->interest)/100.0;
+    }
+
+    public static function notRefundedBorrowings() {
+        $exercise = Exercise::findOne(['active' => true]);
+        $sessions = Session::find()->select('id')->where(['exercise_id' => $exercise->id])->column();
+        return Borrowing::findAll(['session_id' => $sessions, 'state' => true]);
     }
 
 }
