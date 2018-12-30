@@ -111,7 +111,7 @@ class AdministratorController extends Controller
                     // S'il n'y a pas, on le crée
                     $exercise = new Exercise();
                     $exercise->administrator_id = $this->administrator->id;
-                    $exercise->year = (int) (new DateTime())->format("y");
+                    $exercise->year = (int) (new DateTime())->format("Y");
                     $exercise->save();
                 }
 
