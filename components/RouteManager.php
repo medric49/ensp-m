@@ -52,7 +52,7 @@ class RouteManager {
         'administrator.cloture_session' => '/administrator/cloturer-session',
         'administrator.back_to_refunds' => '/administrator/rentrer-aux-remboursements',
         'administrator.back_to_savings' => '/administrator/rentrer-aux-epargnes',
-        'administrator.cloture_exercise' => '/administrator/cloturer-exercise',
+        'administrator.cloture_exercise' => '/administrator/cloturer-exercice',
 
         // ============================ ESPACE MEMBRE =================================
         'member.home' => '/member/accueil',

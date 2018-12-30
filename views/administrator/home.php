@@ -6,6 +6,12 @@ Accueil
     #saving-amount-title {
         font-size: 5rem;
     }
+    .img-bravo {
+        width: 100px;
+        height: 100px;
+        border-radius: 100px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.51);
+    }
 </style>
 <?php $this->endBlock() ?>
 
@@ -160,7 +166,10 @@ Accueil
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-body">
-                                    <p class="text-center blue-text">Félicitations !</p>
+                                    <div class="text-center mb-2">
+                                        <img src="/img/bravo.jpg" alt="bravo" class="img-bravo">
+                                    </div>
+                                    <p class="text-center text-secondary">Félicitations !</p>
                                     <p>Vous êtes au terme de cette période de 12 sessions. Vous êtes sur le point de
                                         passer au décaissement, voulez-vous continuer ?</p>
                                     <div class="mt-3">

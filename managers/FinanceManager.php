@@ -103,4 +103,6 @@ class FinanceManager
         return Borrowing::findAll(['session_id' => $sessions, 'state' => true]);
     }
 
+
+
 }
