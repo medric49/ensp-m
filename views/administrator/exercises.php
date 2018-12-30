@@ -79,15 +79,15 @@ Exercices
                         <div class="white-block">
                             <div class="bl b-amount">
                                 <h5>Fond total</h5>
-                                <h2><?= $exercise->exerciseAmount() ?> XAF</h2>
+                                <h2><?= ($t=$exercise->exerciseAmount())?$t:0 ?> XAF</h2>
                             </div>
                             <div class="bl b-saved">
                                 <h5>Montant épargné</h5>
-                                <h2><?= $exercise->totalSavedAmount() ?> XAF</h2>
+                                <h2><?= ($t=$exercise->totalSavedAmount())?$t:0 ?> XAF</h2>
                             </div>
                             <div class="bl b-borrowed">
                                 <h5>Montant emprunté</h5>
-                                <h2><?= $exercise->totalBorrowedAmount() ?> XAF</h2>
+                                <h2><?= ($t=$exercise->totalBorrowedAmount())?$t:0 ?> XAF</h2>
                             </div>
                             <div class="bl b-refunded">
                                 <h5>Montant remboursé</h5>
@@ -95,7 +95,7 @@ Exercices
                             </div>
                             <div class="bl b-interest">
                                 <h5>Intérêt produit</h5>
-                                <h2><?= $exercise->interest() ?> XAF</h2>
+                                <h2><?= ($t=$exercise->interest())?$t:0 ?> XAF</h2>
                             </div>
                         </div>
                     </div>
@@ -136,7 +136,7 @@ Exercices
                             $interest = $member->interest($exercise);
 
                             $labels[] = $user->name . " " . $user->first_name;
-                            $data[] = $interest;
+                            $data[] = $interest?$interest:0;
                             $colors[] = \app\managers\ColorManager::getColor();
                             ?>
                             <tr>

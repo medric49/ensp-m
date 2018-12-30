@@ -37,4 +37,8 @@ class Exercise extends ActiveRecord
         return $amount;
     }
 
+    public function sessionNumber() {
+        return count( Session::findAll(['exercise_id' => $this->id]));
+    }
+
 }
