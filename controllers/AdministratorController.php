@@ -652,11 +652,23 @@ class AdministratorController extends Controller
 
     public function actionExercices() {
         AdministratorSessionManager::setHome("exercise");
-        return $this->render('exercises');
+        $query = Exercise::find();
+        $pagination = new Pagination([
+            'defaultPageSize' => 1,
+            'totalCount' => $query->count(),
+        ]);
+
+        $exercises = $query->orderBy(['created_at'=> SORT_DESC])
+            ->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+        return $this->render('exercises',compact('exercises','pagination'));
     }
 
     public function actionDettesExercices() {
         AdministratorSessionManager::setHome("exercise_debt");
+
+
         return $this->render('exercise_debts');
     }
 
@@ -716,7 +728,7 @@ class AdministratorController extends Controller
 
     }
 
-    public function actionClotureExercise($q = 0) {
+    public function actionCloturerExercice($q = 0) {
         if ($q) {
             $session = Session::findOne($q);
             if ($session && $session->active) {
@@ -739,17 +751,6 @@ class AdministratorController extends Controller
 
                             $borrowing->state = false;
                             $borrowing->save();
-
-                            $totalSavedAmount = FinanceManager::totalSavedAmount();
-
-                            foreach (FinanceManager::exerciseSavings() as $saving) {
-                                $borrowingSaving = new BorrowingSaving();
-                                $borrowingSaving->saving_id = $saving->id;
-                                $borrowingSaving->borrowing_id = $borrowing->id;
-                                $borrowingSaving->percent =100.0*((double)$saving->amount)/ $totalSavedAmount;
-                                $borrowingSaving->save();
-                            }
-
                         }
 
                         $session->active = false;
@@ -760,7 +761,7 @@ class AdministratorController extends Controller
                         $exercise->active = false;
 
                         $exercise->save();
-                        return $this->redirect("@administrator.home");
+                        return $this->redirect("@administrator.exercises");
                     }
                     else
                         return RedirectionManager::abort($this);

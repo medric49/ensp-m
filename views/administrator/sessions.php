@@ -15,6 +15,7 @@ Sessions
         <?php $sessions = \app\models\Session::findAll(['exercise_id' => $exercises[0]->id])?>
         <div class="col-12 white-block mb-2">
             <h1 class="text-muted text-center">Exercice de l'année <span class="blue-text"><?= $exercises[0]->year ?></span></h1>
+            <h3 class="text-secondary text-center"><?= $exercises[0]->active?"En cours":"Terminé" ?></h3>
         </div>
         <?php if (count($sessions)): ?>
             <?php foreach ($sessions as $session): ?>
