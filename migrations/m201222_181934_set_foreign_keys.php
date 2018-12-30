@@ -38,6 +38,8 @@ class m201222_181934_set_foreign_keys extends Migration
         $this->addForeignKey('refund_borrowing_id','refund','borrowing_id','borrowing','id');
         $this->addForeignKey('refund_administrator_id','refund','administrator_id','administrator','id');
         $this->addForeignKey('refund_session_id','refund','session_id','session','id');
+        $this->addForeignKey('refund_exercise_id','refund','exercise_id','exercise','id');
+
 
         $this->addForeignKey('help_administrator_id','help','administrator_id','administrator','id');
         $this->addForeignKey('help_help_type_id','help','help_type_id','help_type','id');

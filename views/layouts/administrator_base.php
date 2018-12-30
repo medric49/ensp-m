@@ -49,7 +49,6 @@ $this->title = "Mutuelle - ENSP";
 
                 <!-- Brand -->
                 <a class="navbar-brand waves-effect" href="<?= Yii::getAlias("@administrator.home")?>">
-                    <strong class="blue-text d-none d-md-inline">Accueil</strong>
                     <img src="/img/icon.png" alt="ENSP" style="width: 40px; height: 40px;" class="d-md-none">
                 </a>
 
@@ -65,16 +64,28 @@ $this->title = "Mutuelle - ENSP";
                     <!-- Left -->
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item">
-                            <a class="nav-link waves-effect" href="#">Epargnes</a>
+                            <a class="nav-link waves-effect <?= AdministratorSessionManager::isHeadHome()?'blue-text':'' ?>" href="<?= Yii::getAlias("@administrator.home")?>">Accueil</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link waves-effect" href="#">Emprunts</a>
+                            <a class="nav-link waves-effect <?= AdministratorSessionManager::isHeadSaving()?'blue-text':'' ?>" href="<?= Yii::getAlias("@administrator.savings")?>">Epargnes</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link waves-effect" href="#">Aides</a>
+                            <a class="nav-link waves-effect <?= AdministratorSessionManager::isHeadRefund()?'blue-text':'' ?>" href="<?= Yii::getAlias("@administrator.refunds")?>">Remboursements</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link waves-effect" href="#">Sessions</a>
+                            <a class="nav-link waves-effect <?= AdministratorSessionManager::isHeadBorrowing()?'blue-text':'' ?>" href="<?= Yii::getAlias("@administrator.borrowings")?>">Emprunts</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link waves-effect <?= AdministratorSessionManager::isHeadSession()?'blue-text':'' ?>" href="<?= Yii::getAlias("@administrator.sessions")?>">Sessions</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link waves-effect <?= AdministratorSessionManager::isHeadExercise()?'blue-text':'' ?>" href="<?= Yii::getAlias("@administrator.exercises")?>">Exercices</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link waves-effect <?= AdministratorSessionManager::isHeadExerciseDebt()?'blue-text':'' ?>" href="<?= Yii::getAlias("@administrator.exercise_debts")?>">Dettes d'exercices</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link waves-effect <?= AdministratorSessionManager::isHeadHelp()?'blue-text':'' ?>" href="<?= Yii::getAlias("@administrator.helps")?>">Aides</a>
                         </li>
                     </ul>
 

@@ -11,22 +11,33 @@ namespace app\controllers;
 
 use app\managers\AdministratorSessionManager;
 use app\managers\FileManager;
+use app\managers\FinanceManager;
 use app\managers\RedirectionManager;
+use app\managers\SettingManager;
 use app\models\Administrator;
+use app\models\Borrowing;
+use app\models\BorrowingSaving;
 use app\models\Exercise;
 use app\models\forms\HelpTypeForm;
 use app\models\forms\IdForm;
+use app\models\forms\NewBorrowingForm;
 use app\models\forms\NewMemberForm;
+use app\models\forms\NewRefundForm;
+use app\models\forms\NewSavingForm;
 use app\models\forms\NewSessionForm;
 use app\models\forms\UpdatePasswordForm;
 use app\models\forms\UpdateSocialInformationForm;
 use app\models\HelpType;
 use app\models\Member;
+use app\models\Refund;
+use app\models\Saving;
 use app\models\Session;
 use app\models\User;
 use DateTime;
 use Yii;
 use yii\base\Security;
+use yii\data\Pagination;
+use yii\db\Query;
 use yii\web\Controller;
 use yii\web\UploadedFile;
 
@@ -92,7 +103,7 @@ class AdministratorController extends Controller
                         $exercise->save();
 
                         $exercise = new Exercise();
-                        $exercise->year = (int) (new DateTime())->format("y");
+                        $exercise->year = (int) (new DateTime())->format("Y");
                         $exercise->save();
                     }
                 }
@@ -100,7 +111,7 @@ class AdministratorController extends Controller
                     // S'il n'y a pas, on le crée
                     $exercise = new Exercise();
                     $exercise->administrator_id = $this->administrator->id;
-                    $exercise->year = (int) (new DateTime())->format("y");
+                    $exercise->year = (int) (new DateTime())->format("Y");
                     $exercise->save();
                 }
 
@@ -377,5 +388,439 @@ class AdministratorController extends Controller
         AdministratorSessionManager::setAdministrators();
         return $this->render("administrators");
     }
+
+    public function actionEpargnes() {
+        AdministratorSessionManager::setHome("saving");
+        $model = new NewSavingForm();
+
+        $query = Session::find();
+        $pagination = new Pagination([
+            'defaultPageSize' => 5,
+            'totalCount' => $query->count(),
+        ]);
+
+        $sessions = $query->orderBy(['created_at'=> SORT_DESC])
+            ->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+
+
+
+        return $this->render("savings",compact("model","sessions","pagination"));
+    }
+
+
+    public function actionNouvelleEpargne() {
+        if (Yii::$app->request->getIsPost()) {
+
+            $query = Session::find();
+            $pagination = new Pagination([
+                'defaultPageSize' => 5,
+                'totalCount' => $query->count(),
+            ]);
+
+            $sessions = $query->orderBy(['created_at'=> SORT_DESC])
+                ->offset($pagination->offset)
+                ->limit($pagination->limit)
+                ->all();
+
+            $model = new NewSavingForm();
+            if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
+                $member = Member::findOne($model->member_id);
+                $session = Session::findOne($model->session_id);
+                if ($member && $session && ($session->state =="SAVING")) {
+                    $saving = new Saving();
+
+                    $saving->member_id = $model->member_id;
+                    $saving->session_id = $model->session_id;
+                    $saving->amount = $model->amount;
+                    $saving->administrator_id = $this->administrator->id;
+                    $saving->save();
+
+                    return $this->redirect("@administrator.savings");
+                }
+                else
+                    return RedirectionManager::abort($this);
+            }
+            else return $this->render("savings",compact("model","pagination","sessions"));
+        }
+        else
+            return RedirectionManager::abort($this);
+    }
+
+    public function actionRemboursements() {
+        AdministratorSessionManager::setHome("refund");
+
+        $model = new NewRefundForm();
+
+        $query = Session::find();
+        $pagination = new Pagination([
+            'defaultPageSize' => 5,
+            'totalCount' => $query->count(),
+        ]);
+
+        $sessions = $query->orderBy(['created_at'=> SORT_DESC])
+            ->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+
+        return $this->render("refunds",compact("model","sessions","pagination"));
+    }
+
+    public function actionNouveauRemboursement() {
+        if (Yii::$app->request->getIsPost()) {
+
+            $query = Session::find();
+            $pagination = new Pagination([
+                'defaultPageSize' => 5,
+                'totalCount' => $query->count(),
+            ]);
+
+            $sessions = $query->orderBy(['created_at'=> SORT_DESC])
+                ->offset($pagination->offset)
+                ->limit($pagination->limit)
+                ->all();
+
+            $model = new NewRefundForm();
+            if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
+                $member = Member::findOne($model->member_id);
+                $session = Session::findOne($model->session_id);
+                if ($member && $session && ($session->state =="REFUND")) {
+
+                    $borrowing = Borrowing::findOne(['member_id' => $member->id,'state' => true]);
+                    $refundedAmount = FinanceManager::borrowingRefundedAmount($borrowing);
+
+                    $intendedAmount = FinanceManager::intendedAmountFromBorrowing($borrowing);
+
+                    if ( $model->amount+$refundedAmount <  $intendedAmount){
+                        $refund = new Refund();
+                        $refund->borrowing_id = $borrowing->id;
+                        $refund->session_id = $model->session_id;
+                        $refund->amount = $model->amount;
+                        $refund->administrator_id = $this->administrator->id;
+                        $refund->save();
+
+                        return $this->redirect("@administrator.refunds");
+
+                    }
+                    elseif ($model->amount+$refundedAmount ==  $intendedAmount) {
+                        $refund = new Refund();
+                        $refund->borrowing_id = $borrowing->id;
+                        $refund->session_id = $model->session_id;
+                        $refund->amount = $model->amount;
+                        $refund->administrator_id = $this->administrator->id;
+                        $refund->save();
+
+                        $borrowing->state = false;
+                        $borrowing->save();
+                        return $this->redirect("@administrator.refunds");
+                    }
+                    else
+                    {
+                        $model->addError('amount','Le montant déborde le reste à payer pour cette dette.');
+                        return $this->render("refunds",compact("model","pagination","sessions"));
+                    }
+                }
+                else
+                    return RedirectionManager::abort($this);
+            }
+            else return $this->render("refunds",compact("model","pagination","sessions"));
+        }
+        else
+            return RedirectionManager::abort($this);
+
+    }
+
+    public function actionEmprunts() {
+        AdministratorSessionManager::setHome("borrowing");
+
+        $model = new NewBorrowingForm();
+
+        $query = Session::find();
+        $pagination = new Pagination([
+            'defaultPageSize' => 5,
+            'totalCount' => $query->count(),
+        ]);
+
+        $sessions = $query->orderBy(['created_at'=> SORT_DESC])
+            ->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+
+        return $this->render("borrowings",compact("model","sessions","pagination"));
+    }
+
+    public function actionNouvelleEmprunt() {
+        if (Yii::$app->request->getIsPost()) {
+            $query = Session::find();
+            $pagination = new Pagination([
+                'defaultPageSize' => 5,
+                'totalCount' => $query->count(),
+            ]);
+
+            $sessions = $query->orderBy(['created_at'=> SORT_DESC])
+                ->offset($pagination->offset)
+                ->limit($pagination->limit)
+                ->all();
+
+            $model = new NewBorrowingForm();
+
+            if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+                $member = Member::findOne($model->member_id);
+                $session = Session::findOne($model->session_id);
+                if ($member && $session && $session->state == "BORROWING" && FinanceManager::numberOfSession()<12) {
+                    if (! Borrowing::findOne(['member_id' => $member->id,'state' => true]) ) {
+                        if ($model->amount <= FinanceManager::exerciseAmount()) {
+                            $borrowing = new Borrowing();
+
+                            $borrowing->interest = SettingManager::getInterest();
+                            $borrowing->amount = $model->amount;
+                            $borrowing->member_id = $model->member_id;
+                            $borrowing->administrator_id = $this->administrator->id;
+                            $borrowing->session_id = $model->session_id;
+                            $borrowing->save();
+
+
+                            $totalSavedAmount = FinanceManager::totalSavedAmount();
+
+                            foreach (FinanceManager::exerciseSavings() as $saving) {
+                                $borrowingSaving = new BorrowingSaving();
+                                $borrowingSaving->saving_id = $saving->id;
+                                $borrowingSaving->borrowing_id = $borrowing->id;
+                                $borrowingSaving->percent =100.0*((double)$saving->amount)/ $totalSavedAmount;
+                                $borrowingSaving->save();
+                            }
+                            return $this->redirect('@administrator.borrowings');
+                        }
+                        else
+                        {
+                            $model->addError('amount','Le montant demandé est supérieur au montant en caisse.');
+                            return $this->render("borrowings",compact("model","sessions","pagination"));
+                        }
+
+                    }
+                    else
+                    {
+                        $model->addError('member_id','Ce membre a déjà fait un emprunt.');
+                        return $this->render("borrowings",compact("model","sessions","pagination"));
+                    }
+                }
+                else
+                    return RedirectionManager::abort($this);
+            }
+            else
+                return $this->render("borrowings",compact("model","sessions","pagination"));
+        }
+        else
+            return RedirectionManager::abort($this);
+    }
+
+
+    public function actionAides() {
+        AdministratorSessionManager::setHome("help");
+        return $this->render("helps");
+    }
+
+    public function actionSessions() {
+        AdministratorSessionManager::setHome("session");
+
+        $query = Exercise::find();
+        $pagination = new Pagination([
+            'defaultPageSize' => 1,
+            'totalCount' => $query->count(),
+        ]);
+
+        $exercises = $query->orderBy(['created_at'=> SORT_DESC])
+            ->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+        return $this->render("sessions",compact('exercises','pagination'));
+    }
+
+    public function actionDetailsSession($q=0) {
+        if ($q) {
+            $session = Session::findOne($q);
+            if ($session) {
+                return $this->render("details_session",compact('session'));
+            }
+            else
+                return RedirectionManager::abort($this);
+        }
+        else
+            return RedirectionManager::abort($this);
+    }
+
+    public function actionExercices() {
+        AdministratorSessionManager::setHome("exercise");
+        return $this->render('exercises');
+    }
+
+    public function actionDettesExercices() {
+        AdministratorSessionManager::setHome("exercise_debt");
+        return $this->render('exercise_debts');
+    }
+
+    public function actionPasserAuxRemboursements($q=0) {
+        if ($q) {
+            $session = Session::findOne($q);
+            if ($session && $session->active) {
+                $session->state = "REFUND";
+                $session->save();
+
+                return $this->redirect("@administrator.home");
+            }
+            else
+                return RedirectionManager::abort($this);
+        }
+        else
+            return RedirectionManager::abort($this);
+    }
+
+    public function actionPasserAuxEmprunts($q=0) {
+        if ($q) {
+            $session = Session::findOne($q);
+            if ($session && $session->active) {
+                $session->state = "BORROWING";
+                $session->save();
+                return $this->redirect("@administrator.home");
+            }
+            else
+                return RedirectionManager::abort($this);
+        }
+        else
+            return RedirectionManager::abort($this);
+
+    }
+
+    public function actionCloturerSession($q=0) {
+        if ($q) {
+            $session = Session::findOne($q);
+            if ($session && $session->active) {
+                $session->state = "END";
+                $session->active = false;
+                $session->save();
+
+                Yii::$app->db->createCommand('UPDATE borrowing SET interest=interest+:val WHERE session_id!=:session_id AND state=1 ', [
+                    ':val' => SettingManager::getInterest(),
+                    ':session_id' => $session->id,
+                ])->execute();
+
+
+                return $this->redirect("@administrator.home");
+            }
+            else
+                return RedirectionManager::abort($this);
+        }
+        else
+            return RedirectionManager::abort($this);
+
+    }
+
+    public function actionClotureExercise($q = 0) {
+        if ($q) {
+            $session = Session::findOne($q);
+            if ($session && $session->active) {
+                if (FinanceManager::numberOfSession() == 12) {
+                    $exercise = Exercise::findOne(['active' => true]);
+                    $lastSession = Session::find()->orderBy(['created_at' => SORT_DESC])->where(['exercise_id' => $exercise])->one();
+                    if ($lastSession->id == $session->id) {
+                        foreach (FinanceManager::notRefundedBorrowings() as $borrowing) {
+                            $intendedAmount = FinanceManager::intendedAmountFromBorrowing($borrowing);
+                            $refundedAmount = FinanceManager::borrowingRefundedAmount($borrowing);
+
+                            $refund = new Refund();
+
+                            $refund->borrowing_id = $borrowing->id;
+                            $refund->session_id = $session->id;
+                            $refund->administrator_id = $this->administrator->id;
+                            $refund->amount = $intendedAmount-$refundedAmount;
+                            $refund->exercise_id = $exercise->id;
+                            $refund->save();
+
+                            $borrowing->state = false;
+                            $borrowing->save();
+
+                            $totalSavedAmount = FinanceManager::totalSavedAmount();
+
+                            foreach (FinanceManager::exerciseSavings() as $saving) {
+                                $borrowingSaving = new BorrowingSaving();
+                                $borrowingSaving->saving_id = $saving->id;
+                                $borrowingSaving->borrowing_id = $borrowing->id;
+                                $borrowingSaving->percent =100.0*((double)$saving->amount)/ $totalSavedAmount;
+                                $borrowingSaving->save();
+                            }
+
+                        }
+
+                        $session->active = false;
+                        $session->state = "END";
+
+                        $session->save();
+
+                        $exercise->active = false;
+
+                        $exercise->save();
+                        return $this->redirect("@administrator.home");
+                    }
+                    else
+                        return RedirectionManager::abort($this);
+                }
+                else
+                    return RedirectionManager::abort($this);
+            }
+            else
+                return RedirectionManager::abort($this);
+        }
+        else
+            return RedirectionManager::abort($this);
+    }
+
+    public function actionRentrerAuxRemboursements($q=0) {
+        if ($q) {
+            $session = Session::findOne($q);
+            if ($session && $session->active) {
+                $borrowings = Borrowing::findAll(['session_id' => $session->id]);
+                foreach ($borrowings as $borrowing) {
+                    Yii::$app->db->createCommand()->delete('borrowing_saving',['borrowing_id'=> $borrowing->id])->execute();
+                    $borrowing->delete();
+                }
+
+                $session->state = "REFUND";
+                $session->save();
+
+                return $this->redirect("@administrator.home");
+            }
+            else
+                return RedirectionManager::abort($this);
+        }
+        else
+            return RedirectionManager::abort($this);
+
+    }
+
+    public function actionRentrerAuxEpargnes($q=0) {
+        if ($q) {
+            $session = Session::findOne($q);
+            if ($session && $session->active) {
+                $refunds = Refund::findAll(['session_id' => $q]);
+                foreach ($refunds as $refund) {
+                    $borrowing = Borrowing::findOne($refund->borrowing_id);
+                    $borrowing->state = true;
+                    $borrowing->save();
+                    $refund->delete();
+                }
+
+                $session->state = "SAVING";
+                $session->save();
+                return $this->redirect("@administrator.home");
+            }
+            else
+                return RedirectionManager::abort($this);
+        }
+        else
+            return RedirectionManager::abort($this);
+
+    }
+
 
 }

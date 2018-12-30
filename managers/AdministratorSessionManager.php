@@ -13,28 +13,59 @@ class AdministratorSessionManager
 {
 
     const place = "adminPlace";
+    const head = "adminHead";
 
 
-    public static function setHome() {
+    public static function setHome($head = "home") {
         \Yii::$app->session->set(self::place,"home");
+        \Yii::$app->session->set(self::head,$head);
     }
 
     public static function setProfile() {
         \Yii::$app->session->set(self::place,"profile");
+        \Yii::$app->session->set(self::head,null);
     }
 
     public static function setMembers() {
         \Yii::$app->session->set(self::place,"members");
+        \Yii::$app->session->set(self::head,null);
     }
 
     public static function setAdministrators() {
         \Yii::$app->session->set(self::place,"administrators");
+        \Yii::$app->session->set(self::head,null);
     }
 
     public static function setHelps() {
         \Yii::$app->session->set(self::place,"helps");
+        \Yii::$app->session->set(self::head,null);
     }
 
+
+    public static function isHeadHome() {
+        return \Yii::$app->session->get(self::head) == "home";
+    }
+    public static function isHeadSaving() {
+        return \Yii::$app->session->get(self::head) == "saving";
+    }
+    public static function isHeadRefund() {
+        return \Yii::$app->session->get(self::head) == "refund";
+    }
+    public static function isHeadBorrowing() {
+        return \Yii::$app->session->get(self::head) == "borrowing";
+    }
+    public static function isHeadHelp() {
+        return \Yii::$app->session->get(self::head) == "help";
+    }
+    public static function isHeadSession() {
+        return \Yii::$app->session->get(self::head) == "session";
+    }
+    public static function isHeadExercise() {
+        return \Yii::$app->session->get(self::head) == "exercise";
+    }
+    public static function isHeadExerciseDebt() {
+        return \Yii::$app->session->get(self::head) == "exercise_debt";
+    }
 
 
     public static function isHome() {
