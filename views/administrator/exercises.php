@@ -187,17 +187,20 @@ Exercices
 <script>
 
     <?php
-            $sessions = \app\models\Session::find()->where(['exercise_id' => $exercise->id])->orderBy('created_at',SORT_ASC)->all();
-            $sum = 0;
 
-            $lLabels = [];
-            $lData = [];
+    $lLabels = [];
+    $lData = [];
 
-            foreach ($sessions as $index => $session) {
-                $lLabels[] = "Session ".($index+1);
-                $lData[] = ($sum += $session->totalAmount());
-            }
+    if(isset($exercise))
+    {
+        $sessions = \app\models\Session::find()->where(['exercise_id' => $exercise->id])->orderBy('created_at',SORT_ASC)->all();
+        $sum = 0;
 
+        foreach ($sessions as $index => $session) {
+            $lLabels[] = "Session ".($index+1);
+            $lData[] = ($sum += $session->totalAmount());
+        }
+    }
 
     ?>
 
