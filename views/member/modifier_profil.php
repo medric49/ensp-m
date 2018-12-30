@@ -13,7 +13,7 @@ Profil
     <div class="row justify-content-center">
 
         <?php $form1 = \yii\widgets\ActiveForm::begin(['method' => 'post',
-            'action' => '@administrator.update_social_information',
+            'action' => '@member.enregistrer_modifier_profil',
             'options' => ['enctype' => 'multipart/form-data','class' => 'col-md-5 mb-2 white-block mr-md-2'],
             'errorCssClass' => 'text-secondary'
         ])?>
@@ -32,7 +32,7 @@ Profil
         <?php \yii\widgets\ActiveForm::end()?>
 
         <?php $form2 = \yii\widgets\ActiveForm::begin(['method' => 'post',
-            'action' => '@administrator.update_password',
+            'action' => '@member.modifiermotdepasse',
             'options' => ['enctype' => 'multipart/form-data','class' => 'col-md-5 mb-2 white-block mr-md-2'],
             'errorCssClass' => 'text-secondary'
         ])?>

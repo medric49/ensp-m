@@ -24,21 +24,21 @@ Mes épargnes
     <div class="row">
         <div class="col-12 white-block">
             <div class="row table-head py-2">
-                <h3 class="col-8">
+                <h4 class="col-2">
                     Exercice
-                </h3>
-                <h3 class="col-4">
+                </h4>
+                <h4 class="col-3">
                     Session
-                </h3>
-                <h3 class="col-4">
+                </h4>
+                <h4 class="col-2">
                     Montant
-                </h3>
-                <h3 class="col-4">
-                    Administrateur
-                </h3>
-                <h3 class="col-4">
+                </h4>
+                <h4 class="col-3">
+                    Administrateur     
+                </h4>
+                <h4 class="col-2">
                     Date
-                </h3>
+                </h4>
             </div>
 
             <?php foreach($savings as $saving): 
@@ -47,19 +47,19 @@ Mes épargnes
                 $exercise = Exercise::findOne(['id'=> $session->exercise_id]); ?>
 
                 <div class="row py-3" style="border-bottom: 1px solid #e6e6e6">
-                    <div class="col-8">
+                    <div class="col-2">
                         <?= $exercise->year ?>
                     </div>
-                    <div class="col-4">
+                    <div class="col-3">
                         <?= $session->date ?> 
                     </div>
-                    <div class="col-4">
+                    <div class="col-2">
                         <?= $saving->amount ?> XAF
                     </div>
-                    <div class="col-4">
+                    <div class="col-3">
                         <?= $admin->username ?> 
                     </div>
-                    <div class="col-4">
+                    <div class="col-2">
                         <?= $saving->created_at ?> 
                     </div>
                 </div>

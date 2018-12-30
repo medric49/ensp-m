@@ -49,7 +49,8 @@ class RouteManager {
         'member.typesaide' => '/member/types-aide',
         'member.contributions' => '/member/contributions',
         'member.modifier_profil' => '/member/modifier-profil',
-        'member.enregistrer_modifier_profil' => '/member/enregistrer-modifier-profil'
+        'member.enregistrer_modifier_profil' => '/member/enregistrer-modifier-profil',
+        'member.modifiermotdepasse' => '/member/modifier-mot-de-passe'
 
     ];
 

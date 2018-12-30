@@ -8,6 +8,7 @@
 
 namespace app\controllers;
 
+use app\managers\MemberSessionManager;
 use app\models\forms\UpdateSocialInformationForm;
 use app\models\forms\UpdatePasswordForm;
 use app\models\forms\NewMemberForm;
@@ -21,6 +22,11 @@ use app\models\Contribution;
 use app\models\Session;
 use app\models\Borrowing;
 use yii\web\Controller;
+use yii\web\UploadedFile;
+use DateTime;
+use Yii;
+use yii\base\Security;
+use app\managers\FileManager;
 
 class MemberController extends Controller
 {
@@ -61,6 +67,7 @@ class MemberController extends Controller
     }
 
     public function actionAccueil() {
+        MemberSessionManager::setHome();
         return $this->render('home');
     }
 
@@ -76,7 +83,7 @@ class MemberController extends Controller
 
     public function actionProfil() {
         
-        
+        MemberSessionManager::setProfil();
             $user = User::findOne(\Yii::$app->user->getId());
                 $member = Member::findOne(['user_id'=> $user->id]);
 
@@ -89,7 +96,7 @@ class MemberController extends Controller
     }
 
     public function actionProfilMembre($m=0, $n=0) {
-        
+        MemberSessionManager::setMembers();
        if($m){
             $member = Member::findOne($n);
             $user = User::findOne($m);
@@ -99,7 +106,7 @@ class MemberController extends Controller
     }
 
     public function actionProfilAdmin($m=0, $n=0) {
-        
+        MemberSessionManager::setAdministrators();
         if($m){
              $admin = Administrator::findOne($n);
              $user = User::findOne($m);
@@ -109,7 +116,7 @@ class MemberController extends Controller
      }
 
     public function actionModifierProfil() {
-        
+        MemberSessionManager::setProfil();
         $user = User::findOne(\Yii::$app->user->getId());
         $member = Member::findOne(['user_id'=> $user->id]);
         $socialModel = new UpdateSocialInformationForm();
@@ -128,7 +135,7 @@ class MemberController extends Controller
     }
 
     public function actionEnregistrerModifierProfil() {
-
+        MemberSessionManager::setProfil();
         if (\Yii::$app->request->getIsPost()) {
             $socialModel = new UpdateSocialInformationForm();
             $passwordModel = new UpdatePasswordForm();
@@ -157,8 +164,41 @@ class MemberController extends Controller
 
     }
 
+    public function actionModifierMotDePasse() {
+        MemberSessionManager::setProfil();
+        if (\Yii::$app->request->getIsPost()) {
+            $socialModel = new UpdateSocialInformationForm();
+            $socialModel->attributes = [
+                'username' => $this->member->username,
+                'name' => $this->user->name,
+                'first_name' => $this->user->first_name,
+                'tel' => $this->user->tel,
+                'email' => $this->user->email,
+            ];
+
+            $passwordModel = new UpdatePasswordForm();
+            if ($passwordModel->load(\Yii::$app->request->post()) &&  $passwordModel->validate()) {
+                if ($this->user->validatePassword($passwordModel->password)) {
+                    $this->user->password = Yii::$app->getSecurity()->generatePasswordHash($passwordModel->new_password);
+                    $this->user->save();
+                    return $this->redirect("@member.profil");
+                }
+                else {
+                    $passwordModel->addError('password','Le mot de passe ne correspond pas.');
+                    return $this->render('modifier_profil',compact('socialModel','passwordModel'));
+                }
+
+            }
+            else
+                return $this->render('modifier_profil',compact('socialModel','passwordModel'));
+
+        }
+        else
+            return RedirectionManager::abort($this);;
+    }
+
     public function actionEpargnes() {
-     
+        MemberSessionManager::setEpargnes();
         $user = User::findOne(\Yii::$app->user->getId());
         $member = Member::findOne(['user_id'=> $user->id]);
         $savings = Saving::find()->where(['member_id'=> $member->id])->all();
@@ -166,7 +206,7 @@ class MemberController extends Controller
     }
 
     public function actionEmprunts() {
-     
+        MemberSessionManager::setEmprunts();
         $user = User::findOne(\Yii::$app->user->getId());
         $member = Member::findOne(['user_id'=> $user->id]);
         $borrowings = Borrowing::find()->where(['member_id'=> $member->id])->all();
@@ -174,7 +214,7 @@ class MemberController extends Controller
     }
 
     public function actionContributions() {
-     
+        MemberSessionManager::setContributions();
         $user = User::findOne(\Yii::$app->user->getId());
         $member = Member::findOne(['user_id'=> $user->id]);
         $contributions = Contribution::find()->where(['member_id'=> $member->id])->all();
@@ -182,13 +222,13 @@ class MemberController extends Controller
     }
 
     public function actionTypesAide() {
-     
+        MemberSessionManager::setHelps();
         $helptype = Help_type::find()->all();
         return $this->render('types_aide',compact('helptype'));
     }
 
     public function actionMembres() {
-     
+        MemberSessionManager::setMembers();
         $user = User::findOne(\Yii::$app->user->getId());
         $member = Member::findOne(['user_id'=> $user->id]);
         $members = Member::findBySql('Select * from member where id != '.$member->id)->all();
@@ -196,22 +236,21 @@ class MemberController extends Controller
     }
 
     public function actionAdministrators() {
-     
+        MemberSessionManager::setAdministrators();
         $admins = Administrator::find()->all();
         return $this->render('administrators',compact('admins'));
     }
 
     public function actionSessions() {
-     
+        MemberSessionManager::setSessions();
         $sessions = Session::find()->all();
         return $this->render('sessions',compact('sessions'));
     }
 
-    public function actionDetailSession($m = "") {
-        
+    public function actionDetailSession($m = 0) {
+        MemberSessionManager::setSessions();
         if($m){
-             $session = Session::findOne(['id'=> $m]);
-             return $this->render('detailsession',['session'=> $session]);
+             return $this->render('detailsession',['m'=> $m]);
         }
      }
 }

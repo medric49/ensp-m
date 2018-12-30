@@ -1,4 +1,5 @@
 <?php
+use app\managers\MemberSessionManager;
 use yii\helpers\Html;
 $this->title = "Mutuelle - ENSP";
 ?>
@@ -60,16 +61,16 @@ $this->title = "Mutuelle - ENSP";
 
                     <!-- Left -->
                     <ul class="navbar-nav mr-auto">
-                        <li class="nav-item active">
-                            <a href="<?= Yii::getAlias("@member.epargnes") ?>" class="nav-link waves-effect" href="#">Mes épargnes</a>
+                        <li class="nav-item <?= MemberSessionManager::isEpargnes()?'active':''?>">
+                            <a href="<?= Yii::getAlias("@member.epargnes") ?>" class="nav-link waves-effect" >Mes épargnes</a>
                         </li>
-                        <li class="nav-item">
-                            <a href="<?= Yii::getAlias("@member.emprunts") ?>" class="nav-link waves-effect" href="#">Mes emprunts</a>
+                        <li class="nav-item <?= MemberSessionManager::isEmprunts()?'active':''?>">
+                            <a href="<?= Yii::getAlias("@member.emprunts") ?>" class="nav-link waves-effect" >Mes emprunts</a>
                         </li>
-                        <li class="nav-item">
-                            <a href="<?= Yii::getAlias("@member.contributions") ?>" class="nav-link waves-effect" href="#">Mes contributions</a>
+                        <li class="nav-item <?= MemberSessionManager::isContributions()?'active':''?>">
+                            <a href="<?= Yii::getAlias("@member.contributions") ?>" class="nav-link waves-effect" >Mes contributions</a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item <?= MemberSessionManager::isSessions()?'active':''?>">
                             <a class="nav-link waves-effect" href="<?= Yii::getAlias("@member.sessions") ?>">Sessions</a>
                         </li>
                     </ul>
@@ -106,16 +107,16 @@ $this->title = "Mutuelle - ENSP";
 
 
             <div class="list-group list-group-flush">
-                <a href="#" class="list-group-item active waves-effect">
+                <a href="<?= Yii::getAlias("@member.home") ?>" class="list-group-item list-group-item-action <?= MemberSessionManager::isHome()?'active':''?> waves-effect">
                     <i class="fas fa-chart-pie mr-3"></i>Tableau de bord
                 </a>
-                <a href="<?= Yii::getAlias("@member.profil") ?>" class="list-group-item list-group-item-action waves-effect">
+                <a href="<?= Yii::getAlias("@member.profil") ?>" class="list-group-item list-group-item-action <?= MemberSessionManager::isProfil()?'active':''?> waves-effect">
                     <i class="fas fa-user mr-3"></i>Mon profil</a>
-                <a href="<?= Yii::getAlias("@member.members") ?>" class="list-group-item list-group-item-action waves-effect">
+                <a href="<?= Yii::getAlias("@member.members") ?>" class="list-group-item list-group-item-action <?= MemberSessionManager::isMembers()?'active':''?> waves-effect">
                     <i class="fas fa-users mr-3"></i>Membres</a>
-                <a href="<?= Yii::getAlias("@member.administrators")?>" class="list-group-item list-group-item-action waves-effect">
+                <a href="<?= Yii::getAlias("@member.administrators")?>" class="list-group-item list-group-item-action <?= MemberSessionManager::isAdministrators()?'active':''?> waves-effect">
                     <i class="fas fa-robot mr-3"></i>Administrateurs</a>
-                <a href="<?= Yii::getAlias("@member.typesaide") ?>" class="list-group-item list-group-item-action waves-effect">
+                <a href="<?= Yii::getAlias("@member.typesaide") ?>" class="list-group-item list-group-item-action <?= MemberSessionManager::isHelps()?'active':''?> waves-effect">
                     <i class="fas fa-hand-holding-heart mr-3"></i>Type d'aides</a>
             </div>
 

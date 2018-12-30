@@ -8,40 +8,43 @@ use app\models\Member;
 use app\models\Session;
 ?>
 <?php $this->beginBlock('title') ?>
-Contributions membre
+Mes contributions
 <?php $this->endBlock()?>
-<?php $this->beginBlock('style') ?>
+<?php $this->beginBlock('style')?>
 <style>
-    table{
-    border-collapse: collapse;
-    border: 1px solid black;
-    padding: 10px;
-    width: 50%;
-    text-align: center;
+    .table-head {
+        background-color: rgba(30, 144, 255, 0.31);
+        border-bottom: 1px solid dodgerblue;
     }
-
-    td, th {
-    border: 1px solid black;
-    padding: 10px;
-    width: 50%;
-    text-align: center;
-    }
+    
 </style>
 <?php $this->endBlock()?>
 
 
 <div class="container mt-5 mb-5">
-    
-    <table>
-        <tr>
-            <th>Montant</th>
-            <th>Date</th>
-            <th>Administrateur</th>
-            <th>Membre aidé </th>
-            <th>Motif</th>
-        </tr>
-            
-        <?php foreach ($contributions as $contribution): 
+
+    <?php if (count($contributions)):?>
+    <div class="row">
+        <div class="col-12 white-block">
+            <div class="row table-head py-2">
+                <h4 class="col-2">
+                    Montant
+                </h4>
+                <h4 class="col-2">
+                    Date
+                </h4>
+                <h4 class="col-3">
+                    Administrateur
+                </h4>
+                <h4 class="col-3">
+                    Membre aidé
+                </h4>
+                <h4 class="col-2">
+                    Motif
+                </h4>
+            </div>
+
+            <?php foreach ($contributions as $contribution): 
             $admin = Administrator::findOne(['id'=> $contribution->administrator_id]);
             $help = Help::findOne(['id'=> $contribution->help_id]);
             $helptype = Help_type::findOne(['id'=> $help->help_type_id]);
@@ -49,13 +52,33 @@ Contributions membre
             //$session = Session::findOne(['id'=> $borrowing->session_id]);
             //$exercise = Exercise::findOne(['id'=> $session->exercise_id]); ?>
 
-            <tr>
-                <td><?= Html::encode("{$help->unit_amount}") ?></td>
-                <td><?= Html::encode("{$contribution->date}") ?></td>
-                <td><?= Html::encode("{$admin->username}") ?></td>
-                <td><?= Html::encode("{$member->username}") ?></td> 
-                <td><?= Html::encode("{$helptype->title}") ?></td>
-            </tr>
-        <?php endforeach; ?>
-    </table>
+                <div class="row py-3" style="border-bottom: 1px solid #e6e6e6">
+                    <div class="col-2">
+                        <?= $help->unit_amount ?> XAF
+                    </div>
+                    <div class="col-2">
+                        <?= $contribution->date ?> 
+                    </div>
+                    <div class="col-3">
+                        <?= $admin->username ?> 
+                    </div>
+                    <div class="col-3">
+                        <?= $member->username ?> 
+                    </div>
+                    <div class="col-2">
+                        <?= $helptype->title ?> 
+                    </div>
+                </div>
+            <?php endforeach;?>
+        </div>
+    </div>
+
+
+
+    <?php else: ?>
+        <div class="row">
+            <h1 class="col-12 text-center text-muted">Vous n'avez fait aucune contribution.</h1>
+        </div>
+    <?php endif;?>
+
 </div>
