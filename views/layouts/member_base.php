@@ -46,7 +46,6 @@ $this->title = "Mutuelle - ENSP";
 
                 <!-- Brand -->
                 <a class="navbar-brand waves-effect" href="<?= Yii::getAlias("@member.home")?>">
-                    <strong class="blue-text d-none d-md-inline">Accueil</strong>
                     <img src="/img/icon.png" alt="ENSP" style="width: 40px; height: 40px;" class="d-md-none">
                 </a>
 
@@ -61,17 +60,20 @@ $this->title = "Mutuelle - ENSP";
 
                     <!-- Left -->
                     <ul class="navbar-nav mr-auto">
-                        <li class="nav-item <?= MemberSessionManager::isEpargnes()?'active':''?>">
-                            <a href="<?= Yii::getAlias("@member.epargnes") ?>" class="nav-link waves-effect" >Mes épargnes</a>
+                        <li class="nav-item">
+                            <a class="nav-link waves-effect <?= MemberSessionManager::isHome()?'blue-text':'' ?>" href="<?= Yii::getAlias("@member.home")?>">Accueil</a>
                         </li>
-                        <li class="nav-item <?= MemberSessionManager::isEmprunts()?'active':''?>">
-                            <a href="<?= Yii::getAlias("@member.emprunts") ?>" class="nav-link waves-effect" >Mes emprunts</a>
+                        <li class="nav-item">
+                            <a href="<?= Yii::getAlias("@member.epargnes") ?>" class="nav-link waves-effect <?= MemberSessionManager::isEpargnes()?'blue-text':''?>" >Mes épargnes</a>
                         </li>
-                        <li class="nav-item <?= MemberSessionManager::isContributions()?'active':''?>">
-                            <a href="<?= Yii::getAlias("@member.contributions") ?>" class="nav-link waves-effect" >Mes contributions</a>
+                        <li class="nav-item">
+                            <a href="<?= Yii::getAlias("@member.emprunts") ?>" class="nav-link waves-effect  <?= MemberSessionManager::isEmprunts()?'blue-text':''?>" >Mes emprunts</a>
                         </li>
-                        <li class="nav-item <?= MemberSessionManager::isSessions()?'active':''?>">
-                            <a class="nav-link waves-effect" href="<?= Yii::getAlias("@member.sessions") ?>">Sessions</a>
+                        <li class="nav-item">
+                            <a href="<?= Yii::getAlias("@member.contributions") ?>" class="nav-link waves-effect  <?= MemberSessionManager::isContributions()?'blue-text':''?>" >Mes contributions</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link waves-effect  <?= MemberSessionManager::isSessions()?'blue-text':''?>" href="<?= Yii::getAlias("@member.sessions") ?>">Sessions</a>
                         </li>
                     </ul>
 

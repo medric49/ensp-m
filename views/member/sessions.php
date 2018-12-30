@@ -62,7 +62,7 @@ Sessions
         </div>
     <?php else: ?>
         <div class="row">
-            <h1 class="col-12 text-center text-muted">Il ne s'est tenu aucune session jusqu'à maintenant.</h1>
+            <h1 class="col-12 text-center text-muted">Il ne s'est tenu aucune session jusqu'à présent.</h1>
         </div>
     <?php endif;?>
 
