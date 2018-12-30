@@ -16,16 +16,23 @@ use app\managers\RedirectionManager;
 use app\models\Member;
 use app\models\User;
 use app\models\Saving;
+use app\models\forms\IdForm;
+use app\models\forms\NewBorrowingForm;
+use app\models\forms\NewRefundForm;
+use app\models\forms\NewSavingForm;
+use app\models\forms\NewSessionForm;
 use app\models\Administrator;
 use app\models\Help_type;
 use app\models\Contribution;
 use app\models\Session;
+use app\models\Exercise;
 use app\models\Borrowing;
 use yii\web\Controller;
 use yii\web\UploadedFile;
 use DateTime;
 use Yii;
 use yii\base\Security;
+use yii\data\Pagination;
 use app\managers\FileManager;
 
 class MemberController extends Controller
@@ -68,7 +75,12 @@ class MemberController extends Controller
 
     public function actionAccueil() {
         MemberSessionManager::setHome();
-        return $this->render('home');
+        $session = Session::findOne(['active' => true]);
+        $idModel = new IdForm();
+        if ($session)
+            $idModel->id = $session->id;
+        $model = new NewSessionForm();
+        return $this->render('home',compact('session','model','idModel'));
     }
 
     public function actionDeconnexion() {
@@ -198,23 +210,46 @@ class MemberController extends Controller
     }
 
     public function actionEpargnes() {
-        MemberSessionManager::setEpargnes();
+        MemberSessionManager::setHome("epargnes");
+        $model = new NewSavingForm();
         $user = User::findOne(\Yii::$app->user->getId());
         $member = Member::findOne(['user_id'=> $user->id]);
-        $savings = Saving::find()->where(['member_id'=> $member->id])->all();
-        return $this->render('epargnes',compact('savings'));
+        $query = Session::find();
+        $pagination = new Pagination([
+            'defaultPageSize' => 5,
+            'totalCount' => $query->count(),
+        ]);
+
+        $sessions = $query->orderBy(['created_at'=> SORT_DESC])
+            ->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+
+        return $this->render("epargnes",compact("model","sessions","pagination","member"));
     }
 
     public function actionEmprunts() {
-        MemberSessionManager::setEmprunts();
+        MemberSessionManager::setHome("emprunts");
         $user = User::findOne(\Yii::$app->user->getId());
         $member = Member::findOne(['user_id'=> $user->id]);
-        $borrowings = Borrowing::find()->where(['member_id'=> $member->id])->all();
-        return $this->render('emprunts',compact('borrowings'));
+        $model = new NewBorrowingForm();
+
+        $query = Session::find();
+        $pagination = new Pagination([
+            'defaultPageSize' => 5,
+            'totalCount' => $query->count(),
+        ]);
+
+        $sessions = $query->orderBy(['created_at'=> SORT_DESC])
+            ->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+
+        return $this->render("emprunts",compact("model","sessions","pagination","member"));
     }
 
     public function actionContributions() {
-        MemberSessionManager::setContributions();
+        MemberSessionManager::setHome("contributions");
         $user = User::findOne(\Yii::$app->user->getId());
         $member = Member::findOne(['user_id'=> $user->id]);
         $contributions = Contribution::find()->where(['member_id'=> $member->id])->all();
@@ -242,15 +277,31 @@ class MemberController extends Controller
     }
 
     public function actionSessions() {
-        MemberSessionManager::setSessions();
-        $sessions = Session::find()->all();
-        return $this->render('sessions',compact('sessions'));
+        MemberSessionManager::setHome("sessions");
+        $query = Exercise::find();
+        $pagination = new Pagination([
+            'defaultPageSize' => 1,
+            'totalCount' => $query->count(),
+        ]);
+
+        $exercises = $query->orderBy(['created_at'=> SORT_DESC])
+            ->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+        return $this->render("sessions",compact('exercises','pagination'));
     }
 
-    public function actionDetailSession($m = 0) {
-        MemberSessionManager::setSessions();
-        if($m){
-             return $this->render('detailsession',['m'=> $m]);
+    public function actionDetailSession($q = 0) {
+        MemberSessionManager::setHome("sessions");
+        if ($q) {
+            $session = Session::findOne($q);
+            if ($session) {
+                return $this->render("detailsession",compact('session'));
+            }
+            else
+                return RedirectionManager::abort($this);
         }
+        else
+            return RedirectionManager::abort($this);
      }
 }

@@ -1,69 +1,75 @@
-<?php
-use yii\helpers\Html;
-use app\models\Administrator;
-use app\models\Exercise;
-?>
-<?php $this->beginBlock('title') ?>
-Sessions
-<?php $this->endBlock()?>
-<?php $this->beginBlock('style')?>
-<style>
-    .table-head {
-        background-color: rgba(30, 144, 255, 0.31);
-        border-bottom: 1px solid dodgerblue;
-    }
-    
-</style>
-<?php $this->endBlock()?>
+<?php use yii\widgets\LinkPager;
 
+$this->beginBlock('title') ?>
+Sessions
+<?php $this->endBlock() ?>
+<?php $this->beginBlock('style') ?>
+<style>
+
+</style>
+<?php $this->endBlock() ?>
 
 <div class="container mt-5 mb-5">
+    <div class="row">
+        <?php if(count($exercises)):?>
+        <?php $sessions = \app\models\Session::find()->where(['exercise_id' => $exercises[0]->id])->orderBy('created_at',SORT_ASC)->all() ?>
+        <div class="col-12 white-block mb-2">
+            <h1 class="text-muted text-center">Exercice de l'année <span class="blue-text"><?= $exercises[0]->year ?></span></h1>
+            <h3 class="text-secondary text-center"><?= $exercises[0]->active?"En cours":"Terminé" ?></h3>
+        </div>
+        <?php if (count($sessions)): ?>
+            <?php foreach ($sessions as $index=>$session): ?>
+                <?php $savingAmount = \app\models\Saving::find()->where(['session_id' => $session->id])->sum('amount'); ?>
+                <?php $refundAmount = \app\models\Refund::find()->where(['session_id' => $session->id])->sum('amount'); ?>
+                <?php $borrowingAmount = \app\models\Borrowing::find()->where(['session_id' => $session->id])->sum('amount'); ?>
 
-    <?php if (count($sessions)):?>
-        <div class="row">
-            <div class="col-12 white-block">
-                <div class="row table-head py-2">
-                    <h4 class="col-3">
-                    Numéro
-                    </h4>
-                    <h4 class="col-3">
-                    Exercice
-                    </h4>
-                    <h4 class="col-3">
-                    Date
-                    </h4>
-                    <h4 class="col-3">
-                    Administrateur
-                    </h4>
+            <div class="col-12 white-block mb-2">
+                <h4 class="mb-4"><span class="text-danger"><?= '#'. ($index+1)?></span> Session du <span
+                            class="text-secondary"><?= (new DateTime($session->date))->format("d-m-Y") ?> <?= $session->active ? '(active)' : '' ?></span></h4>
+
+                <h5 class="text-muted">Total des épargnes : <span class="blue-text"><?= $savingAmount?$savingAmount:0 ?> XAF</span></h5>
+                <h5 class="text-muted">Total des remboursements : <span class="blue-text"><?= $refundAmount?$refundAmount:0 ?> XAF</span></h5>
+                <h5 class="text-muted">Total des emprunts : <span class="text-secondary"><?= $borrowingAmount?$borrowingAmount:0 ?> XAF</span></h5>
+                <div class="text-right mt-2">
+                    <a href="<?= Yii::getAlias("@member.detailsession")."?q=".$session->id?>" class="btn btn-primary">Voir les details</a>
                 </div>
-
-                <?php foreach ($sessions as $session):  
-                    $exercise = Exercise::findOne(['id'=> $session->exercise_id]);
-                    $admin = Administrator::findOne(['id'=> $session->administrator_id]); ?>
-
-                    <div class="row py-3" style="border-bottom: 1px solid #e6e6e6">
-                        <div class="col-3">
-                            <a href="<?= Yii::getAlias("@member.detailsession")."?m=".$session->id?>" class="link">
-                            <?= $session->id ?>
-                            </a>
-                        </div>
-                        <div class="col-3">
-                            <?= $exercise->year ?> 
-                        </div>
-                        <div class="col-3">
-                            <?= $session->date ?> 
-                        </div>
-                        <div class="col-3">
-                            <?= $admin->username ?> 
-                        </div>
-                    </div>
-                <?php endforeach;?>
             </div>
-        </div>
-    <?php else: ?>
-        <div class="row">
-            <h1 class="col-12 text-center text-muted">Il ne s'est tenu aucune session jusqu'à présent.</h1>
-        </div>
-    <?php endif;?>
 
+            <?php endforeach; ?>
+
+        <?php else: ?>
+
+        <div class="col-12 white-block mb-2">
+            <h1 class="text-center text-muted">Aucune session créée pour cette exercice.</h1>
+        </div>
+
+        <?php endif; ?>
+
+            <div class="col-12 p-2">
+                <nav aria-label="Page navigation example">
+                    <?= LinkPager::widget(['pagination' => $pagination,
+                        'options' => [
+                            'class' => 'pagination pagination-circle justify-content-center pg-blue mb-0',
+                        ],
+                        'pageCssClass' => 'page-item',
+                        'disabledPageCssClass' => 'd-none',
+                        'prevPageCssClass' => 'page-item',
+                        'nextPageCssClass' => 'page-item',
+                        'firstPageCssClass' => 'page-item',
+                        'lastPageCssClass' => 'page-item',
+                        'linkOptions' => ['class' => 'page-link']
+                    ]) ?>
+                </nav>
+
+            </div>
+
+        <?php else: ?>
+
+            <div class="col-12 white-block">
+                <h1 class="text-center text-muted">Aucun exercice créé.</h1>
+            </div>
+
+        <?php endif; ?>
+
+    </div>
 </div>

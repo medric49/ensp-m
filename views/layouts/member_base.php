@@ -61,7 +61,7 @@ $this->title = "Mutuelle - ENSP";
                     <!-- Left -->
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item">
-                            <a class="nav-link waves-effect <?= MemberSessionManager::isHome()?'blue-text':'' ?>" href="<?= Yii::getAlias("@member.home")?>">Accueil</a>
+                            <a class="nav-link waves-effect <?= MemberSessionManager::isAccueil()?'blue-text':'' ?>" href="<?= Yii::getAlias("@member.home")?>">Accueil</a>
                         </li>
                         <li class="nav-item">
                             <a href="<?= Yii::getAlias("@member.epargnes") ?>" class="nav-link waves-effect <?= MemberSessionManager::isEpargnes()?'blue-text':''?>" >Mes épargnes</a>

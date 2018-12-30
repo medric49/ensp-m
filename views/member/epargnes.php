@@ -1,78 +1,61 @@
-<?php
-use yii\helpers\Html;
-use app\models\Administrator;
-use app\models\Exercise;
-use app\models\Session;
-?>
-<?php $this->beginBlock('title') ?>
+<?php use yii\widgets\LinkPager;
+
+$this->beginBlock('title') ?>
 Mes épargnes
-<?php $this->endBlock()?>
-<?php $this->beginBlock('style')?>
+<?php $this->endBlock() ?>
+<?php $this->beginBlock('style') ?>
 <style>
-    .table-head {
-        background-color: rgba(30, 144, 255, 0.31);
-        border-bottom: 1px solid dodgerblue;
-    }
-    
 </style>
-<?php $this->endBlock()?>
+<?php $this->endBlock() ?>
 
 
 <div class="container mt-5 mb-5">
-
-    <?php if (count($savings)):?>
     <div class="row">
-        <div class="col-12 white-block">
-            <div class="row table-head py-2">
-                <h4 class="col-2">
-                    Exercice
-                </h4>
-                <h4 class="col-3">
-                    Session
-                </h4>
-                <h4 class="col-2">
-                    Montant
-                </h4>
-                <h4 class="col-3">
-                    Administrateur     
-                </h4>
-                <h4 class="col-2">
-                    Date
-                </h4>
+        <?php if (count($sessions)): ?>
+            <?php $activeSession = \app\models\Session::findOne(['active' => true]); ?>
+
+            <?php foreach ($sessions as $session): ?>
+
+                <?php $admin = \app\models\Administrator::findOne(['id' => $session->administrator_id]); ?>
+                <?php $saving = \app\models\Saving::findOne(['member_id'=> $member->id, 'session_id' => $session->id]); ?>
+
+                <div class="col-12 white-block mb-2">
+                    <h5 class="mb-4">Session du <span class="text-secondary"><?= (new DateTime($session->date))->format("d-m-Y") ?> <?= $session->active ? '(active)' : '' ?></span></span></h5>
+                    <h5 class="blue-grey lighten-4">Administrateur : <span class="text-secondary"><?= $admin->username ?></span></h5>
+
+                    <?php if ($saving): ?>
+                        <h5 class="mb-4">Montant : <span class="blue-text"><?= $saving->amount ?> XAF</span></h5>
+                    <?php else: ?>
+                        <h3 class="text-center text-muted">Aucune épargne à cette session</h3>
+                    <?php endif; ?>
+
+
+                </div>
+            <?php endforeach; ?>
+
+            <div class="col-12 p-2">
+                <nav aria-label="Page navigation example">
+                    <?= LinkPager::widget(['pagination' => $pagination,
+                        'options' => [
+                            'class' => 'pagination pagination-circle justify-content-center pg-blue mb-0',
+                        ],
+                        'pageCssClass' => 'page-item',
+                        'disabledPageCssClass' => 'd-none',
+                        'prevPageCssClass' => 'page-item',
+                        'nextPageCssClass' => 'page-item',
+                        'firstPageCssClass' => 'page-item',
+                        'lastPageCssClass' => 'page-item',
+                        'linkOptions' => ['class' => 'page-link']
+                    ]) ?>
+                </nav>
+
             </div>
 
-            <?php foreach($savings as $saving): 
-                $admin = Administrator::findOne(['id'=> $saving->administrator_id]);
-                $session = Session::findOne(['id'=> $saving->session_id]);
-                $exercise = Exercise::findOne(['id'=> $session->exercise_id]); ?>
+        <?php else: ?>
+            <div class="col-12 white-block">
+                <h1 class="text-muted text-center">Aucune session créée.</h1>
+            </div>
 
-                <div class="row py-3" style="border-bottom: 1px solid #e6e6e6">
-                    <div class="col-2">
-                        <?= $exercise->year ?>
-                    </div>
-                    <div class="col-3">
-                        <?= $session->date ?> 
-                    </div>
-                    <div class="col-2">
-                        <?= $saving->amount ?> XAF
-                    </div>
-                    <div class="col-3">
-                        <?= $admin->username ?> 
-                    </div>
-                    <div class="col-2">
-                        <?= $saving->created_at ?> 
-                    </div>
-                </div>
-            <?php endforeach;?>
-        </div>
+        <?php endif; ?>
     </div>
-
-
-
-    <?php else: ?>
-        <div class="row">
-            <h1 class="col-12 text-center text-muted">Vous n'avez aucune épargne.</h1>
-        </div>
-    <?php endif;?>
-
 </div>

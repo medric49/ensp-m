@@ -1,156 +1,137 @@
 <?php
-use yii\helpers\Html;
-use app\models\Administrator;
-use app\models\Exercise;
-use app\models\Saving;
-use app\models\Member;
-use app\models\Borrowing;
-use app\models\Refund;
-use app\models\Help;
-?>
-<?php $this->beginBlock('title') ?>
-Détails session <?= $m ?>
-<?php $this->endBlock()?>
-<?php $this->beginBlock('style')?>
-<style>
-    .table-head {
-        background-color: rgba(30, 144, 255, 0.31);
-        border-bottom: 1px solid dodgerblue;
-    }
-    
-</style>
-<?php $this->endBlock()?>
-
-<?php 
-$savings= Saving::find(['session_id'=> $m])->all();
-$borrowings= Borrowing::find(['session_id'=> $m])->all();
-$refunds= Refund::find(['session_id'=> $m])->all();
-?>
+$this->beginBlock('title') ?>
+Session 
+<?php $this->endBlock() ?>
+<?php $this->beginBlock('style') ?>
+    <style>
+    </style>
+<?php $this->endBlock() ?>
 
 <div class="container mt-5 mb-5">
+    <?php $savingAmount = \app\models\Saving::find()->where(['session_id' => $session->id])->sum('amount'); ?>
+    <?php $refundAmount = \app\models\Refund::find()->where(['session_id' => $session->id])->sum('amount'); ?>
+    <?php $borrowingAmount = \app\models\Borrowing::find()->where(['session_id' => $session->id])->sum('amount'); ?>
+    <?php $transac = $savingAmount+$refundAmount-$borrowingAmount ?>
 
-    <?php if (count($savings)):?>
-        
-        <div class="row">
-            <div>
-                <h2>Liste des epargnes</h2>
-            </div>
-            <div class="col-12 white-block">
-                <div class="row table-head py-2">
-                    <h3 class="col-6">
-                    Membre
-                    </h3>
-                    <h3 class="col-6">
-                    Montant
-                    </h3>
-                    
-                </div>
-
-                <?php foreach ($savings as $saving):  
-                    $member = Member::findOne(['id'=> $saving->member_id]); ?>
-
-                    <div class="row py-3" style="border-bottom: 1px solid #e6e6e6">
-                        <div class="col-6">
-                            <?= $member->username ?> 
-                        </div>
-                        <div class="col-6">
-                            <?= $saving->amount ?> XAF
-                        </div>
-                    </div>
-                <?php endforeach;?>
-            </div>
+    <div class="row">
+        <div class="col-12 white-block mb-3">
+            <h3 class="text-center">Session du <?= (new DateTime($session->date))->format("d-m-Y") ?> <?= $session->active ? '(active)' : '' ?></h3>
+            <h1 class="text-center text-secondary"><?= $transac ?> XAF</h1>
+            <h3 class="text-center">transactés</h3>
         </div>
-    <?php else: ?>
-        <div class="row">
-            <h1 class="col-12 text-center text-muted">Il n'y a eu aucune épargne à cette session.</h1>
+
+        <div class="col-12 white-block mb-3">
+            <?php $savings = \app\models\Saving::findAll(['session_id' => $session->id]) ?>
+            <h3 class="text-center">Epargnes : <span class="blue-text"><?= $savingAmount ? $savingAmount : 0 ?> XAF</span></h3>
+            <?php if (count($savings)): ?>
+                <table class="table table-hover">
+                    <thead class="blue-grey lighten-4">
+                    <tr>
+                        <th>#</th>
+                        <th>Membre</th>
+                        <th>Montant</th>
+                        <th>Administrateur</th>
+                    </tr>
+
+                    </thead>
+                    <tbody>
+                    <?php foreach ($savings as $index => $saving): ?>
+                        <?php $member = \app\models\Member::findOne($saving->member_id);
+                        $memberUser = \app\models\User::findOne($member->user_id);
+                        $administrator = \app\models\Administrator::findOne($saving->administrator_id);
+                        $administratorUser = \app\models\User::findOne($administrator->id);
+                        ?>
+                        <tr>
+                            <th scope="row"><?= $index + 1 ?></th>
+                            <td class="text-capitalize"><?= $memberUser->name . " " . $memberUser->first_name ?></td>
+                            <td class="blue-text"><?= $saving->amount ?> XAF</td>
+                            <td class="text-capitalize"><?= $administratorUser->name . " " . $administratorUser->first_name ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php else: ?>
+                <h3 class="text-center text-muted">Aucune épargne à cette session</h3>
+            <?php endif; ?>
+
         </div>
-    <?php endif;?>
-    <div>
-        <p>
+
+        <div class="col-12 white-block mb-3">
+            <?php $refunds = \app\models\Refund::findAll(['session_id' => $session->id]) ?>
+            <h3 class="text-center">Remboursement : <span class="blue-text"><?= $refundAmount ? $refundAmount : 0 ?> XAF</span></h3>
+
+            <?php if (count($refunds)): ?>
+                <table class="table table-hover">
+                    <thead class="blue-grey lighten-4">
+                    <tr>
+                        <th>#</th>
+                        <th>Membre</th>
+                        <th>Montant</th>
+                        <th>Administrateur</th>
+                    </tr>
+
+                    </thead>
+                    <tbody>
+                    <?php foreach ($refunds as $index => $refund): ?>
+                        <?php $member = \app\models\Member::findOne((\app\models\Borrowing::findOne($refund->borrowing_id))->member_id);
+                        $memberUser = \app\models\User::findOne($member->user_id);
+                        $administrator = \app\models\Administrator::findOne($refund->administrator_id);
+                        $administratorUser = \app\models\User::findOne($administrator->id);
+                        ?>
+                        <tr>
+                            <th scope="row"><?= $index + 1 ?></th>
+                            <td class="text-capitalize"><?= $memberUser->name . " " . $memberUser->first_name ?></td>
+                            <td class="blue-text"><?= $refund->amount ?> XAF</td>
+                            <td class="text-capitalize"><?= $administratorUser->name . " " . $administratorUser->first_name ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+
+            <?php else: ?>
+                <h3 class="text-center text-muted">Aucune épargne à cette session</h3>
+            <?php endif; ?>
+
+        </div>
 
 
-        
+        <div class="col-12 white-block mb-3">
+            <?php $borrowings = \app\models\Borrowing::findAll(['session_id' => $session->id]) ?>
+            <h3 class="text-center">Emprunt : <span class="blue-text"><?= $borrowingAmount ? $borrowingAmount : 0 ?> XAF</span></h3>
+
+            <?php if (count($borrowings)): ?>
+                <table class="table table-hover">
+                    <thead class="blue-grey lighten-4">
+                    <tr>
+                        <th>#</th>
+                        <th>Membre</th>
+                        <th>Montant</th>
+                        <th>Administrateur</th>
+                    </tr>
+
+                    </thead>
+                    <tbody>
+                    <?php foreach ($borrowings as $index => $borrowing): ?>
+                        <?php $member = \app\models\Member::findOne($borrowing->member_id);
+                        $memberUser = \app\models\User::findOne($member->user_id);
+                        $administrator = \app\models\Administrator::findOne($borrowing->administrator_id);
+                        $administratorUser = \app\models\User::findOne($administrator->id);
+                        ?>
+                        <tr>
+                            <th scope="row"><?= $index + 1 ?></th>
+                            <td class="text-capitalize"><?= $memberUser->name . " " . $memberUser->first_name ?></td>
+                            <td class="blue-text"><?= $borrowing->amount ?> XAF</td>
+                            <td class="text-capitalize"><?= $administratorUser->name . " " . $administratorUser->first_name ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+
+            <?php else: ?>
+                <h3 class="text-center text-muted">Aucun emprunt à cette session</h3>
+            <?php endif; ?>
+
+        </div>
     </div>
-    <?php if (count($borrowings)):?>
-        <div class="row">
-            <div>
-                <h2>Liste des emprunts</h2>
-            </div>
-            <div class="col-12 white-block">
-                <div class="row table-head py-2">
-                    <h3 class="col-6">
-                    Membre
-                    </h3>
-                    <h3 class="col-6">
-                    Montant
-                    </h3>
-                </div>
-
-                <?php foreach ($borrowings as $bor):  
-                    $member = Member::findOne(['id'=> $bor->member_id]); ?>
-
-                    <div class="row py-3" style="border-bottom: 1px solid #e6e6e6">
-                        <div class="col-6">
-                            <?= $member->username ?> 
-                        </div>
-                        <div class="col-6">
-                            <?= $bor->amount ?> XAF
-                        </div>
-                    </div>
-                <?php endforeach;?>
-            </div>
-        </div>
-    <?php else: ?>
-        <div class="row">
-            <h1 class="col-12 text-center text-muted">Il n'y a eu aucun emprunt à cette session.</h1>
-        </div>
-    <?php endif;?>
-    <div>
-        <p>
-
-
-
-    </div>
-    <?php if (count($refunds)):?>
-        <div class="row">
-            <div>
-                <h2>Liste des remboursements</h2>
-            </div>
-            <div class="col-12 white-block">
-                <div class="row table-head py-2">
-                    <h3 class="col-4">
-                        Membre
-                    </h3>
-                    <h3 class="col-4">
-                        Montant
-                    </h3>
-                    <h3 class="col-4">
-                        Montant emprunté
-                    </h3>
-                </div>
-
-                <?php foreach ($refunds as $ref):  
-                     $borr = Borrowing::findOne(['id'=> $ref->borrowing_id]);
-                     $member = Member::findOne(['id'=> $borr->member_id]); ?>
-
-                    <div class="row py-3" style="border-bottom: 1px solid #e6e6e6">
-                        <div class="col-4">
-                            <?= $member->username ?> 
-                        </div>
-                        <div class="col-3">
-                            <?= $ref->amount ?> XAF
-                        </div>
-                        <div class="col-3">
-                            <?= $borr->amount ?> XAF
-                        </div>
-                    </div>
-                <?php endforeach;?>
-            </div>
-        </div>
-    <?php else: ?>
-        <div class="row">
-            <h1 class="col-12 text-center text-muted">Il n'y a eu aucun remboursement à cette session.</h1>
-        </div>
-    <?php endif;?>
 
 </div>
