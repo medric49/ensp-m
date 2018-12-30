@@ -8,11 +8,25 @@
 
 namespace app\controllers;
 
-
+use app\managers\MemberSessionManager;
+use app\models\forms\UpdateSocialInformationForm;
+use app\models\forms\UpdatePasswordForm;
+use app\models\forms\NewMemberForm;
 use app\managers\RedirectionManager;
 use app\models\Member;
 use app\models\User;
+use app\models\Saving;
+use app\models\Administrator;
+use app\models\Help_type;
+use app\models\Contribution;
+use app\models\Session;
+use app\models\Borrowing;
 use yii\web\Controller;
+use yii\web\UploadedFile;
+use DateTime;
+use Yii;
+use yii\base\Security;
+use app\managers\FileManager;
 
 class MemberController extends Controller
 {
@@ -53,6 +67,7 @@ class MemberController extends Controller
     }
 
     public function actionAccueil() {
+        MemberSessionManager::setHome();
         return $this->render('home');
     }
 
@@ -65,4 +80,177 @@ class MemberController extends Controller
             return $this->redirect('@member.home');
         }
     }
+
+    public function actionProfil() {
+        
+        MemberSessionManager::setProfil();
+            $user = User::findOne(\Yii::$app->user->getId());
+                $member = Member::findOne(['user_id'=> $user->id]);
+
+                $this->user = $user;
+                $this->member = $member;
+                $this->view->params = ['user'=> $this->user,'member'=> $this->member];
+                return $this->render('profil',['member'=> $member, 'user'=> $user]);
+            
+        
+    }
+
+    public function actionProfilMembre($m=0, $n=0) {
+        MemberSessionManager::setMembers();
+       if($m){
+            $member = Member::findOne($n);
+            $user = User::findOne($m);
+            
+            return $this->render('profilmembre',['member'=> $member, 'user'=> $user]);
+       }
+    }
+
+    public function actionProfilAdmin($m=0, $n=0) {
+        MemberSessionManager::setAdministrators();
+        if($m){
+             $admin = Administrator::findOne($n);
+             $user = User::findOne($m);
+             
+             return $this->render('profiladmin',['admin'=> $admin, 'user'=> $user]);
+        }
+     }
+
+    public function actionModifierProfil() {
+        MemberSessionManager::setProfil();
+        $user = User::findOne(\Yii::$app->user->getId());
+        $member = Member::findOne(['user_id'=> $user->id]);
+        $socialModel = new UpdateSocialInformationForm();
+        $passwordModel = new UpdatePasswordForm();
+
+        $socialModel->attributes = [
+            'username' => $this->member->username,
+            'name' => $this->user->name,
+            'first_name' => $this->user->first_name,
+            'tel' => $this->user->tel,
+            'email' => $this->user->email,
+        ];
+
+        return $this->render('modifier_profil',compact('socialModel','passwordModel'));
+        
+    }
+
+    public function actionEnregistrerModifierProfil() {
+        MemberSessionManager::setProfil();
+        if (\Yii::$app->request->getIsPost()) {
+            $socialModel = new UpdateSocialInformationForm();
+            $passwordModel = new UpdatePasswordForm();
+
+            if ($socialModel->load(\Yii::$app->request->post()) &&  $socialModel->validate()) {
+                $this->user->name = $socialModel->name;
+                $this->user->first_name = $socialModel->first_name;
+                $this->user->tel = $socialModel->tel;
+                $this->user->email = $socialModel->email;
+                if (UploadedFile::getInstance($socialModel,"avatar"))
+                    $this->user->avatar = FileManager::storeAvatar( UploadedFile::getInstance($socialModel,"avatar"),$socialModel->username,"MEMBER");
+
+                $this->user->save();
+                $this->member->username = $socialModel->username;
+                $this->member->save();
+                return $this->redirect("@member.profil");
+            }
+            else
+                return $this->render('modifier_profil',compact('socialModel','passwordModel'));
+
+        }
+        else
+        {
+            return RedirectionManager::abort($this);;
+        }
+
+    }
+
+    public function actionModifierMotDePasse() {
+        MemberSessionManager::setProfil();
+        if (\Yii::$app->request->getIsPost()) {
+            $socialModel = new UpdateSocialInformationForm();
+            $socialModel->attributes = [
+                'username' => $this->member->username,
+                'name' => $this->user->name,
+                'first_name' => $this->user->first_name,
+                'tel' => $this->user->tel,
+                'email' => $this->user->email,
+            ];
+
+            $passwordModel = new UpdatePasswordForm();
+            if ($passwordModel->load(\Yii::$app->request->post()) &&  $passwordModel->validate()) {
+                if ($this->user->validatePassword($passwordModel->password)) {
+                    $this->user->password = Yii::$app->getSecurity()->generatePasswordHash($passwordModel->new_password);
+                    $this->user->save();
+                    return $this->redirect("@member.profil");
+                }
+                else {
+                    $passwordModel->addError('password','Le mot de passe ne correspond pas.');
+                    return $this->render('modifier_profil',compact('socialModel','passwordModel'));
+                }
+
+            }
+            else
+                return $this->render('modifier_profil',compact('socialModel','passwordModel'));
+
+        }
+        else
+            return RedirectionManager::abort($this);;
+    }
+
+    public function actionEpargnes() {
+        MemberSessionManager::setEpargnes();
+        $user = User::findOne(\Yii::$app->user->getId());
+        $member = Member::findOne(['user_id'=> $user->id]);
+        $savings = Saving::find()->where(['member_id'=> $member->id])->all();
+        return $this->render('epargnes',compact('savings'));
+    }
+
+    public function actionEmprunts() {
+        MemberSessionManager::setEmprunts();
+        $user = User::findOne(\Yii::$app->user->getId());
+        $member = Member::findOne(['user_id'=> $user->id]);
+        $borrowings = Borrowing::find()->where(['member_id'=> $member->id])->all();
+        return $this->render('emprunts',compact('borrowings'));
+    }
+
+    public function actionContributions() {
+        MemberSessionManager::setContributions();
+        $user = User::findOne(\Yii::$app->user->getId());
+        $member = Member::findOne(['user_id'=> $user->id]);
+        $contributions = Contribution::find()->where(['member_id'=> $member->id])->all();
+        return $this->render('contributions',compact('contributions'));
+    }
+
+    public function actionTypesAide() {
+        MemberSessionManager::setHelps();
+        $helptype = Help_type::find()->all();
+        return $this->render('types_aide',compact('helptype'));
+    }
+
+    public function actionMembres() {
+        MemberSessionManager::setMembers();
+        $user = User::findOne(\Yii::$app->user->getId());
+        $member = Member::findOne(['user_id'=> $user->id]);
+        $members = Member::findBySql('Select * from member where id != '.$member->id)->all();
+        return $this->render('members',compact('members'));
+    }
+
+    public function actionAdministrators() {
+        MemberSessionManager::setAdministrators();
+        $admins = Administrator::find()->all();
+        return $this->render('administrators',compact('admins'));
+    }
+
+    public function actionSessions() {
+        MemberSessionManager::setSessions();
+        $sessions = Session::find()->all();
+        return $this->render('sessions',compact('sessions'));
+    }
+
+    public function actionDetailSession($m = 0) {
+        MemberSessionManager::setSessions();
+        if($m){
+             return $this->render('detailsession',['m'=> $m]);
+        }
+     }
 }

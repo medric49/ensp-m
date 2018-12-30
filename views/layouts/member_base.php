@@ -1,4 +1,5 @@
 <?php
+use app\managers\MemberSessionManager;
 use yii\helpers\Html;
 $this->title = "Mutuelle - ENSP";
 ?>
@@ -45,7 +46,6 @@ $this->title = "Mutuelle - ENSP";
 
                 <!-- Brand -->
                 <a class="navbar-brand waves-effect" href="<?= Yii::getAlias("@member.home")?>">
-                    <strong class="blue-text d-none d-md-inline">Accueil</strong>
                     <img src="/img/icon.png" alt="ENSP" style="width: 40px; height: 40px;" class="d-md-none">
                 </a>
 
@@ -60,24 +60,27 @@ $this->title = "Mutuelle - ENSP";
 
                     <!-- Left -->
                     <ul class="navbar-nav mr-auto">
-                        <li class="nav-item active">
-                            <a class="nav-link waves-effect" href="#">Epargnes</a>
+                        <li class="nav-item">
+                            <a class="nav-link waves-effect <?= MemberSessionManager::isHome()?'blue-text':'' ?>" href="<?= Yii::getAlias("@member.home")?>">Accueil</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link waves-effect" href="#">Emprunts</a>
+                            <a href="<?= Yii::getAlias("@member.epargnes") ?>" class="nav-link waves-effect <?= MemberSessionManager::isEpargnes()?'blue-text':''?>" >Mes épargnes</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link waves-effect" href="#">Aides</a>
+                            <a href="<?= Yii::getAlias("@member.emprunts") ?>" class="nav-link waves-effect  <?= MemberSessionManager::isEmprunts()?'blue-text':''?>" >Mes emprunts</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link waves-effect" href="#">Sessions</a>
+                            <a href="<?= Yii::getAlias("@member.contributions") ?>" class="nav-link waves-effect  <?= MemberSessionManager::isContributions()?'blue-text':''?>" >Mes contributions</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link waves-effect  <?= MemberSessionManager::isSessions()?'blue-text':''?>" href="<?= Yii::getAlias("@member.sessions") ?>">Sessions</a>
                         </li>
                     </ul>
 
                     <!-- Right -->
                     <ul class="navbar-nav nav-flex-icons">
                         <li class="nav-item mr-auto">
-                            <a href="#" class="nav-link waves-effect">
+                            <a href="<?= Yii::getAlias("@member.profil") ?>" class="nav-link waves-effect">
                                 <img src="<?= \app\managers\FileManager::loadAvatar($this->params['user'])?>" class="profile-icon" alt="<?= $this->params['member']->username ?>">
                                 <span><?= $this->params['member']->username ?></span>
                             </a>
@@ -106,16 +109,16 @@ $this->title = "Mutuelle - ENSP";
 
 
             <div class="list-group list-group-flush">
-                <a href="#" class="list-group-item active waves-effect">
+                <a href="<?= Yii::getAlias("@member.home") ?>" class="list-group-item list-group-item-action <?= MemberSessionManager::isHome()?'active':''?> waves-effect">
                     <i class="fas fa-chart-pie mr-3"></i>Tableau de bord
                 </a>
-                <a href="#" class="list-group-item list-group-item-action waves-effect">
-                    <i class="fas fa-user mr-3"></i>Profil</a>
-                <a href="#" class="list-group-item list-group-item-action waves-effect">
+                <a href="<?= Yii::getAlias("@member.profil") ?>" class="list-group-item list-group-item-action <?= MemberSessionManager::isProfil()?'active':''?> waves-effect">
+                    <i class="fas fa-user mr-3"></i>Mon profil</a>
+                <a href="<?= Yii::getAlias("@member.members") ?>" class="list-group-item list-group-item-action <?= MemberSessionManager::isMembers()?'active':''?> waves-effect">
                     <i class="fas fa-users mr-3"></i>Membres</a>
-                <a href="#" class="list-group-item list-group-item-action waves-effect">
+                <a href="<?= Yii::getAlias("@member.administrators")?>" class="list-group-item list-group-item-action <?= MemberSessionManager::isAdministrators()?'active':''?> waves-effect">
                     <i class="fas fa-robot mr-3"></i>Administrateurs</a>
-                <a href="#" class="list-group-item list-group-item-action waves-effect">
+                <a href="<?= Yii::getAlias("@member.typesaide") ?>" class="list-group-item list-group-item-action <?= MemberSessionManager::isHelps()?'active':''?> waves-effect">
                     <i class="fas fa-hand-holding-heart mr-3"></i>Type d'aides</a>
             </div>
 
@@ -131,17 +134,6 @@ $this->title = "Mutuelle - ENSP";
     </main>
     <!--Main layout-->
 
-    <!--Footer-->
-    <footer class="page-footer text-center font-small primary-color-dark darken-2 mt-4 wow fadeIn">
-
-        <!--Copyright-->
-        <div class="footer-copyright py-3">
-            © 2018 Copyright: Groupe DEC
-        </div>
-        <!--/.Copyright-->
-
-    </footer>
-    <!--/.Footer-->
     <?php include Yii::getAlias("@app") . "/includes/scripts.php"; ?>
 
     <!-- Initializations -->

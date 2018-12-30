@@ -13,7 +13,7 @@ class RouteManager {
         'guest.member_form' => "/guest/member-form",
         'guest.administrator_form' => '/guest/administrator-form',
 
-        // ============================ ESPACE ADMINSTRATEUR ==========================
+        // ============================ ESPACE ADMINISTRATEUR ==========================
 
 
         'administrator.home' => '/administrator/accueil',
@@ -58,6 +58,20 @@ class RouteManager {
         // ============================ ESPACE MEMBRE =================================
         'member.home' => '/member/accueil',
         'member.disconnection' => '/member/deconnexion',
+        'member.profil' => '/member/profil',
+        'member.profilmembre' => '/member/profil-membre',
+        'member.profiladmin' => '/member/profil-admin',
+        'member.epargnes' => '/member/epargnes',
+        'member.emprunts' => '/member/emprunts',
+        'member.members' => '/member/membres',
+        'member.administrators' => '/member/administrators',
+        'member.sessions' => '/member/sessions',
+        'member.detailsession' => '/member/detail-session',
+        'member.typesaide' => '/member/types-aide',
+        'member.contributions' => '/member/contributions',
+        'member.modifier_profil' => '/member/modifier-profil',
+        'member.enregistrer_modifier_profil' => '/member/enregistrer-modifier-profil',
+        'member.modifiermotdepasse' => '/member/modifier-mot-de-passe'
 
     ];
 
