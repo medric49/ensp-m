@@ -60,6 +60,10 @@ class RouteManager {
         'administrator.borrowing_member' => '/administrator/emprunt-membre',
         'administrator.contribution_member' => '/administrator/contribution-membre',
 
+
+        'administrator.new_administrator' => '/administrator/nouvel-administrateur',
+        'administrator.add_administrator' => '/administrator/ajouter-administrateur',
+
         // ============================ ESPACE MEMBRE =================================
         'member.home' => '/member/accueil',
         'member.disconnection' => '/member/deconnexion',

@@ -20,6 +20,7 @@ use app\models\BorrowingSaving;
 use app\models\Exercise;
 use app\models\forms\HelpTypeForm;
 use app\models\forms\IdForm;
+use app\models\forms\NewAdministratorForm;
 use app\models\forms\NewBorrowingForm;
 use app\models\forms\NewMemberForm;
 use app\models\forms\NewRefundForm;
@@ -133,30 +134,13 @@ class AdministratorController extends Controller
 
 
 
-    public function actionDesactiveSession() {
-        if (Yii::$app->request->getIsPost()) {
-            $idModel = new IdForm();
-            if ($idModel->load(Yii::$app->request->post()) && $idModel->validate()) {
-                $session = Session::findOne($idModel->id);
-
-                $session->active = false;
-                $session->save();
-
-                return $this->redirect("@administrator.home");
-            }
-            else
-                return RedirectionManager::abort($this);
-        }
-        else
-            return RedirectionManager::abort($this);
-    }
-
     public function actionProfil() {
         AdministratorSessionManager::setProfile();
         return $this->render('profile');
     }
     public function actionModifierProfil() {
         AdministratorSessionManager::setProfile();
+
         $socialModel = new UpdateSocialInformationForm();
         $passwordModel = new UpdatePasswordForm();
 
@@ -177,17 +161,25 @@ class AdministratorController extends Controller
             $passwordModel = new UpdatePasswordForm();
 
             if ($socialModel->load(\Yii::$app->request->post()) &&  $socialModel->validate()) {
-                $this->user->name = $socialModel->name;
-                $this->user->first_name = $socialModel->first_name;
-                $this->user->tel = $socialModel->tel;
-                $this->user->email = $socialModel->email;
-                if (UploadedFile::getInstance($socialModel,"avatar"))
-                    $this->user->avatar = FileManager::storeAvatar( UploadedFile::getInstance($socialModel,"avatar"),$socialModel->username,"ADMINISTRATOR");
+                $administrator = Administrator::findOne(['username' => $socialModel->username]);
+                if ($administrator && $administrator->id!= $this->administrator->id) {
 
-                $this->user->save();
-                $this->administrator->username = $socialModel->username;
-                $this->administrator->save();
-                return $this->redirect("@administrator.profile");
+                    $socialModel->addError("username","Ce nom d'utilisateur est déjà pris");
+                    return $this->render('update_profile',compact('socialModel','passwordModel'));
+                }
+                else {
+                    $this->user->name = $socialModel->name;
+                    $this->user->first_name = $socialModel->first_name;
+                    $this->user->tel = $socialModel->tel;
+                    $this->user->email = $socialModel->email;
+                    if (UploadedFile::getInstance($socialModel,"avatar"))
+                        $this->user->avatar = FileManager::storeAvatar( UploadedFile::getInstance($socialModel,"avatar"),$socialModel->username,"ADMINISTRATOR");
+
+                    $this->user->save();
+                    $this->administrator->username = $socialModel->username;
+                    $this->administrator->save();
+                    return $this->redirect("@administrator.profile");
+                }
             }
             else
                 return $this->render('update_profile',compact('socialModel','passwordModel'));
@@ -346,6 +338,52 @@ class AdministratorController extends Controller
         return $this->render('new_member',['model'=> $model]);
     }
 
+    public function actionNouvelAdministrateur() {
+        if ($this->administrator->root) {
+            $model = new NewAdministratorForm();
+            return $this->render("new_administrator",compact('model'));
+        }
+        else
+            return RedirectionManager::abort($this);
+    }
+    public function actionAjouterAdministrateur() {
+        if (Yii::$app->request->post() && $this->administrator->root) {
+            $model = new NewAdministratorForm();
+
+            if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
+                if (!Administrator::findOne(['username' => $model->username])) {
+                    $user = new User();
+                    $user->name = $model->name;
+                    $user->first_name = $model->first_name;
+                    $user->tel = $model->tel;
+                    $user->email = $model->email;
+                    $user->type = "MEMBER";
+                    $user->password = (new Security())->generatePasswordHash($model->password);
+                    if (UploadedFile::getInstance($model,'avatar'))
+                        $user->avatar = FileManager::storeAvatar(UploadedFile::getInstance($model,'avatar'),$model->username,'MEMBER');
+                    $user->save();
+
+                    $administrator = new Administrator();
+                    $administrator->user_id = $user->id;
+                    $administrator->root = false;
+                    $administrator->username = $model->username;
+                    $administrator->save();
+
+                    return $this->redirect('@administrator.administrators');
+                }
+                else
+                {
+                    $model->addError('username','Ce nom d\'utilisateur est déjà pris');
+                    return $this->render('new_administrator',compact('model'));
+                }
+            }
+            else
+                return $this->render('new_administrator',compact("model"));
+        }
+        else
+            return RedirectionManager::abort($this);
+    }
+
     public function actionAjouterMember() {
         if (\Yii::$app->request->post()) {
             $model = new NewMemberForm();
@@ -386,7 +424,9 @@ class AdministratorController extends Controller
 
     public function actionAdministrateurs() {
         AdministratorSessionManager::setAdministrators();
-        return $this->render("administrators");
+
+        $administrators = Administrator::find()->all();
+        return $this->render("administrators",compact("administrators"));
     }
 
     public function actionEpargnes() {
@@ -914,4 +954,6 @@ class AdministratorController extends Controller
         else
             return RedirectionManager::abort($this);
     }
+
+
 }
