@@ -837,4 +837,81 @@ class AdministratorController extends Controller
         else
             return RedirectionManager::abort($this);
     }
+
+    public function actionMembre($q=0) {
+        if ($q) {
+            $member = Member::findOne($q);
+
+            if ($member) {
+                return $this->render("member",compact("member"));
+            }
+            else
+                return RedirectionManager::abort($this);
+        }
+        else
+            return RedirectionManager::abort($this);
+    }
+
+    public function actionEpargneMembre($q = 0) {
+        if ($q) {
+            $member = Member::findOne($q);
+            if ($member)
+            {
+                $query = Exercise::find();
+                $pagination = new Pagination([
+                    'defaultPageSize' => 1,
+                    'totalCount' => $query->count(),
+                ]);
+
+                $exercises = $query->orderBy(['created_at'=> SORT_DESC])
+                    ->offset($pagination->offset)
+                    ->limit($pagination->limit)
+                    ->all();
+                return $this->render("saving_member",compact("member","exercises","pagination"));
+            }
+            else
+                return RedirectionManager::abort($this);
+        }
+        else {
+            return RedirectionManager::abort($this);
+        }
+    }
+
+    public function actionEmpruntMembre($q = 0) {
+        if ($q) {
+            $member = Member::findOne($q);
+            if ($member)
+            {
+                $query = Exercise::find();
+                $pagination = new Pagination([
+                    'defaultPageSize' => 1,
+                    'totalCount' => $query->count(),
+                ]);
+
+                $exercises = $query->orderBy(['created_at'=> SORT_DESC])
+                    ->offset($pagination->offset)
+                    ->limit($pagination->limit)
+                    ->all();
+                return $this->render("borrowing_member",compact("member","exercises","pagination"));
+            }
+            else
+                return RedirectionManager::abort($this);
+        }
+        else
+            return RedirectionManager::abort($this);
+    }
+
+    public function actionContributionMembre($q = 0) {
+        if ($q) {
+            $member = Member::findOne($q);
+            if ($member)
+            {
+                return $this->render("contribution_member",compact("member"));
+            }
+            else
+                RedirectionManager::abort($this);
+        }
+        else
+            return RedirectionManager::abort($this);
+    }
 }

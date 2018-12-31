@@ -29,4 +29,8 @@ class Session extends ActiveRecord
     public function refundedAmount()  {
         return Refund::find()->where(['session_id' => $this->id])->sum('amount');
     }
+
+    public function date() {
+        return (new \DateTime($this->date))->format("d-m-Y");
+    }
 }

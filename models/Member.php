@@ -18,15 +18,28 @@ class Member extends ActiveRecord
     public function user() {
         return User::findOne($this->user_id);
     }
+    public function activeBorrowing() {
+        return Borrowing::findOne(['member_id' => $this,'state'=>true]);
+    }
 
     public function savedAmount(Exercise $exercise) {
         $sessions = Session::find()->select('id')->where(['exercise_id' => $exercise->id])->column();
         return Saving::find()->where(['session_id' => $sessions,'member_id' => $this->id])->sum("amount");
     }
 
+    public function exerciseSavings(Exercise $exercise) {
+        $sessions = Session::find()->select('id')->where(['exercise_id' => $exercise->id])->column();
+        return Saving::find()->where(['session_id' => $sessions,'member_id' => $this->id])->orderBy('created_at',SORT_ASC)->all();
+    }
+
     public function borrowedAmount(Exercise $exercise) {
         $sessions = Session::find()->select('id')->where(['exercise_id' => $exercise->id])->column();
         return Borrowing::find()->where(['session_id' => $sessions,'member_id' => $this->id])->sum("amount");
+    }
+
+    public function exerciseBorrowings(Exercise $exercise) {
+        $sessions = Session::find()->select('id')->where(['exercise_id' => $exercise->id])->column();
+        return Borrowing::find()->where(['session_id' => $sessions,'member_id' => $this->id])->orderBy('created_at',SORT_ASC)->all();
     }
 
     public function refundedAmount(Exercise $exercise) {

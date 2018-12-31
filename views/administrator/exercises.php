@@ -123,7 +123,7 @@ Exercices
                             <th>Montant emprunté</th>
                             <th>Dette remboursée</th>
                             <th>Intérêt sur les dettes</th>
-                            <th>Montant final</th>
+                            <th>Total obtenu</th>
                         </tr>
                         </thead>
                         <tbody>

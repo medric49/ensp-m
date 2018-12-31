@@ -13,7 +13,9 @@
         }
     </style>
 <?php $this->endBlock() ?>
-
+<?php
+$refunds = \app\models\Refund::find()->where(['is not','exercise_id',null])->all();
+?>
 <div class="container mb-5 mt-5">
     <div class="row">
 
@@ -26,6 +28,9 @@
 
         <div class="col-12 white-block">
 
+            <?php
+            if (count($refunds)):
+            ?>
             <table class="table table-hover">
                 <thead class="blue-grey lighten-4">
                 <tr>
@@ -38,7 +43,7 @@
 
                 </thead>
                 <tbody>
-                <?php foreach (\app\models\Refund::find()->where(['is not','exercise_id',null])->all() as $index => $refund): ?>
+                <?php foreach ($refunds as $index => $refund): ?>
                     <?php $member = \app\models\Member::findOne((\app\models\Borrowing::findOne($refund->borrowing_id))->member_id);
                     $memberUser = \app\models\User::findOne($member->user_id);
                     $exercise = \app\models\Exercise::findOne($refund->exercise_id);
@@ -76,6 +81,14 @@
                 </tbody>
             </table>
 
+            <?php
+            else:
+            ?>
+            <h3 class="text-muted text-center">Aucune dette d'exercice enregistrée</h3>
+
+            <?php
+            endif;
+            ?>
         </div>
 
     </div>

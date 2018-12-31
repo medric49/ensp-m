@@ -55,6 +55,11 @@ class RouteManager {
         'administrator.cloture_exercise' => '/administrator/cloturer-exercice',
         'administrator.treat_debt' => '/administrator/traiter-dette',
 
+        'administrator.member' => '/administrator/membre',
+        'administrator.saving_member' => '/administrator/epargne-membre',
+        'administrator.borrowing_member' => '/administrator/emprunt-membre',
+        'administrator.contribution_member' => '/administrator/contribution-membre',
+
         // ============================ ESPACE MEMBRE =================================
         'member.home' => '/member/accueil',
         'member.disconnection' => '/member/deconnexion',
