@@ -45,6 +45,12 @@ Exercices
 
 <div class="container mt-5 mb-5">
     <div class="row">
+        <?php
+        $labels = [];
+        $data = [];
+        $colors = [];
+        ?>
+
         <?php if(count($exercises)):?>
 
             <?php
@@ -106,11 +112,6 @@ Exercices
 
 
             <?php if ( count($members) ):?>
-                <?php
-            $labels = [];
-            $data = [];
-            $colors = [];
-                ?>
                 <div class="col-12 white-block">
 
                     <h3 class="text-center my-4 blue-text">Bilan de l'exercice</h3>
