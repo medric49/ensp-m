@@ -24,10 +24,10 @@ class NewMemberForm extends Model
     public function rules()
     {
         return [
-            [['username','name','first_name','tel','password'],'string'],
-            [['username','name','first_name','tel','password','email'],'required'],
-            [['email'],'email'],
-            [['avatar'],'image'],
+            [['username','name','first_name','tel','password'],'string','message' => 'Ce champ attend du texte'],
+            [['username','name','first_name','tel','password','email'],'required','message' => 'Ce champ est obligatoire'],
+            [['email'],'email','Ce champ attend un email'],
+            [['avatar'],'image','Ce champ attend une image'],
         ];
     }
 }

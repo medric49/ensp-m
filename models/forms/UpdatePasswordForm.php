@@ -21,8 +21,8 @@ class UpdatePasswordForm extends Model
     public function rules()
     {
         return [
-            [['password','new_password','confirmation_new_password'],'required'],
-            [['password','new_password','confirmation_new_password'],'string'],
+            [['password','new_password','confirmation_new_password'],'required','message' => 'Ce champ est obligatoire'],
+            [['password','new_password','confirmation_new_password'],'string','message' => 'Ce champ attend du texte'],
             [['confirmation_new_password'],'compare','compareAttribute' => 'new_password','message'=>'Le mot de passe ne correspond pas.']
         ];
     }

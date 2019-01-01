@@ -24,10 +24,10 @@ class NewAdministratorForm extends Model
     public function rules()
     {
         return [
-            [['username','name','first_name','tel','password'],'string'],
-            [['username','name','first_name','tel','password','email'],'required'],
-            [['email'],'email'],
-            [['avatar'],'image'],
+            [['username','name','first_name','tel','password'],'string','message' => 'Ce champ doit être du texte'],
+            [['username','name','first_name','tel','password','email'],'required','message' => 'Ce champ est obligatoire'],
+            [['email'],'email','message' => 'Ce champ doit être un email'],
+            [['avatar'],'image','message' => 'Ce champ attend une image'],
         ];
     }
 }

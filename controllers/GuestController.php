@@ -99,7 +99,7 @@ class GuestController extends Controller
             if ($administratorModel->validate()) {
                 $administrator = Administrator::findOne(['username' => $administratorModel->username]);
                 if ($administrator) {
-                    $user = User::findIdentity($administrator->user_id);
+                    $user = User::findOne($administrator->user_id);
                     if ($user) {
                         if ($user->validatePassword($administratorModel->password)) {
                             if ($administratorModel->remember) {

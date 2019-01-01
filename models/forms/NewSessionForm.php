@@ -18,8 +18,8 @@ class NewSessionForm extends Model
     public function rules()
     {
         return [
-            ['date','date','format' => 'yyyy-M-d'],
-            ['date','required']
+            ['date','date','format' => 'yyyy-M-d','message' => 'Ce champ attend une date'],
+            ['date','required','message' => 'Ce champ est obligatoire']
         ];
     }
 }

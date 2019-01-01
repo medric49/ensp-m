@@ -25,7 +25,7 @@ class HelpTypeForm extends Model
             ['title','string'],
             ['title','required'],
             ['amount','required'],
-            ['amount','number','min'=> 0,'integerOnly' => true],
+            ['amount','number','min'=> 1,'integerOnly' => true,'message' => 'Ce champ doit être un entier positif'],
         ];
     }
 
