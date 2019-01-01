@@ -78,6 +78,12 @@ class RouteManager {
         'administrator.delete_saving' => '/administrator/supprimer-epargne',
         'administrator.delete_refund' => '/administrator/supprimer-remboursement',
         'administrator.delete_borrowing' => '/administrator/supprimer-emprunt',
+
+        'administrator.fix_social_crown' => '/administrator/regler-fond-social',
+
+        'administrator.settings' => '/administrator/configurations',
+        'administrator.apply_settings' => '/administrator/appliquer-configuration',
+
         // ============================ ESPACE MEMBRE =================================
         'member.home' => '/member/accueil',
         'member.disconnection' => '/member/deconnexion',

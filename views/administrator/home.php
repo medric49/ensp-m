@@ -16,6 +16,9 @@ Accueil
     .media {
         border-bottom: 1px solid #ededed;
     }
+    #social-crown {
+        font-size: 5rem;
+    }
 </style>
 <?php $this->endBlock() ?>
 
@@ -276,6 +279,9 @@ Accueil
         <div class="col-md-8  pr-4">
             <div class="row">
                 <div class="col-12 white-block">
+                    <h3 class="text-center text-muted">Fond social</h3>
+                    <h1 id="social-crown" class="blue-text text-center"><?= ($t=\app\managers\FinanceManager::socialCrown())?$t:0 ?> XAF</h1>
+
                     <h3 class="text-center text-muted">Evènements de la mutuelle</h3>
                     <?php
                     $helps = \app\models\Help::findAll(['state' => true]);

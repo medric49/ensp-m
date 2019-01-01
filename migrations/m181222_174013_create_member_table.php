@@ -17,6 +17,7 @@ class m181222_174013_create_member_table extends Migration
             'user_id' => $this->integer()->unsigned(),
             'username' =>$this->string()->unique(),
             'active' => $this->boolean()->defaultValue(true),
+            'social_crown' => $this->integer()->defaultValue(0),
             'administrator_id' => $this->integer()->unsigned()
         ]);
     }

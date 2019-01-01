@@ -16,9 +16,9 @@ Nouvel administrateur
 
 <div class="container mt-5 mb-5">
     <div class="row justify-content-center">
-        <h1 class="col-12">
+        <h3 class="col-12 text-center text-muted">
             Nouvel administrateur
-        </h1>
+        </h3>
         <?php $form = \yii\widgets\ActiveForm::begin([
             'method' => 'post',
             'action' => '@administrator.add_administrator',

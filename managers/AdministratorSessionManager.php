@@ -40,6 +40,10 @@ class AdministratorSessionManager
         \Yii::$app->session->set(self::place,"helps");
         \Yii::$app->session->set(self::head,null);
     }
+    public static function setSettings() {
+        \Yii::$app->session->set(self::place,"settings");
+        \Yii::$app->session->set(self::head,null);
+    }
 
 
     public static function isHeadHome() {
@@ -86,5 +90,10 @@ class AdministratorSessionManager
 
     public static function isHelps() {
         return \Yii::$app->session->get(self::place) == "helps";
+    }
+
+    public static function isSettings()
+    {
+        return \Yii::$app->session->get(self::place) == "settings";
     }
 }

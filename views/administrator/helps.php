@@ -22,13 +22,25 @@ Aides
         margin-bottom: 10px;
 
     }
+
+    #saving-amount-title {
+        font-size: 5rem;
+        color: white;
+    }
 </style>
 <?php $this->endBlock() ?>
 
 
 <div class="container mt-5 mb-5">
-
-    <div class="row mb-5">
+    <div class="row mb-2">
+        <div class="col-12 white-block text-center blue-gradient ">
+            <h3 class="text-white">Fond social</h3>
+            <h1 id="saving-amount-title">
+                <?=  ($t=\app\managers\FinanceManager::socialCrown())?$t:0 ?> XAF
+            </h1>
+        </div>
+    </div>
+    <div class="row mb-2">
         <div class="col-12 white-block">
             <h3 class="text-center text-muted">Aides financiaires actives</h3>
             <hr>

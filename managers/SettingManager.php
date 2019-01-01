@@ -11,9 +11,26 @@ namespace app\managers;
 
 class SettingManager
 {
-    const INTEREST = 10;
-
     public static function getInterest() {
-        return self::INTEREST;
+        $json_source = file_get_contents(\Yii::$app->getBasePath().'/managers/app.json');
+        $data = json_decode($json_source,true);
+        return $data['interest'];
+    }
+
+    public static function getSocialCrown() {
+        $json_source = file_get_contents(\Yii::$app->getBasePath().'/managers/app.json');
+        $data = json_decode($json_source,true);
+
+        return $data['social_crown'];
+    }
+
+    public static function setValues($interest,$social_crown) {
+        $data = [
+            'interest'=>$interest,
+            'social_crown'=>$social_crown,
+        ];
+
+        file_put_contents(\Yii::$app->getBasePath().'/managers/app.json',json_encode($data));
+
     }
 }
