@@ -1,43 +1,56 @@
 <?php $this->beginBlock('title') ?>
-Administrateurs
-<?php $this->endBlock()?>
-<?php $this->beginBlock('style')?>
-<style>
-    .table-head {
-        background-color: rgba(30, 144, 255, 0.31);
-        border-bottom: 1px solid dodgerblue;
-    }
-</style>
-<?php $this->endBlock()?>
+    Administrateurs
+<?php $this->endBlock() ?>
+<?php $this->beginBlock('style') ?>
+    <style>
+    </style>
+<?php $this->endBlock() ?>
+    <div class="container mt-5 mb-5">
+        <div class="row">
+            <?php if (count($administrators)): ?>
+                <div class="col-12 mt-2">
+                    <div class="row">
+                        <?php foreach ($administrators as $administrator): ?>
+                            <?php
+                            $user = $administrator->user();
+                            ?>
+                            <div class="col-4 mb-2">
+                                <div class="card">
+                                    <!-- Card image -->
+                                    <div class="view overlay">
+                                        <img class="card-img-top"
+                                             src="<?= \app\managers\FileManager::loadAvatar($user, "512") ?>"
+                                             style="height: 12rem" alt="Card image cap">
+                                        <a href="javascript:void()">
+                                            <div class="mask rgba-white-slight"></div>
+                                        </a>
+                                    </div>
 
+                                    <!-- Card content -->
+                                    <div class="card-body">
 
-<div class="container mt-5 mb-5">
-
-    <?php if (count($admins)):?>
-    <div class="row">
-        <div class="col-12 white-block">
-            <div class="row table-head py-2">
-                <h3 class="col-8">
-                    Administrateur
-                </h3>
-            </div>
-
-            <?php foreach($admins as $admin): ?>
-                <div class="row py-3" style="border-bottom: 1px solid #e6e6e6">
-                    <div class="col-8">
-                        <a href="<?= Yii::getAlias("@member.profiladmin")."?m=".$admin->user_id."&n=".$admin->id?>" class="link"><?= $admin->username ?></a>
+                                        <!-- Title -->
+                                        <h4 class="card-title text-capitalize"><?= $user->name . ' ' . $user->first_name ?></h4>
+                                        
+                                        <!-- Text -->
+                                        <p class="card-text">
+                                            <span>Pseudo : </span><span
+                                                    class="blue-text"><?= $administrator->username ?></span>
+                                            <br>
+                                            <span>Téléphone : </span><span class="text-secondary"><?= $user->tel ?></span>
+                                            <br>
+                                            <span>Email : </span><span class="blue-text"><?= $user->email ?></span>
+                                        </p>
+                                        <!-- Button -->
+                                    </div>
+                                   
+                                </div>
+                            </div>
+                        <?php
+                        endforeach;
+                        ?>
                     </div>
                 </div>
-            <?php endforeach;?>
+            <?php endif; ?>
         </div>
     </div>
-
-
-
-    <?php else: ?>
-        <div class="row">
-            <h1 class="col-12 text-center text-muted">Aucun administrateur!</h1>
-        </div>
-    <?php endif;?>
-
-</div>

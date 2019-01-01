@@ -81,4 +81,7 @@ class MemberSessionManager
     public static function isSessions() {
         return \Yii::$app->session->get(self::head) == "sessions";
     }
+    public static function isExercices() {
+        return \Yii::$app->session->get(self::head) == "exercises";
+    }
 }

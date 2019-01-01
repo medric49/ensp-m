@@ -75,6 +75,9 @@ $this->title = "Mutuelle - ENSP";
                         <li class="nav-item">
                             <a class="nav-link waves-effect  <?= MemberSessionManager::isSessions()?'blue-text':''?>" href="<?= Yii::getAlias("@member.sessions") ?>">Sessions</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link waves-effect  <?= MemberSessionManager::isExercices()?'blue-text':''?>" href="<?= Yii::getAlias("@member.exercises") ?>">Exercices</a>
+                        </li>
                     </ul>
 
                     <!-- Right -->

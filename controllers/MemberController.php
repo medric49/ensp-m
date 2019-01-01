@@ -209,53 +209,6 @@ class MemberController extends Controller
             return RedirectionManager::abort($this);;
     }
 
-    public function actionEpargnes() {
-        MemberSessionManager::setHome("epargnes");
-        $model = new NewSavingForm();
-        $user = User::findOne(\Yii::$app->user->getId());
-        $member = Member::findOne(['user_id'=> $user->id]);
-        $query = Session::find();
-        $pagination = new Pagination([
-            'defaultPageSize' => 5,
-            'totalCount' => $query->count(),
-        ]);
-
-        $sessions = $query->orderBy(['created_at'=> SORT_DESC])
-            ->offset($pagination->offset)
-            ->limit($pagination->limit)
-            ->all();
-
-        return $this->render("epargnes",compact("model","sessions","pagination","member"));
-    }
-
-    public function actionEmprunts() {
-        MemberSessionManager::setHome("emprunts");
-        $user = User::findOne(\Yii::$app->user->getId());
-        $member = Member::findOne(['user_id'=> $user->id]);
-        $model = new NewBorrowingForm();
-
-        $query = Session::find();
-        $pagination = new Pagination([
-            'defaultPageSize' => 5,
-            'totalCount' => $query->count(),
-        ]);
-
-        $sessions = $query->orderBy(['created_at'=> SORT_DESC])
-            ->offset($pagination->offset)
-            ->limit($pagination->limit)
-            ->all();
-
-        return $this->render("emprunts",compact("model","sessions","pagination","member"));
-    }
-
-    public function actionContributions() {
-        MemberSessionManager::setHome("contributions");
-        $user = User::findOne(\Yii::$app->user->getId());
-        $member = Member::findOne(['user_id'=> $user->id]);
-        $contributions = Contribution::find()->where(['member_id'=> $member->id])->all();
-        return $this->render('contributions',compact('contributions'));
-    }
-
     public function actionTypesAide() {
         MemberSessionManager::setHelps();
         $helptype = Help_type::find()->all();
@@ -272,8 +225,55 @@ class MemberController extends Controller
 
     public function actionAdministrators() {
         MemberSessionManager::setAdministrators();
-        $admins = Administrator::find()->all();
-        return $this->render('administrators',compact('admins'));
+        $administrators = Administrator::find()->all();
+        return $this->render('administrators',compact('administrators'));
+    }
+
+    public function actionEpargnes() {
+        MemberSessionManager::setHome("epargnes");
+        $model = new NewSavingForm();
+        $user = User::findOne(\Yii::$app->user->getId());
+        $member = Member::findOne(['user_id'=> $user->id]);
+        $query = Exercise::find();
+        $pagination = new Pagination([
+            'defaultPageSize' => 5,
+            'totalCount' => $query->count(),
+        ]);
+
+        $exercises = $query->orderBy(['created_at'=> SORT_ASC])
+            ->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+
+        return $this->render("epargnes",compact("exercises","pagination","member"));
+    }
+
+    public function actionEmprunts() {
+        MemberSessionManager::setHome("emprunts");
+        $user = User::findOne(\Yii::$app->user->getId());
+        $member = Member::findOne(['user_id'=> $user->id]);
+        $model = new NewBorrowingForm();
+
+        $query = Exercise::find();
+        $pagination = new Pagination([
+            'defaultPageSize' => 5,
+            'totalCount' => $query->count(),
+        ]);
+
+        $exercises = $query->orderBy(['created_at'=> SORT_ASC])
+            ->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+
+        return $this->render("emprunts",compact("exercises","pagination","member"));
+    }
+
+    public function actionContributions() {
+        MemberSessionManager::setHome("contributions");
+        $user = User::findOne(\Yii::$app->user->getId());
+        $member = Member::findOne(['user_id'=> $user->id]);
+        $contributions = Contribution::find()->where(['member_id'=> $member->id])->all();
+        return $this->render('contributions',compact('contributions'));
     }
 
     public function actionSessions() {
@@ -303,5 +303,24 @@ class MemberController extends Controller
         }
         else
             return RedirectionManager::abort($this);
-     }
+    }
+
+    public function actionExercises() {
+        MemberSessionManager::setHome("exercises");
+        $query = Exercise::find();
+
+        $user = User::findOne(\Yii::$app->user->getId());
+        $member = Member::findOne(['user_id'=> $user->id]);
+
+        $pagination = new Pagination([
+            'defaultPageSize' => 1,
+            'totalCount' => $query->count(),
+        ]);
+        $exercises = $query->orderBy(['created_at'=> SORT_ASC])
+            ->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+        return $this->render("exercises",compact('exercises','pagination',"member"));
+    }
+
 }

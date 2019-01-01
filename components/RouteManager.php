@@ -89,6 +89,7 @@ class RouteManager {
         'member.members' => '/member/membres',
         'member.administrators' => '/member/administrators',
         'member.sessions' => '/member/sessions',
+        'member.exercises' => '/member/exercises',
         'member.detailsession' => '/member/detail-session',
         'member.typesaide' => '/member/types-aide',
         'member.contributions' => '/member/contributions',
