@@ -12,7 +12,6 @@ class m201227_125715_seed_help_types extends Migration
      */
 
     private $helps = [
-        'Remplissement du fond' => 1000000,
         'Membre malade' => 200000,
         'Décès d\'un membre' => 1000000,
         'Décès du parent d\'un membre' => 200000,

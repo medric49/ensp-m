@@ -8,8 +8,8 @@ Connexion
             <!-- Card -->
             <div class="card">
                 <div class="view overlay">
-                    <img class="card-img-top" style="height: 150px" src="<?= Yii::getAlias("@web").'/img/administrator.jpg'?>" alt="Card image cap">
-                    <a href="#!">
+                    <img class="card-img-top" style="height: 150px" src="/img/admin_connection.jpg" alt="Card image cap">
+                    <a href="javascript:void()">
                         <div class="mask rgba-white-slight"></div>
                     </a>
                 </div>
@@ -23,8 +23,8 @@ Connexion
         <div class="col-lg-3 col-md-4 col-sm-6 mb-1">
             <div class="card">
                 <div class="view overlay">
-                    <img class="card-img-top" style="height: 150px" src="<?= Yii::getAlias("@web").'/img/member.png'?>" alt="Card image cap">
-                    <a href="#!">
+                    <img class="card-img-top" style="height: 150px" src="/img/member_connection.jpg" alt="Card image cap">
+                    <a href="javascript:void()">
                         <div class="mask rgba-white-slight"></div>
                     </a>
                 </div>

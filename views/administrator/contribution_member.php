@@ -84,8 +84,68 @@ $user = $member->user();
                 </h5>
             </div>
         </div>
-        <div class="col-12">
+        <div class="col-12 white-block">
+            <?php
+            if (count($contributions)):
+            ?>
+            <table class="table table-hover">
+                <thead class="blue-grey lighten-4">
+                <tr>
+                    <th>#</th>
+                    <th>Montant</th>
+                    <th>Date</th>
+                    <th>Administrateur</th>
+                    <th>Etat</th>
 
+                    <th>Objectif</th>
+                    <th>Aide</th>
+                    <th>Membre concerné</th>
+                </tr>
+
+                </thead>
+                <tbody>
+
+                <?php foreach ($contributions as $index => $contribution): ?>
+                    <?php $help = $contribution->help();
+                    $administrator = $contribution->administrator();
+                    $administratorUser = $administrator?$administrator->user():null;
+                    $helpType = $help->helpType();
+
+                    $user = $help->member()->user();
+
+                    ?>
+                    <tr>
+                        <th scope="row"><?= $index + 1 ?></th>
+                        <td class="blue-text"><?= $help->unit_amount ?> XAF</td>
+                        <td><?= $contribution->state?(new DateTime($contribution->date))->format("d-m-Y"):"###" ?></td>
+                        <td class="text-capitalize"><?=$administratorUser?$administratorUser->name . " " . $administratorUser->first_name: "###" ?></td>
+                        <td>
+                            <?php
+                            if ($contribution->state):
+                            ?>
+                            <span class="blue-text"><b><i class="fas fa-check"></i></b></span>
+                            <?php
+                            else:
+                            ?>
+                            <span class="text-secondary"><b><i class="fas fa-times"></i></b></span>
+                            <?php
+                            endif;
+                            ?>
+                        </td>
+                        <td class="blue-text"><?= $help->amount ?> XAF</td>
+                        <td><?= $helpType->title  ?></td>
+                        <td><?= $user->name.' '.$user->first_name ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+            <?php
+            else:
+                ?>
+            <h3 class="text-center text-muted">Aucun évènement ne concerne ce membre</h3>
+            <?php
+            endif;
+            ?>
         </div>
     </div>
 </div>

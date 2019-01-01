@@ -16,7 +16,7 @@ class m181222_181745_create_contribution_table extends Migration
             'id' => $this->primaryKey()->unsigned(),
             'member_id' => $this->integer()->unsigned(),
             'date' => $this->dateTime(),
-            'state' => $this->boolean(),
+            'state' => $this->boolean()->defaultValue(false),
             'created_at' => $this->dateTime()->defaultExpression('CURRENT_TIMESTAMP'),
             'help_id' => $this->integer()->unsigned(),
             'administrator_id' => $this->integer()->unsigned()

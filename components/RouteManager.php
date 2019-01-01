@@ -64,6 +64,13 @@ class RouteManager {
         'administrator.new_administrator' => '/administrator/nouvel-administrateur',
         'administrator.add_administrator' => '/administrator/ajouter-administrateur',
 
+        'administrator.new_help' => '/administrator/nouvelle-aide',
+        'administrator.add_help' => '/administrator/ajouter-aide',
+
+        'administrator.help_details' => '/administrator/details-aide',
+        'administrator.new_contribution' => '/administrator/nouvelle-contribution',
+        'administrator.add_contribution' => '/administrator/ajouter-contribution',
+
         // ============================ ESPACE MEMBRE =================================
         'member.home' => '/member/accueil',
         'member.disconnection' => '/member/deconnexion',

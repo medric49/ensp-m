@@ -17,17 +17,21 @@ use app\managers\SettingManager;
 use app\models\Administrator;
 use app\models\Borrowing;
 use app\models\BorrowingSaving;
+use app\models\Contribution;
 use app\models\Exercise;
 use app\models\forms\HelpTypeForm;
 use app\models\forms\IdForm;
 use app\models\forms\NewAdministratorForm;
 use app\models\forms\NewBorrowingForm;
+use app\models\forms\NewContributionForm;
+use app\models\forms\NewHelpForm;
 use app\models\forms\NewMemberForm;
 use app\models\forms\NewRefundForm;
 use app\models\forms\NewSavingForm;
 use app\models\forms\NewSessionForm;
 use app\models\forms\UpdatePasswordForm;
 use app\models\forms\UpdateSocialInformationForm;
+use app\models\Help;
 use app\models\HelpType;
 use app\models\Member;
 use app\models\Refund;
@@ -656,10 +660,7 @@ class AdministratorController extends Controller
     }
 
 
-    public function actionAides() {
-        AdministratorSessionManager::setHome("help");
-        return $this->render("helps");
-    }
+
 
     public function actionSessions() {
         AdministratorSessionManager::setHome("session");
@@ -946,7 +947,8 @@ class AdministratorController extends Controller
             $member = Member::findOne($q);
             if ($member)
             {
-                return $this->render("contribution_member",compact("member"));
+                $contributions = Contribution::find()->where(['member_id' => $q])->orderBy(['created_at' => SORT_DESC])->all();
+                return $this->render("contribution_member",compact("member","contributions"));
             }
             else
                 RedirectionManager::abort($this);
@@ -955,5 +957,149 @@ class AdministratorController extends Controller
             return RedirectionManager::abort($this);
     }
 
+
+    public function actionNouvelleAide() {
+        $model = new NewHelpForm();
+        return $this->render("new_help",compact("model"));
+    }
+
+    public function actionAjouterAide() {
+        if (Yii::$app->request->getIsPost()) {
+            $model = new NewHelpForm();
+            if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+                $d1 = (new DateTime())->getTimestamp();
+                $d2 = (new DateTime($model->limit_date))->getTimestamp();
+
+                $member = Member::findOne($model->member_id);
+                $help_type = HelpType::findOne($model->help_type_id);
+
+                if ($member && $help_type) {
+                    if ( $d1 <= $d2 + 86400000*30) {
+                        $help = new Help();
+                        $help->limit_date = $model->limit_date;
+                        $help->help_type_id = $model->help_type_id;
+                        $help->member_id = $model->member_id;
+                        $help->comments = $model->comments;
+                        $help->state = true;
+                        $help->administrator_id = $this->administrator->id;
+
+                        $members = Member::find()->where(['!=','id',$model->member_id])->all();
+
+                        $unit_amount = (int)ceil((double)($help_type->amount)/count($members));
+                        $amount = $unit_amount*count($members);
+
+                        $help->amount = $amount;
+                        $help->unit_amount = $unit_amount;
+                        $help->save();
+
+                        foreach ($members as $member) {
+                            $contribution = new Contribution();
+                            $contribution->state = false;
+                            $contribution->member_id  = $member->id;
+                            $contribution->help_id = $help->id;
+                            $contribution->save();
+                        }
+
+                        return $this->redirect("@administrator.helps");
+                    }
+                    else {
+                        $model->addError("limit_date","La date limite doit être au moins un mois après la date de création");
+                        return $this->render("new_help",compact("model"));
+                    }
+                }
+                else
+                    return RedirectionManager::abort($this);
+            }
+            else
+                return $this->render("new_help",compact("model"));
+        }
+        else
+            return RedirectionManager::abort($this);
+    }
+
+    public function actionDetailsAide($q=0) {
+        if ($q) {
+            $help = Help::findOne($q);
+            if ($help) {
+
+                return $this->render("help_details",compact("help"));
+            }
+            else
+                return RedirectionManager::abort($this);
+        }
+        else
+            return RedirectionManager::abort($this);
+    }
+
+    public function actionNouvelleContribution($q=0) {
+        if ($q) {
+            $help = Help::findOne($q);
+            if ($help && $help->state) {
+                $model = new NewContributionForm();
+                $model->help_id =$q;
+                return $this->render("new_contribution",compact("model"));
+            }
+            else
+                return RedirectionManager::abort($this);
+        }
+        else
+            return RedirectionManager::abort($this);
+    }
+
+    public function actionAjouterContribution() {
+        if (Yii::$app->request->getIsPost()) {
+            $model = new NewContributionForm();
+            if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
+                $member = Member::findOne($model->member_id);
+                $help = Help::findOne($model->help_id);
+                if ($member && $help && $help->state) {
+                    $contribution = Contribution::findOne(['member_id' => $model->member_id,'help_id' => $model->help_id]);
+                    if ($contribution && !$contribution->state) {
+                        $contribution->state = true;
+                        $contribution->date = $model->date;
+                        $contribution->administrator_id = $this->administrator->id;
+                        $contribution->save();
+
+                        if ($help->contributedAmount() == $help->amount)
+                        {
+                            $help->state = false;
+                            $help->save();
+                        }
+
+                        return $this->redirect("@administrator.help_details?q=".$help->id);
+                    }
+                    else
+                        return RedirectionManager::abort($this);
+                }
+                else  {
+                    return RedirectionManager::abort($this);
+                }
+            }
+            else
+                return $this->render("new_contribution",compact('model'));
+        }
+        else
+            return RedirectionManager::abort($this);
+    }
+
+    public function actionAides() {
+        AdministratorSessionManager::setHome("help");
+
+        $activeHelps = Help::findAll(['state' => true]);
+
+        $query = Help::find()->where(['state' => false])->orderBy('created_at',SORT_DESC);
+
+        $pagination = new Pagination([
+            'defaultPageSize' => 9,
+            'totalCount' => $query->count(),
+        ]);
+
+        $helps = $query
+            ->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+
+        return $this->render("helps",compact("helps",'pagination',"activeHelps"));
+    }
 
 }

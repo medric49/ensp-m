@@ -18,7 +18,7 @@ class m181222_181147_create_help_table extends Migration
             'unit_amount' => $this->integer(10)->unsigned(),
             'amount' => $this->integer(10)->unsigned(),
             'comments' => $this->text(),
-            'state' => $this->boolean(),
+            'state' => $this->boolean()->defaultValue(true),
             'administrator_id' => $this->integer()->unsigned(),
             'created_at' => $this->dateTime()->defaultExpression('CURRENT_TIMESTAMP'),
             'help_type_id' => $this->integer()->unsigned(),
