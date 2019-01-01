@@ -100,6 +100,7 @@ Remboursements
                                 <th>#</th>
                                 <th>Membre</th>
                                 <th>Montant</th>
+                                <th>Reste à payer</th>
                                 <th>Administrateur</th>
                             </tr>
 
@@ -110,6 +111,7 @@ Remboursements
                                 $memberUser = \app\models\User::findOne($member->user_id);
                                 $administrator = \app\models\Administrator::findOne($refund->administrator_id);
                                 $administratorUser = \app\models\User::findOne($administrator->id);
+                                $borrowing = $refund->borrowing();
                                 ?>
                             <?php
                             if ($session->active && $session->state == "REFUNDS"):
@@ -118,6 +120,7 @@ Remboursements
                                     <th scope="row"><?= $index + 1 ?></th>
                                     <td class="text-capitalize"><?= $memberUser->name . " " . $memberUser->first_name ?></td>
                                     <td class="blue-text"><?= $refund->amount ?> XAF</td>
+                                    <th><?= $borrowing->intendedAmount()-$borrowing->refundedAmount() ?> XAF</th>
                                     <td class="text-capitalize"><?= $administratorUser->name . " " . $administratorUser->first_name ?></td>
                                 </tr>
 
@@ -147,6 +150,7 @@ Remboursements
                                             <th scope="row"><?= $index + 1 ?></th>
                                             <td class="text-capitalize"><?= $memberUser->name . " " . $memberUser->first_name ?></td>
                                             <td class="blue-text"><?= $refund->amount ?> XAF</td>
+                                            <th><?= $borrowing->intendedAmount()-$borrowing->refundedAmount() ?> XAF</th>
                                             <td class="text-capitalize"><?= $administratorUser->name . " " . $administratorUser->first_name ?></td>
                                         </tr>
                             <?php
@@ -158,7 +162,7 @@ Remboursements
                         </table>
 
                     <?php else: ?>
-                        <h3 class="text-center text-muted">Aucune épargne à cette session</h3>
+                        <h3 class="text-center text-muted">Aucun remboursement à cette session</h3>
                     <?php endif; ?>
 
 

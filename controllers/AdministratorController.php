@@ -29,6 +29,7 @@ use app\models\forms\NewMemberForm;
 use app\models\forms\NewRefundForm;
 use app\models\forms\NewSavingForm;
 use app\models\forms\NewSessionForm;
+use app\models\forms\SettingForm;
 use app\models\forms\UpdatePasswordForm;
 use app\models\forms\UpdateSocialInformationForm;
 use app\models\Help;
@@ -1201,6 +1202,45 @@ class AdministratorController extends Controller
 
             else
                 return RedirectionManager::abort($this);
+        }
+        else
+            return RedirectionManager::abort($this);
+    }
+
+    public function actionReglerFondSocial($q = 0) {
+        if ($q) {
+            $member = Member::findOne($q);
+            if ($member && ($member->social_crown==0)) {
+                $member->social_crown = SettingManager::getSocialCrown();
+                $member->save();
+                return $this->redirect("@administrator.exercise_debts");
+            }
+            else
+                return RedirectionManager::abort($this);
+        }
+        else
+            return RedirectionManager::abort($this);
+    }
+
+    public function actionConfigurations() {
+        AdministratorSessionManager::setSettings();
+        $model = new SettingForm();
+        $model->interest = SettingManager::getInterest();
+        $model->social_crown = SettingManager::getSocialCrown();
+        return $this->render("settings",compact("model"));
+    }
+
+    public function actionAppliquerConfiguration() {
+        if (Yii::$app->request->getIsPost()) {
+            $model = new SettingForm();
+            if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+
+                SettingManager::setValues($model->interest,$model->social_crown);
+
+                return $this->redirect("@administrator.settings");
+            }
+            else
+                return $this->render("settings",compact("model"));
         }
         else
             return RedirectionManager::abort($this);

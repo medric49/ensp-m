@@ -64,18 +64,33 @@ $user = $member->user();
                 <div class="col-7">
                     <?= $user->email ?>
                 </div>
+                <div class="col-5">
+                    Fond social
+                </div>
+                <div class="col-7">
+                    <?php if ($member->social_crown):
+                    ?>
+                    <span>Payé (<?= $member->social_crown ?>)</span>
+                    <?php
+                    else:
+                    ?>
+                    <span class="text-secondary">Non payé</span>
+                    <?php
+                    endif;
+                    ?>
+                </div>
             </div>
             <div class="row mt-5">
-                <div class="col-12 text-center">
+                <div class="col-12 text-right">
                     <?php
                     if ($member->active):
                     ?>
-                        <a href="<?= Yii::getAlias("@administrator.disable_member")."?q=".$member->id ?>" class="btn btn-primary">Désactiver le membre</a>
+                        <a href="<?= Yii::getAlias("@administrator.disable_member")."?q=".$member->id ?>" class="btn btn-primary p-2">Désactiver le membre</a>
                     <?php
                     else:
                     ?>
 
-                        <a href="<?= Yii::getAlias("@administrator.enable_member")."?q=".$member->id ?>" class="btn btn-primary">Activer le membre</a>
+                        <a href="<?= Yii::getAlias("@administrator.enable_member")."?q=".$member->id ?>" class="btn btn-primary p-2">Activer le membre</a>
                     <?php
                     endif;
                     ?>

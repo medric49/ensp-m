@@ -11,6 +11,7 @@ namespace app\managers;
 
 use app\models\Borrowing;
 use app\models\Exercise;
+use app\models\Help;
 use app\models\Member;
 use app\models\Refund;
 use app\models\Saving;
@@ -103,6 +104,15 @@ class FinanceManager
         return Borrowing::findAll(['session_id' => $sessions, 'state' => true]);
     }
 
+    public static function socialCrown() {
+        $r = Member::find()->sum('social_crown');
+        foreach (Help::find()->all() as $help) {
+            $r += $help->contributedAmount();
+            $r -= $help->amount;
+        }
+
+        return $r;
+    }
 
 
 }

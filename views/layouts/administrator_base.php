@@ -82,7 +82,7 @@ $this->title = "Mutuelle - ENSP";
                             <a class="nav-link waves-effect <?= AdministratorSessionManager::isHeadExercise()?'blue-text':'' ?>" href="<?= Yii::getAlias("@administrator.exercises")?>">Exercices</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link waves-effect <?= AdministratorSessionManager::isHeadExerciseDebt()?'blue-text':'' ?>" href="<?= Yii::getAlias("@administrator.exercise_debts")?>">Dettes d'exercices</a>
+                            <a class="nav-link waves-effect <?= AdministratorSessionManager::isHeadExerciseDebt()?'blue-text':'' ?>" href="<?= Yii::getAlias("@administrator.exercise_debts")?>">Dettes</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link waves-effect <?= AdministratorSessionManager::isHeadHelp()?'blue-text':'' ?>" href="<?= Yii::getAlias("@administrator.helps")?>">Aides</a>
@@ -132,6 +132,8 @@ $this->title = "Mutuelle - ENSP";
                     <i class="fas fa-robot mr-3"></i>Administrateurs</a>
                 <a href="<?= Yii::getAlias("@administrator.help_types") ?>" class="list-group-item list-group-item-action <?= AdministratorSessionManager::isHelps()?'active':''?> waves-effect">
                     <i class="fas fa-hand-holding-heart mr-3"></i>Type d'aides</a>
+                <a href="<?= Yii::getAlias("@administrator.settings") ?>" class="list-group-item list-group-item-action <?= AdministratorSessionManager::isSettings()?'active':''?> waves-effect">
+                    <i class="fas fa-cogs mr-3"></i>Configurations</a>
             </div>
 
         </div>

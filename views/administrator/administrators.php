@@ -44,9 +44,10 @@
                                             <span>Pseudo : </span><span
                                                     class="blue-text"><?= $administrator->username ?></span>
                                             <br
-                                            <span>Email : </span><span class="blue-text"><?= $user->email ?></span>
+                                            <span>Téléphone : </span><span class="text-secondary"><?= $user->tel ?></span>
                                             <br>
-                                            <span>Tel : </span><span class="text-secondary"><?= $user->tel ?></span>
+                                            <span>Email : </span><span class="blue-text"><?= $user->email ?></span>
+
                                         </p>
                                         <!-- Button -->
                                     </div>

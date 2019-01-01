@@ -29,8 +29,6 @@ Membres
                     <?php
 
                 $user = $member->user();
-                $borrowing = $member->activeBorrowing();
-                $savedAmount = $member->savedAmount($exercise);
                     ?>
                     <div class="col-4">
                         <div class="card">
@@ -49,12 +47,18 @@ Membres
                                 <h4 class="card-title"><?= $user->name.' '.$user->first_name ?></h4>
                                 <!-- Text -->
                                 <p class="card-text">
-                                    <span>Epargne : </span><span class="blue-text"><?= $savedAmount?$savedAmount:0 ?> XAF</span>
+                                    <span>Pseudo : </span><span
+                                            class="blue-text"><?= $member->username ?></span>
                                     <br>
-                                    <span>Emprunt : </span><span class="text-secondary"><?= $borrowing?( $borrowing->refundedAmount() ."/". $borrowing->intendedAmount() ." XAF"):"Aucun emprunt" ?></span>
+                                    <span>Téléphone : </span><span class="text-secondary"><?= $user->tel ?></span>
+                                    <br>
+                                    <span>Email : </span><span class="blue-text"><?= $user->email ?></span>
                                 </p>
                                 <!-- Button -->
-                                <a href="<?= Yii::getAlias("@administrator.member")."?q=".$member->id ?>" class="btn btn-primary">Details</a>
+                                <div class="text-right">
+                                    <a href="<?= Yii::getAlias("@administrator.member")."?q=".$member->id ?>" class="btn btn-primary p-2">Details des activités</a>
+
+                                </div>
 
                             </div>
 
