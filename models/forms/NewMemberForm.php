@@ -26,8 +26,8 @@ class NewMemberForm extends Model
         return [
             [['username','name','first_name','tel','password'],'string','message' => 'Ce champ attend du texte'],
             [['username','name','first_name','tel','password','email'],'required','message' => 'Ce champ est obligatoire'],
-            [['email'],'email','Ce champ attend un email'],
-            [['avatar'],'image','Ce champ attend une image'],
+            [['email'],'email','message' => 'Ce champ attend un email'],
+            [['avatar'],'image','message' => 'Ce champ attend une image'],
         ];
     }
 }

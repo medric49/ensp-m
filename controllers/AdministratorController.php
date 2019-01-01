@@ -362,7 +362,7 @@ class AdministratorController extends Controller
                     $user->first_name = $model->first_name;
                     $user->tel = $model->tel;
                     $user->email = $model->email;
-                    $user->type = "MEMBER";
+                    $user->type = "ADMINISTRATOR";
                     $user->password = (new Security())->generatePasswordHash($model->password);
                     if (UploadedFile::getInstance($model,'avatar'))
                         $user->avatar = FileManager::storeAvatar(UploadedFile::getInstance($model,'avatar'),$model->username,'MEMBER');
