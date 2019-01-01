@@ -74,6 +74,10 @@ class RouteManager {
         'administrator.disable_member' => '/administrator/desactiver-membre',
         'administrator.enable_member' => '/administrator/activer-membre',
 
+
+        'administrator.delete_saving' => '/administrator/supprimer-epargne',
+        'administrator.delete_refund' => '/administrator/supprimer-remboursement',
+        'administrator.delete_borrowing' => '/administrator/supprimer-emprunt',
         // ============================ ESPACE MEMBRE =================================
         'member.home' => '/member/accueil',
         'member.disconnection' => '/member/deconnexion',

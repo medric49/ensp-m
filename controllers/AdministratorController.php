@@ -1135,4 +1135,72 @@ class AdministratorController extends Controller
             return RedirectionManager::abort($this);
     }
 
+    public function actionSupprimerEpargne($q=0) {
+        if ($q)
+        {
+            $saving = Saving::findOne($q);
+            if ($saving) {
+                $session = $saving->session();
+                if ($session && $session->active && $session->state == "SAVING") {
+                    $saving->delete();
+                    return $this->redirect("@administrator.savings");
+                }
+                else
+                    return RedirectionManager::abort($this);
+            }
+            else
+                return RedirectionManager::abort($this);
+        }
+        else
+            return RedirectionManager::abort($this);
+    }
+
+    public function actionSupprimerRemboursement($q=0) {
+        if ($q) {
+            $refund = Refund::findOne($q);
+            if ($refund) {
+                $session = $refund->session();
+                if ($session && $session->active && $session->state == "REFUND") {
+
+                    $borrowing = $refund->borrowing();
+                    $refund->delete();
+                    if (!$borrowing->state)
+                    {
+                        $borrowing->state == true;
+                        $borrowing->save();
+                    }
+                    return $this->redirect("@administrator.refunds");
+                }
+                else
+                    return RedirectionManager::abort($this);
+            }
+            else
+                return RedirectionManager::abort($this);
+        }
+        else
+            return RedirectionManager::abort($this);
+    }
+
+    public function actionSupprimerEmprunt($q=0) {
+        if ($q) {
+            $borrowing = Borrowing::findOne($q);
+            if ($borrowing) {
+                $session = $borrowing->session();
+                if ($session && $session->state == "BORROWING" && $session->active) {
+                    Yii::$app->db->createCommand()->delete('borrowing_saving',['borrowing_id'=> $borrowing->id])->execute();
+                    $borrowing->delete();
+
+                    return $this->redirect("@administrator.borrowings");
+                }
+                else
+                    return RedirectionManager::abort($this);
+            }
+
+            else
+                return RedirectionManager::abort($this);
+        }
+        else
+            return RedirectionManager::abort($this);
+    }
+
 }

@@ -111,12 +111,48 @@ Remboursements
                                 $administrator = \app\models\Administrator::findOne($refund->administrator_id);
                                 $administratorUser = \app\models\User::findOne($administrator->id);
                                 ?>
-                                <tr>
+                            <?php
+                            if ($session->active && $session->state == "REFUNDS"):
+                            ?>
+                                <tr data-target="#modalS<?= $refund->id?>" data-toggle="modal">
                                     <th scope="row"><?= $index + 1 ?></th>
                                     <td class="text-capitalize"><?= $memberUser->name . " " . $memberUser->first_name ?></td>
                                     <td class="blue-text"><?= $refund->amount ?> XAF</td>
                                     <td class="text-capitalize"><?= $administratorUser->name . " " . $administratorUser->first_name ?></td>
                                 </tr>
+
+                                <div class="modal fade" id="modalS<?= $refund->id ?>" tabindex="-1" role="dialog"
+                                     aria-labelledby="myModalLabel"
+                                     aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-body">
+                                                <p class="p-1 text-center">
+                                                    Voulez-vous supprimer ce remboursement ?
+                                                </p>
+                                                <div class="text-center">
+                                                    <button data-dismiss="modal" class="btn btn-secondary">non</button>
+                                                    <a href="<?= Yii::getAlias("@administrator.delete_refund")."?q=".$refund->id?>" class="btn btn-primary">oui</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            <?php
+                                    else:
+                            ?>
+                                        <tr>
+                                            <th scope="row"><?= $index + 1 ?></th>
+                                            <td class="text-capitalize"><?= $memberUser->name . " " . $memberUser->first_name ?></td>
+                                            <td class="blue-text"><?= $refund->amount ?> XAF</td>
+                                            <td class="text-capitalize"><?= $administratorUser->name . " " . $administratorUser->first_name ?></td>
+                                        </tr>
+                            <?php
+                                    endif;
+                            ?>
+
                             <?php endforeach; ?>
                             </tbody>
                         </table>

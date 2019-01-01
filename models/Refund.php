@@ -13,5 +13,11 @@ use yii\db\ActiveRecord;
 
 class Refund extends ActiveRecord
 {
+    public function session() {
+        return Session::findOne($this->session_id);
+    }
 
+    public function borrowing() {
+        return Borrowing::findOne($this->borrowing_id);
+    }
 }

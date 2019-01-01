@@ -116,12 +116,50 @@ $this->beginBlock('title') ?>
                                 $administrator = \app\models\Administrator::findOne($borrowing->administrator_id);
                                 $administratorUser = \app\models\User::findOne($administrator->id);
                                 ?>
+                            <?php
+                            if ($session->active && $session->state == "BORROWING"):
+                            ?>
+                                <tr data-target="#modalS<?= $borrowing->id?>" data-toggle="modal">
+                                    <th scope="row"><?= $index + 1 ?></th>
+                                    <td class="text-capitalize"><?= $memberUser->name . " " . $memberUser->first_name ?></td>
+                                    <td class="blue-text"><?= $borrowing->amount ?> XAF</td>
+                                    <td class="text-capitalize"><?= $administratorUser->name . " " . $administratorUser->first_name ?></td>
+                                </tr>
+
+                                <div class="modal fade" id="modalS<?= $borrowing->id ?>" tabindex="-1" role="dialog"
+                                     aria-labelledby="myModalLabel"
+                                     aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-body">
+                                                <p class="p-1 text-center">
+                                                    Voulez-vous supprimer cet emprunt ?
+                                                </p>
+                                                <div class="text-center">
+                                                    <button data-dismiss="modal" class="btn btn-secondary">non</button>
+                                                    <a href="<?= Yii::getAlias("@administrator.delete_borrowing")."?q=".$borrowing->id?>" class="btn btn-primary">oui</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            <?php
+                            else:
+                                ?>
+
                                 <tr>
                                     <th scope="row"><?= $index + 1 ?></th>
                                     <td class="text-capitalize"><?= $memberUser->name . " " . $memberUser->first_name ?></td>
                                     <td class="blue-text"><?= $borrowing->amount ?> XAF</td>
                                     <td class="text-capitalize"><?= $administratorUser->name . " " . $administratorUser->first_name ?></td>
                                 </tr>
+
+                            <?php
+                            endif;
+                            ?>
+
+
                             <?php endforeach; ?>
                             </tbody>
                         </table>
