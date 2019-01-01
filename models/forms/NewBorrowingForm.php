@@ -21,7 +21,7 @@ class NewBorrowingForm extends Model
     {
         return [
             [['member_id','amount','session_id' ],'required','message' => 'Ce champ est obligatoire'],
-            [['member_id','session_id'],'integer','min' => 1,'Ce champ attend une entier positif'],
+            [['member_id','session_id'],'integer','min' => 1,'message' => 'Ce champ attend une entier positif'],
             ['amount','integer','min' => 1,'message' => 'Ce champ attend un entier positif']
         ];
     }
