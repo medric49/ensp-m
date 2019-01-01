@@ -36,7 +36,7 @@ $this->beginBlock('title') ?>
                          aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
-                                <?php $members = \app\models\Member::find()->all() ?>
+                                <?php $members = \app\models\Member::find()->where(['active' => true])->all() ?>
 
                                 <?php if (count($members)): ?>
 

@@ -230,7 +230,7 @@ class AdministratorController extends Controller
 
     public function actionTypesAide() {
         AdministratorSessionManager::setHelps();
-        $helpTypes = HelpType::find()->all();
+        $helpTypes = HelpType::find()->where(['active' => true])->all();
         return $this->render('help_types',compact('helpTypes'));
     }
     public function actionModifierTypeAide($q=0) {
@@ -238,7 +238,7 @@ class AdministratorController extends Controller
             $model = new HelpTypeForm();
 
             $helpType = HelpType::findOne($q);
-            if ($helpType) {
+            if ($helpType && $helpType->active) {
                 $model->id = $helpType->id;
                 $model->title = $helpType->title;
                 $model->amount = $helpType->amount;
@@ -280,7 +280,8 @@ class AdministratorController extends Controller
                 $helpType = HelpType::findOne($model->id);
                 if ($helpType)
                 {
-                    $helpType->delete();
+                    $helpType->active = false;
+                    $helpType->save();
                     return $this->redirect("@administrator.help_types");
                 }
                 else
@@ -959,6 +960,7 @@ class AdministratorController extends Controller
 
 
     public function actionNouvelleAide() {
+        AdministratorSessionManager::setHome("help");
         $model = new NewHelpForm();
         return $this->render("new_help",compact("model"));
     }
@@ -973,7 +975,7 @@ class AdministratorController extends Controller
                 $member = Member::findOne($model->member_id);
                 $help_type = HelpType::findOne($model->help_type_id);
 
-                if ($member && $help_type) {
+                if ($member && $help_type && $member->active) {
                     if ( $d1 <= $d2 + 86400000*30) {
                         $help = new Help();
                         $help->limit_date = $model->limit_date;
@@ -983,7 +985,7 @@ class AdministratorController extends Controller
                         $help->state = true;
                         $help->administrator_id = $this->administrator->id;
 
-                        $members = Member::find()->where(['!=','id',$model->member_id])->all();
+                        $members = Member::find()->where(['!=','id',$model->member_id])->andWhere(['active' => true])->all();
 
                         $unit_amount = (int)ceil((double)($help_type->amount)/count($members));
                         $amount = $unit_amount*count($members);
@@ -1066,7 +1068,7 @@ class AdministratorController extends Controller
                             $help->save();
                         }
 
-                        return $this->redirect("@administrator.help_details?q=".$help->id);
+                        return $this->redirect(["@administrator.help_details",'q' =>$help->id]);
                     }
                     else
                         return RedirectionManager::abort($this);
@@ -1100,6 +1102,37 @@ class AdministratorController extends Controller
             ->all();
 
         return $this->render("helps",compact("helps",'pagination',"activeHelps"));
+    }
+
+
+    public function actionDesactiverMembre($q = 0) {
+        if ($q) {
+            $member = Member::findOne($q);
+            if ($member && $member->active) {
+                $member->active = false;
+                $member->save();
+
+                return $this->redirect(["@administrator.member",'q'=> $q]);
+            }
+            else
+                return RedirectionManager::abort($this);
+        }
+        else
+            return RedirectionManager::abort($this);
+    }
+
+    public function actionActiverMembre($q = 0) {
+        if ($q) {
+            $member = Member::findOne($q);
+            if ($member && !$member->active) {
+                $member->active = true;
+                $member->save();
+                return $this->redirect(["@administrator.member",'q'=> $q]);
+            }
+            else return RedirectionManager::abort($this);
+        }
+        else
+            return RedirectionManager::abort($this);
     }
 
 }

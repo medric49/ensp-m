@@ -65,7 +65,7 @@ class GuestController extends Controller
             $memberModel->attributes = Yii::$app->request->post();
             if ($memberModel->validate()) {
                 $member = Member::findOne(['username' => $memberModel->username]);
-                if ($member) {
+                if ($member && $member->active) {
 
                     $user = User::findIdentity($member->user_id);
 

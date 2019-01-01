@@ -68,7 +68,7 @@ Remboursements
 
                                 <?php else: ?>
                                     <div class="modal-body p-5">
-                                        <h3 class="text-muted text-center">Aucun prêt n'a actif</h3>
+                                        <h3 class="text-muted text-center">Aucun prêt n'est actif</h3>
                                     </div>
 
                                 <?php endif; ?>

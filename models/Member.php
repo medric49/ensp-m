@@ -22,9 +22,12 @@ class Member extends ActiveRecord
         return Borrowing::findOne(['member_id' => $this,'state'=>true]);
     }
 
-    public function savedAmount(Exercise $exercise) {
-        $sessions = Session::find()->select('id')->where(['exercise_id' => $exercise->id])->column();
-        return Saving::find()->where(['session_id' => $sessions,'member_id' => $this->id])->sum("amount");
+    public function savedAmount(Exercise $exercise=null) {
+        if ($exercise) {
+            $sessions = Session::find()->select('id')->where(['exercise_id' => $exercise->id])->column();
+            return Saving::find()->where(['session_id' => $sessions,'member_id' => $this->id])->sum("amount");
+        }
+        return 0;
     }
 
     public function exerciseSavings(Exercise $exercise) {

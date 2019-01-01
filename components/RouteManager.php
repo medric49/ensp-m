@@ -71,6 +71,9 @@ class RouteManager {
         'administrator.new_contribution' => '/administrator/nouvelle-contribution',
         'administrator.add_contribution' => '/administrator/ajouter-contribution',
 
+        'administrator.disable_member' => '/administrator/desactiver-membre',
+        'administrator.enable_member' => '/administrator/activer-membre',
+
         // ============================ ESPACE MEMBRE =================================
         'member.home' => '/member/accueil',
         'member.disconnection' => '/member/deconnexion',

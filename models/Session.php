@@ -33,4 +33,19 @@ class Session extends ActiveRecord
     public function date() {
         return (new \DateTime($this->date))->format("d-m-Y");
     }
+
+    public function number() {
+        $exercise = $this->exercise();
+        $i = 0;
+        foreach ($exercise->sessions() as $session) {
+            $i++;
+            if ($session->id ==  $this->id)
+                return $i;
+        }
+        return 0;
+    }
+
+    public function exercise() {
+        return Exercise::findOne($this->exercise_id);
+    }
 }

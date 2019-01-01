@@ -15,7 +15,7 @@ $this->beginBlock('title') ?>
 
 <div class="container mt-5 mb-5">
     <div class="row justify-content-center">
-        <?php if (count(\app\models\Member::find()->all()) >1 ):?>
+        <?php if (count(\app\models\Member::find()->where(['active' => true]) ->all()) >1 ):?>
             <div class="col-12 mb-2">
                 <h3 class="text-center text-muted">Nouvelle aide financiaire</h3>
             </div>
@@ -27,8 +27,8 @@ $this->beginBlock('title') ?>
                 'options' =>['class' => 'col-md-8 col-12 white-block']
             ]);
 
-            $help_types = \app\models\HelpType::find()->all();
-            $members = \app\models\Member::find()->all();
+            $help_types = \app\models\HelpType::find()->where(['active'=> true])->all();
+            $members = \app\models\Member::find()->where(['active' => true])->all();
 
             $heps = [];
             foreach ($help_types as $help_type) {
@@ -57,7 +57,7 @@ $this->beginBlock('title') ?>
             ?>
         <?php else:?>
         <div class="col-12">
-            <h3 class="text-center text-muted">Impossible de créer une aide avec moin de 2 membres.</h3>
+            <h3 class="text-center text-muted">Impossible de créer une aide avec moin de 2 membres actifs.</h3>
             <div class="text-center mt-2">
                 <a href="<?= Yii::getAlias("@administrator.new_member")?>" class="btn btn-primary">Nouveau membre</a>
             </div>

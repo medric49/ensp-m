@@ -16,6 +16,7 @@ class m181222_181453_create_help_type_table extends Migration
             'id' => $this->primaryKey()->unsigned(),
             'title' => $this->string(),
             'amount' => $this->integer(10)->unsigned(),
+            'active' => $this->boolean()->defaultValue(true)
         ]);
     }
 

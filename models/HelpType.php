@@ -13,5 +13,7 @@ use yii\db\ActiveRecord;
 
 class HelpType extends ActiveRecord
 {
-
+    public function helps() {
+        return Help::findAll(['help_type_id' => $this->id]);
+    }
 }

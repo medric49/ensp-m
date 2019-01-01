@@ -29,4 +29,7 @@ class Borrowing extends ActiveRecord
     public function session() {
         return Session::findOne($this->session_id);
     }
+    public function member() {
+        return Member::findOne($this->member_id);
+    }
 }

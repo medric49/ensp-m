@@ -13,6 +13,9 @@ use yii\db\ActiveRecord;
 
 class Exercise extends ActiveRecord
 {
+    public function sessions() {
+        return Session::find()->where(['exercise_id' => $this->id])->orderBy('created_at',SORT_ASC)->all();
+    }
     public function exerciseAmount() {
         return $this->totalSavedAmount()+ $this->totalRefundedAmount()- $this->totalBorrowedAmount();
     }
@@ -39,6 +42,11 @@ class Exercise extends ActiveRecord
 
     public function sessionNumber() {
         return count( Session::findAll(['exercise_id' => $this->id]));
+    }
+
+    public function borrowings() {
+        $sessions = Session::find()->select('id')->where(['exercise_id' => $this->id])->column();
+        return Borrowing::find()->where(['session_id' => $sessions])->all();
     }
 
 }

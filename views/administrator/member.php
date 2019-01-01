@@ -65,6 +65,22 @@ $user = $member->user();
                     <?= $user->email ?>
                 </div>
             </div>
+            <div class="row mt-5">
+                <div class="col-12 text-center">
+                    <?php
+                    if ($member->active):
+                    ?>
+                        <a href="<?= Yii::getAlias("@administrator.disable_member")."?q=".$member->id ?>" class="btn btn-primary">Désactiver le membre</a>
+                    <?php
+                    else:
+                    ?>
+
+                        <a href="<?= Yii::getAlias("@administrator.enable_member")."?q=".$member->id ?>" class="btn btn-primary">Activer le membre</a>
+                    <?php
+                    endif;
+                    ?>
+                </div>
+            </div>
         </div>
     </div>
     <div class="row mt-5">
