@@ -178,7 +178,6 @@ class AdministratorController extends Controller
                     $this->user->email = $socialModel->email;
                     if (UploadedFile::getInstance($socialModel,"avatar"))
                         $this->user->avatar = FileManager::storeAvatar( UploadedFile::getInstance($socialModel,"avatar"),$socialModel->username,"ADMINISTRATOR");
-
                     $this->user->save();
                     $this->administrator->username = $socialModel->username;
                     $this->administrator->save();
@@ -366,6 +365,8 @@ class AdministratorController extends Controller
                     $user->password = (new Security())->generatePasswordHash($model->password);
                     if (UploadedFile::getInstance($model,'avatar'))
                         $user->avatar = FileManager::storeAvatar(UploadedFile::getInstance($model,'avatar'),$model->username,'MEMBER');
+                    else
+                        $user->avatar = null;
                     $user->save();
 
                     $administrator = new Administrator();
@@ -405,6 +406,8 @@ class AdministratorController extends Controller
                     $user->password = (new Security())->generatePasswordHash($model->password);
                     if (UploadedFile::getInstance($model,'avatar'))
                         $user->avatar = FileManager::storeAvatar(UploadedFile::getInstance($model,'avatar'),$model->username,'MEMBER');
+                    else
+                        $user->avatar = null;
                     $user->save();
 
 
