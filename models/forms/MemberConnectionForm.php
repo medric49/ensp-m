@@ -6,7 +6,7 @@
  * Time: 17:43
  */
 
-namespace app\models;
+namespace app\models\forms;
 
 
 use yii\base\Model;
@@ -20,8 +20,8 @@ class MemberConnectionForm extends Model
     public function rules()
     {
         return [
-            [['username','password'],'required'],
-            [['username','password'],'string'],
+            [['username','password'],'required','message' => 'Ce champ est obligatoire'],
+            [['username','password'],'string','message' => 'Ce champ doit être du texte'],
             ['rememberMe','boolean'],
         ];
     }

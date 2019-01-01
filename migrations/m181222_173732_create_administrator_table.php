@@ -15,8 +15,8 @@ class m181222_173732_create_administrator_table extends Migration
         $this->createTable('administrator', [
             'id' => $this->primaryKey()->unsigned(),
             'user_id' => $this->integer()->unsigned(),
-            'root' => $this->boolean(),
-            'username' => $this->string(4)->unique(),
+            'root' => $this->boolean()->defaultValue(false),
+            'username' => $this->string()->unique(),
         ]);
     }
 

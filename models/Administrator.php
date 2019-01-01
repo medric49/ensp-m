@@ -13,5 +13,7 @@ use yii\db\ActiveRecord;
 
 class Administrator extends ActiveRecord
 {
-
+    public function user() {
+        return User::findOne($this->user_id);
+    }
 }

@@ -18,10 +18,8 @@ class m181222_175405_create_borrowing_table extends Migration
             'amount' => $this->integer(10)->unsigned(),
             'member_id' => $this->integer()->unsigned(),
             'administrator_id'=> $this->integer()->unsigned(),
-            'limit_date' => $this->dateTime(),
-            'refund_date' => $this->dateTime(),
             'session_id' => $this->integer()->unsigned(),
-            'state' => $this->boolean(),
+            'state' => $this->boolean()->defaultValue(true),
             'created_at' => $this->dateTime()->defaultExpression('CURRENT_TIMESTAMP')
         ]);
     }
