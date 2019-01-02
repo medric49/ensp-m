@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: medric
- * Date: 31/12/18
- * Time: 14:31
- */
+
 $this->beginBlock('title') ?>
     Aides
 <?php $this->endBlock() ?>
@@ -161,9 +156,3 @@ $helpType = $help->helpType();
         </div>
     </div>
 </div>
-<?php
-if ($help->state):
-?>
-<a href="<?= Yii::getAlias("@administrator.new_contribution")."?q=".$help->id?>" class="btn btn-primary btn-add"><i class="fas fa-plus"></i></a>
-<?php
-endif;

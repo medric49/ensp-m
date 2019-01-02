@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: medric
- * Date: 31/12/18
- * Time: 14:31
- */
 
 use yii\widgets\LinkPager;
 
@@ -61,14 +55,14 @@ Aides
                                     <!-- Content -->
                                     <div class="text-white text-center justify-content-center align-items-center rgba-black-strong py-3 px-4">
                                         <div>
-                                            <h6>Créée le : <?= $help->created_at ?></h6>
+                                            <h4>Montant</h4>
                                             <h2><?= $help->amount ?> XAF</h2>
                                             <p >Contribution : <?= $help->unit_amount ?> XAF / membre</p>
                                             <hr class="bg-white p-0 m-0 my-1">
                                             <h2><?= $help->contributedAmount() ?> XAF</h2>
                                             <h5 class="blue-text"><i class="fas fa-user"></i> <?= $user->name." ".$user->first_name ?></h5>
                                             <p class="card-title"><strong><?= $helpType->title ?></strong></p>
-                                            <a class="btn btn-primary" href="<?= Yii::getAlias("@administrator.help_details")."?q=".$help->id ?>"><i class="fas fa-clone left"></i> Details</a>
+                                            <a class="btn btn-primary" href="<?= Yii::getAlias("@member.help_details")."?q=".$help->id ?>"><i class="fas fa-clone left"></i> Details</a>
                                         </div>
                                     </div>
                                 </div>
@@ -114,7 +108,7 @@ Aides
                                 <p  class="mb-5"><?= $help->unit_amount ?> XAF / membre</p>
                                 <h5 class="blue-text"><i class="fas fa-user"></i> <?= $user->name." ".$user->first_name ?></h5>
                                 <p class="card-title pt-2"><strong><?= $helpType->title ?></strong></p>
-                                <a class="btn btn-primary" href="<?= Yii::getAlias("@administrator.help_details")."?q=".$help->id ?>"><i class="fas fa-clone left"></i> Details</a>
+                                <a class="btn btn-primary" href="<?= Yii::getAlias("@member.help_details")."?q=".$help->id ?>"><i class="fas fa-clone left"></i> Details</a>
                             </div>
                         </div>
                     </div>
@@ -152,5 +146,3 @@ Aides
         </div>
     </div>
 </div>
-
-<a href="<?= Yii::getAlias("@administrator.new_help") ?>" class="btn btn-primary btn-add"><i class="fas fa-plus"></i></a>

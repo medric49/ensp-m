@@ -61,6 +61,12 @@ Profil <?= $admin->username?>
                 <div class="col-7">
                     <?= $user->email ?>
                 </div>
+                <div class="col-5">
+                    Adresse
+                </div>
+                <div class="col-7">
+                    <?= $user->address ?>
+                </div>
             </div>
             
         </div>

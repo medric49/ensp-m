@@ -36,8 +36,8 @@ Membres
                         <div class="card">
                             <!-- Card image -->
                             <div class="view overlay">
-                                <img class="card-img-top" src="<?= \app\managers\FileManager::loadAvatar($user,"512") ?>" style="height: 12rem" alt="Card image cap">
-                                <a href="<?= Yii::getAlias("@administrator.member")."?q=".$member->id ?>">
+                                <img class="card-img-top" src="<?= \app\managers\FileManager::loadAvatar($user,"512") ?>" style="height: 12rem" alt="Image membre">
+                                <a href="#">
                                     <div class="mask rgba-white-slight"></div>
                                 </a>
                             </div>
@@ -55,7 +55,10 @@ Membres
                                     <span>Téléphone : </span><span class="text-secondary"><?= $user->tel ?> </span>
                                     <br>
                                     <span>Email : </span><span class="blue-text"><?= $user->email ?></span>
-                                
+                                    <br>
+                                    <span>Adresse : </span><span class="text-secondary"><?= $user->address ?> </span>
+                                    <br>
+                                    <span>Créé le : </span><span class="text-secondary"><?= $user->created_at ?></span>
                                 </p>
                             </div>
 

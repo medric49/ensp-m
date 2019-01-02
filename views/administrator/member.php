@@ -65,6 +65,12 @@ $user = $member->user();
                     <?= $user->email ?>
                 </div>
                 <div class="col-5">
+                    Adresse
+                </div>
+                <div class="col-7">
+                    <?= $user->address ?>
+                </div>
+                <div class="col-5">
                     Fond social
                 </div>
                 <div class="col-7">
@@ -78,6 +84,12 @@ $user = $member->user();
                     <?php
                     endif;
                     ?>
+                </div>
+                <div class="col-5">
+                    Date d'inscription 
+                </div>
+                <div class="col-7">
+                    <?= $user->created_at ?>
                 </div>
             </div>
             <div class="row mt-5">

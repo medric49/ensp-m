@@ -155,6 +155,7 @@ class AdministratorController extends Controller
             'first_name' => $this->user->first_name,
             'tel' => $this->user->tel,
             'email' => $this->user->email,
+            'address' => $this->user->address,
         ];
 
         return $this->render('update_profile',compact('socialModel','passwordModel'));
@@ -169,7 +170,7 @@ class AdministratorController extends Controller
                 $administrator = Administrator::findOne(['username' => $socialModel->username]);
                 if ($administrator && $administrator->id!= $this->administrator->id) {
 
-                    $socialModel->addError("username","Ce nom d'utilisateur est déjà pris");
+                    $socialModel->addError("username","Ce nom d'utilisateur est déjà utilisé");
                     return $this->render('update_profile',compact('socialModel','passwordModel'));
                 }
                 else {
@@ -177,6 +178,7 @@ class AdministratorController extends Controller
                     $this->user->first_name = $socialModel->first_name;
                     $this->user->tel = $socialModel->tel;
                     $this->user->email = $socialModel->email;
+                    $this->user->address = $socialModel->address;
                     if (UploadedFile::getInstance($socialModel,"avatar"))
                         $this->user->avatar = FileManager::storeAvatar( UploadedFile::getInstance($socialModel,"avatar"),$socialModel->username,"ADMINISTRATOR");
                     $this->user->save();
@@ -362,6 +364,7 @@ class AdministratorController extends Controller
                     $user->first_name = $model->first_name;
                     $user->tel = $model->tel;
                     $user->email = $model->email;
+                    $user->address = $model->address;
                     $user->type = "ADMINISTRATOR";
                     $user->password = (new Security())->generatePasswordHash($model->password);
                     if (UploadedFile::getInstance($model,'avatar'))
@@ -403,6 +406,7 @@ class AdministratorController extends Controller
                     $user->first_name = $model->first_name;
                     $user->tel = $model->tel;
                     $user->email = $model->email;
+                    $user->address = $model->address;
                     $user->type = "MEMBER";
                     $user->password = (new Security())->generatePasswordHash($model->password);
                     if (UploadedFile::getInstance($model,'avatar'))
@@ -416,6 +420,7 @@ class AdministratorController extends Controller
                     $member->administrator_id = $this->administrator->id;
                     $member->user_id = $user->id;
                     $member->username = $model->username;
+                    $member->inscription = SettingManager::getInscription();
                     $member->save();
                     return $this->redirect('@administrator.members');
                 }
@@ -566,7 +571,7 @@ class AdministratorController extends Controller
                     }
                     else
                     {
-                        $model->addError('amount','Le montant déborde le reste à payer pour cette dette.');
+                        $model->addError('amount','Le montant entré est supérieur au reste à payer');
                         return $this->render("refunds",compact("model","pagination","sessions"));
                     }
                 }
@@ -619,7 +624,9 @@ class AdministratorController extends Controller
                 $session = Session::findOne($model->session_id);
                 if ($member && $session && $session->state == "BORROWING" && FinanceManager::numberOfSession()<12) {
                     if (! Borrowing::findOne(['member_id' => $member->id,'state' => true]) ) {
-                        if ($model->amount <= FinanceManager::exerciseAmount()) {
+                        $exercise = Exercise::findOne(['active' => 1]);
+                        $sessionss = Session::find()->select('id')->where(['exercise_id' => $exercise->id])->column();
+                        if ($model->amount <= $this->savingofmember($member,$sessionss)) {
                             $borrowing = new Borrowing();
 
                             $borrowing->interest = SettingManager::getInterest();
@@ -643,14 +650,14 @@ class AdministratorController extends Controller
                         }
                         else
                         {
-                            $model->addError('amount','Le montant demandé est supérieur au montant en caisse.');
+                            $model->addError('amount','Le montant demandé est supérieur au montant total des épargnes de ce membre : '. $this->savingofmember($member,$sessionss).' XAF');
                             return $this->render("borrowings",compact("model","sessions","pagination"));
                         }
 
                     }
                     else
                     {
-                        $model->addError('member_id','Ce membre a déjà fait un emprunt.');
+                        $model->addError('member_id','Ce membre a déjà contracté un emprunt');
                         return $this->render("borrowings",compact("model","sessions","pagination"));
                     }
                 }
@@ -1009,7 +1016,7 @@ class AdministratorController extends Controller
                         return $this->redirect("@administrator.helps");
                     }
                     else {
-                        $model->addError("limit_date","La date limite doit être au moins un mois après la date de création");
+                        $model->addError("limit_date","Le délai minimum est d'un mois");
                         return $this->render("new_help",compact("model"));
                     }
                 }
@@ -1227,6 +1234,7 @@ class AdministratorController extends Controller
         $model = new SettingForm();
         $model->interest = SettingManager::getInterest();
         $model->social_crown = SettingManager::getSocialCrown();
+        $model->inscription = SettingManager::getInscription();
         return $this->render("settings",compact("model"));
     }
 
@@ -1235,7 +1243,7 @@ class AdministratorController extends Controller
             $model = new SettingForm();
             if ($model->load(Yii::$app->request->post()) && $model->validate()) {
 
-                SettingManager::setValues($model->interest,$model->social_crown);
+                SettingManager::setValues($model->interest,$model->social_crown,$model->inscription);
 
                 return $this->redirect("@administrator.settings");
             }
@@ -1244,6 +1252,15 @@ class AdministratorController extends Controller
         }
         else
             return RedirectionManager::abort($this);
+    }
+
+    public static function savingofmember($member,$sessionss) {
+        $r = Saving::find()->where(['session_id' => $sessionss,'member_id' => $member->id])->sum('amount');
+        if($r):
+            return  $r;
+        else:
+            return 0;
+        endif;
     }
 
 }

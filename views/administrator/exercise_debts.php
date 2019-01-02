@@ -57,7 +57,7 @@ $refunds = \app\models\Refund::find()->where(['is not','exercise_id',null])->all
                                 <div class="modal-content">
 
                                     <div class="modal-body">
-                                        <p class="text-center p-3">Voulez-vous enregistrer le fond social de ce membre ?.</p>
+                                        <p class="text-center p-3">Êtes-vous sûr(e) de vouloir enregistrer le fond social de ce membre?</p>
                                         <div class="text-center my-2">
                                             <button class="btn btn-secondary" data-dismiss="modal">Non</button>
                                             <a href="<?= Yii::getAlias("@administrator.fix_social_crown")."?q=".$member->id?>"
@@ -75,7 +75,7 @@ $refunds = \app\models\Refund::find()->where(['is not','exercise_id',null])->all
                 <?php
                 else:
                 ?>
-                <p class="text-center blue-text">Aucune dette au fond social</p>
+                <p class="text-center blue-text">Aucune dette de règlement de fond social</p>
                 <?php
                 endif;
                 ?>
@@ -89,10 +89,8 @@ $refunds = \app\models\Refund::find()->where(['is not','exercise_id',null])->all
             <h3 class="text-muted text-center">Dettes d'exercices</h3>
             <hr>
             <p class="warning-block text-center">
-                Attention ! Il s'agit dans cette section des dettes d'exercices qui n'ont pas été remboursées.<br>
-                Pour le bon déroulement de la mutuelle, ces dettes ont été supposées réglées dans l'exercice concerné,
-                mais pour des raisons de sécurité ces dettes sont conservées
-                et devront être réglées par le membre sous peine de poursuite judiciaire.
+                Attention ! Il s'agit des dettes d'exercices qui n'ont pas été remboursées.
+                
             </p>
 
             <?php
@@ -120,7 +118,7 @@ $refunds = \app\models\Refund::find()->where(['is not','exercise_id',null])->all
                         <td class="text-capitalize"><?= $memberUser->name . " " . $memberUser->first_name ?></td>
                         <td class="blue-text"><?= $refund->amount ?> XAF</td>
                         <td class="text-capitalize"><?= $exercise->year ?></td>
-                        <td><button class="btn btn-primary m-0 p-2" data-toggle="modal" data-target="#modal<?= $index?>">Régler la dette</button></td>
+                        <td><button class="btn btn-primary m-0 p-2" data-toggle="modal" data-target="#modal<?= $index?>">Regler</button></td>
                     </tr>
 
 
@@ -131,14 +129,12 @@ $refunds = \app\models\Refund::find()->where(['is not','exercise_id',null])->all
                         <div class="modal-content">
                             <div class="modal-body">
 
-                                <p class="text-center">Vous vous appretez à regler cette dette.<br>
-                                    Cela suggère que le membre a finalement remboursé sa dette laissée.<br>
-                                    Voulez-vous continuer ?
+                                <p class="text-center">Êtes-vous sûr(e) de vouloir régler la dette de ce membre?
                                 </p>
 
                                 <div class="form-group text-center">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-                                    <a href="<?= Yii::getAlias("@administrator.treat_debt")."?q=".$refund->id?>" class="btn btn-primary">Continuer</a>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+                                    <a href="<?= Yii::getAlias("@administrator.treat_debt")."?q=".$refund->id?>" class="btn btn-primary">Oui</a>
                                 </div>
                             </div>
                         </div>

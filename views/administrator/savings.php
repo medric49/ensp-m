@@ -127,7 +127,7 @@ Epargnes
                                                 <div class="modal-content">
                                                     <div class="modal-body">
                                                         <p class="p-1 text-center">
-                                                            Voulez-vous supprimer cette epargne ?
+                                                            Êtes-vous sûr(e) de vouloir supprimer cette épargne?
                                                         </p>
                                                         <div class="text-center">
                                                             <button data-dismiss="modal" class="btn btn-secondary">non</button>
@@ -182,7 +182,7 @@ Epargnes
 
         <?php else: ?>
             <div class="col-12 white-block">
-                <h1 class="text-muted text-center">Aucune session créée.</h1>
+                <h1 class="text-muted text-center">Aucune session créée</h1>
             </div>
 
         <?php endif; ?>

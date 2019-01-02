@@ -32,73 +32,54 @@ Mes épargnes
     <div class="row">
         
         <?php if ( count($exercises)):?>
-            <div class="col-12 white-block mb-2">
-        
-                <?php
-                $exercise = $exercises[0];
-                $savings = $member->exerciseSavings($exercise);
-                ?>
-                    <h1 class="text-muted text-center">Exercice de l'année <span class="blue-text"><?= $exercises[0]->year ?></span></h1>
-                    <h3 class="text-secondary text-center"><?= $exercises[0]->active?"En cours":"Terminé" ?></h3>
-                <?php if (count($savings)):?>
 
-                    <table class="table table-hover">
-                        <thead class="blue-grey lighten-4">
-                        <tr>
-                            <th>#</th>
-                            <th>Montant</th>
-                            <th>Administrateur</th>
-                            <th>Session</th>
-                        </tr>
+            <?php foreach ($exercises as $exercise): ?>
+                <div class="col-12 white-block mb-2">
 
-                        </thead>
-                        <tbody>
-                        <?php foreach ($savings as $index => $saving): ?>
-                            <?php
-                            $amount = $saving->amount;
-                            $administrator = $saving->administrator()->user();
-                            $session = $saving->session();
-                            ?>
-                            <tr>
-                                <th scope="row"><?= $index + 1 ?></th>
-                                <td class="blue-text"><?= $amount ? $amount : 0 ?> XAF</td>
-                                <td class="text-capitalize"><?= $administrator->name." ". $administrator->first_name ?></td>
-                                <td><?= $session->date() ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                <?php else:?>
-                <h3 class="text-center text-muted">Aucune épargne pour cet exercice.</h3>
-                <?php endif; ?>
+                    <?php
+                    $savings = $member->exerciseSavings($exercise);
+                    ?>
+                    <h1 class="text-muted text-center">Exercice de l'année <span class="blue-text"><?= $exercise->year ?></span></h1>
+                    <h3 class="text-secondary text-center"><?= $exercise->active?"En cours":"Terminé" ?></h3>
 
-            </div>
+                    <?php if (count($savings)):?>
 
-            <div class="mt-2 p-2">
-                    <nav aria-label="Page navigation example">
-                        <?= LinkPager::widget(['pagination' => $pagination,
-                            'options' => [
-                                'class' => 'pagination pagination-circle justify-content-center pg-blue mb-0',
-                            ],
-                            'pageCssClass' => 'page-item',
-                            'disabledPageCssClass' => 'd-none',
-                            'prevPageCssClass' => 'page-item',
-                            'nextPageCssClass' => 'page-item',
-                            'firstPageCssClass' => 'page-item',
-                            'lastPageCssClass' => 'page-item',
-                            'linkOptions' => ['class' => 'page-link']
-                        ]) ?>
-                    </nav>
+                        <table class="table table-hover">
+                            <thead class="blue-grey lighten-4">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Montant</th>
+                                    <th>Administrateur</th>
+                                    <th>Session</th>
+                                </tr>
 
-            </div>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($savings as $index => $saving): ?>
+                                <?php
+                                $amount = $saving->amount;
+                                $administrator = $saving->administrator()->user();
+                                $session = $saving->session();
+                                ?>
+                                    <tr>
+                                        <th scope="row"><?= $index + 1 ?></th>
+                                        <td class="blue-text"><?= $amount ? $amount : 0 ?> XAF</td>
+                                        <td class="text-capitalize"><?= $administrator->name." ". $administrator->first_name ?></td>
+                                        <td><?= $session->date() ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    <?php else:?>
+                        <h3 class="text-center text-muted">Aucune épargne pour cet exercice</h3>
+                    <?php endif; ?>
 
-        <?php else:?>
-            <h3 class="text-center text-muted">Aucun exercice enregistré.</h3>
-        <?php endif;?>
+                </div>
+            <?php endforeach; ?>
 
-        <div class="col-12 p-2">
-            <nav aria-label="Page navigation example">
-                <?= LinkPager::widget(['pagination' => $pagination,
+            <div class="col-12 p-2">
+                <nav aria-label="Page navigation example">
+                    <?= LinkPager::widget(['pagination' => $pagination,
                         'options' => [
                             'class' => 'pagination pagination-circle justify-content-center pg-blue mb-0',
                         ],
@@ -109,10 +90,16 @@ Mes épargnes
                         'firstPageCssClass' => 'page-item',
                         'lastPageCssClass' => 'page-item',
                         'linkOptions' => ['class' => 'page-link']
-                ]) ?>
-            </nav>
+                    ]) ?>
+                </nav>
 
-        </div>
+            </div>
+
+        <?php else:?>
+            <h3 class="text-center text-muted">Aucun exercice enregistré.</h3>
+        <?php endif;?>
+
+        
 
     </div>
 </div>

@@ -39,10 +39,12 @@
                 ])
                 ?>
 
-                <?= $form->field($model,'interest')->input("number",['required'=> 'required'])->label('Intérêt par mois sur les emprunts') ?>
+                <?= $form->field($model,'interest')->input("number",['required'=> 'required'])->label('Intérêt par mois sur un emprunt') ?>
 
 
                 <?= $form->field($model,'social_crown')->input("number",['required'=> 'required'])->label('Montant du fond social à payer par membre') ?>
+
+                <?= $form->field($model,'inscription')->input("number",['required'=> 'required'])->label('Montant de l\'inscription à payer par membre') ?>
 
                 <div class="form-group text-right">
                     <button class="btn btn-primary" type="submit">Enregistrer</button>

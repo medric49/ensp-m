@@ -24,10 +24,18 @@ class SettingManager
         return $data['social_crown'];
     }
 
-    public static function setValues($interest,$social_crown) {
+    public static function getInscription() {
+        $json_source = file_get_contents(\Yii::$app->getBasePath().'/managers/app.json');
+        $data = json_decode($json_source,true);
+
+        return $data['inscription'];
+    }
+
+    public static function setValues($interest,$social_crown,$inscription) {
         $data = [
             'interest'=>$interest,
             'social_crown'=>$social_crown,
+            'inscription'=>$inscription,
         ];
 
         file_put_contents(\Yii::$app->getBasePath().'/managers/app.json',json_encode($data));

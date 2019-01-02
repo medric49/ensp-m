@@ -15,13 +15,14 @@ class SettingForm extends Model
 {
     public $interest;
     public $social_crown;
+    public $inscription;
 
 
     public function rules()
     {
         return [
-            [['interest','social_crown'],'required','message' => 'Ce champ est obligatoire'],
-            [['interest','social_crown'],'integer','min' => 1,'message' => 'Ce champ attend un entier positif']
+            [['interest','social_crown','inscription'],'required','message' => 'Ce champ est obligatoire'],
+            [['interest','social_crown','inscription'],'integer','min' => 1,'message' => 'Ce champ attend un entier positif']
         ];
     }
 }

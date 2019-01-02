@@ -52,7 +52,7 @@ Mes emprunts
                             <th>Montant remboursé</th>
                             <th>Montant restant</th>
                             <th>Administrateur</th>
-                            <th>Session</th>
+                            <th>Session d'emprunt</th>
                         </tr>
 
                         </thead>
@@ -83,24 +83,6 @@ Mes emprunts
                 <?php else:?>
                 <h3 class="text-center text-muted">Aucun emprunt pour cet exercice.</h3>
                 <?php endif; ?>
-
-            </div>
-
-            <div class="mt-2 p-2">
-                    <nav aria-label="Page navigation example">
-                        <?= LinkPager::widget(['pagination' => $pagination,
-                            'options' => [
-                                'class' => 'pagination pagination-circle justify-content-center pg-blue mb-0',
-                            ],
-                            'pageCssClass' => 'page-item',
-                            'disabledPageCssClass' => 'd-none',
-                            'prevPageCssClass' => 'page-item',
-                            'nextPageCssClass' => 'page-item',
-                            'firstPageCssClass' => 'page-item',
-                            'lastPageCssClass' => 'page-item',
-                            'linkOptions' => ['class' => 'page-link']
-                        ]) ?>
-                    </nav>
 
             </div>
 

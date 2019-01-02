@@ -29,14 +29,7 @@ Profil
 
 
 <div class="container mt-5 mb-5">
-    <div class="row">
-        <div class="col-md-4 text-center">
-            <div class="img-container">
-                <img src="<?= \app\managers\FileManager::loadAvatar($this->params['user'],"512")?>" alt="">
-            </div>
-            <h2 class="mt-2 text-capitalize"><?= $this->params['member']->username?></h2>
-        </div>
-        <div class="col-md-8 white-block">
+    <div class="row justify-content-center">
             <?php $form1 = \yii\widgets\ActiveForm::begin(['method' => 'post',
                 'action' => '@member.enregistrer_modifier_profil',
                 'options' => ['enctype' => 'multipart/form-data','class' => 'col-md-5 mb-2 white-block mr-md-2'],
@@ -48,6 +41,7 @@ Profil
             <?= $form1->field($socialModel,'name')->input('text',['required' => 'required'])->label('Nom') ?>
             <?= $form1->field($socialModel,'tel')->input('tel',['required'=>'required'])->label("Téléphone") ?>
             <?= $form1->field($socialModel,'email')->input('email',['required'=> 'required'])->label('Email')?>
+            <?= $form1->field($socialModel,'address')->input('address',['required'=> 'required'])->label('Adresse')?>
             <?= $form1->field($socialModel,'avatar')->fileInput(['accept'=>'.png,.jpg,.jpeg,.gif'])->label('Photo de profil')?>
 
             <div class="form-group text-right">
@@ -69,7 +63,7 @@ Profil
             <button type="submit" class="btn btn-primary">Enregistrer</button>
             </div>
             <?php \yii\widgets\ActiveForm::end()?>
-        </div>
+        
         
     </div>
 </div>

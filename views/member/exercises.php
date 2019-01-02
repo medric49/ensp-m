@@ -71,7 +71,9 @@ Exercices
                 </table>
             </div>
         <?php else:?>
-            <h3 class="text-center text-muted">Aucun exercice enregistré.</h3>
+            <div class="col-12 white-block">
+                <h1 class="text-center text-muted">Aucun exercice créé</h1>
+            </div>
         <?php endif;?>
 
         <div class="col-12 p-2">

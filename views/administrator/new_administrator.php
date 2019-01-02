@@ -32,6 +32,7 @@ Nouvel administrateur
         <?= $form->field($model,'name')->label('Nom') ?>
         <?= $form->field($model,'tel')->input('tel')->label('Téléphone') ?>
         <?= $form->field($model,'email')->input('email')->label('Email') ?>
+        <?= $form->field($model,'address')->input('address')->label('Adresse') ?>
         <?= $form->field($model,'avatar')->fileInput(['accept' => '.jpg,.jpeg,.png,.gif'])->label('Photo de profil')?>
         <?= $form->field($model,'password')->input('password')->label('Mot de passe') ?>
         <div class="form-group text-right">

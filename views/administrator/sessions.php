@@ -31,7 +31,7 @@ Sessions
                 <h5 class="text-muted">Total des remboursements : <span class="blue-text"><?= $refundAmount?$refundAmount:0 ?> XAF</span></h5>
                 <h5 class="text-muted">Total des emprunts : <span class="text-secondary"><?= $borrowingAmount?$borrowingAmount:0 ?> XAF</span></h5>
                 <div class="text-right mt-2">
-                    <a href="<?= Yii::getAlias("@administrator.session_details")."?q=".$session->id?>" class="btn btn-primary">Voir les details</a>
+                    <a href="<?= Yii::getAlias("@administrator.session_details")."?q=".$session->id?>" class="btn btn-primary">Details</a>
                 </div>
             </div>
 

@@ -53,6 +53,10 @@ Membres
                                     <span>Téléphone : </span><span class="text-secondary"><?= $user->tel ?></span>
                                     <br>
                                     <span>Email : </span><span class="blue-text"><?= $user->email ?></span>
+                                    <br>
+                                    <span>Adresse : </span><span class="text-secondary"><?= $user->address ?></span>
+                                    <br>
+                                    <span>Créé le : </span><span class="text-secondary"><?= $user->created_at ?></span>
                                 </p>
                                 <!-- Button -->
                                 <div class="text-right">

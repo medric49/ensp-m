@@ -18,6 +18,7 @@ class m181220_125829_create_user_table extends Migration
             'first_name' => $this->string(),
             'tel' => $this->string(),
             'email' =>$this->string(),
+            'address' =>$this->string(),
             'type' => $this->string(),
             'avatar' => $this->string(),
             'password' =>$this->string(),

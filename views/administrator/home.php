@@ -28,7 +28,7 @@ Accueil
             <?php if ($session): ?>
 
                 <?php
-            $exercise = \app\models\Exercise::findOne(['active' => true]);
+                $exercise = \app\models\Exercise::findOne(['active' => true]);
 
                 ?>
 
@@ -73,13 +73,12 @@ Accueil
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-body">
-                                    <p>Attention ! Lorsque vous passez aux remboursements vous ne pourrez plus
-                                        enregistrer de nouvelles epargnes pour cette session.</p>
+                                    <p>Êtes-vous sûr(e) de vouloir passer aux remboursements?</p>
                                     <div class="mt-3">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Non
                                         </button>
                                         <a href="<?= Yii::getAlias("@administrator.go_to_refunds") . "?q=" . $session->id ?>"
-                                           class="btn btn-primary">Continuer</a>
+                                           class="btn btn-primary">Oui</a>
                                     </div>
                                 </div>
                             </div>
@@ -108,13 +107,12 @@ Accueil
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-body">
-                                    <p>Attention ! Lorsque vous rentrez aux epargnes tous les remboursements enregistrés
-                                        de cette session seront perdus.</p>
+                                    <p>Êtes-vous sûr(e) de vouloir retourner aux epargnes? Tous les remboursements enregistrés seront perdus.</p>
                                     <div class="mt-3">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Non
                                         </button>
                                         <a href="<?= Yii::getAlias("@administrator.back_to_savings") . "?q=" . $session->id ?>"
-                                           class="btn btn-primary">Continuer</a>
+                                           class="btn btn-primary">Oui</a>
                                     </div>
                                 </div>
                             </div>
@@ -127,13 +125,12 @@ Accueil
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-body">
-                                    <p>Attention ! Lorsque vous passez aux emprunts vous ne pourrez plus enregistrer de
-                                        nouvaux remboursements pour cette session.</p>
+                                    <p>Êtes-vous sûr(e) de vouloir passer aux emprunts?</p>
                                     <div class="mt-3">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Non
                                         </button>
                                         <a href="<?= Yii::getAlias("@administrator.go_to_borrowings") . "?q=" . $session->id ?>"
-                                           class="btn btn-primary">Continuer</a>
+                                           class="btn btn-primary">Oui</a>
                                     </div>
                                 </div>
                             </div>
@@ -168,13 +165,12 @@ Accueil
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-body">
-                                    <p>Attention ! Lorsque vous rentrez aux remboursements tous les emprunts enregistrés
-                                        pour cette session seront perdus.</p>
+                                    <p>Êtes-vous sûr(e) de vouloir retourner aux remboursements? Tous les emprunts enregistrés seront perdus.</p>
                                     <div class="mt-3">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Non
                                         </button>
                                         <a href="<?= Yii::getAlias("@administrator.back_to_refunds") . "?q=" . $session->id ?>"
-                                           class="btn btn-primary">Continuer</a>
+                                           class="btn btn-primary">Oui</a>
                                     </div>
                                 </div>
                             </div>
@@ -188,13 +184,12 @@ Accueil
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-body">
-                                    <p>Attention ! Vous vous appretez à cloturer la session, lorsque la session est
-                                        cloturée, vous ne pourrez plus faire aucun enregistrerment.</p>
+                                    <p>Êtes-vous sûr(e) de vouloir cloturer la session? Vous ne pourrez plus faire aucun enregistrerment.</p>
                                     <div class="mt-3">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Non
                                         </button>
                                         <a href="<?= Yii::getAlias("@administrator.cloture_session") . "?q=" . $session->id ?>"
-                                           class="btn btn-primary">Continuer</a>
+                                           class="btn btn-primary">Oui</a>
                                     </div>
                                 </div>
                             </div>
@@ -211,13 +206,12 @@ Accueil
                                         <img src="/img/bravo.jpg" alt="bravo" class="img-bravo">
                                     </div>
                                     <p class="text-center text-secondary">Félicitations !</p>
-                                    <p>Vous êtes au terme de cette période de 12 sessions. Vous êtes sur le point de
-                                        passer au décaissement, voulez-vous continuer ?</p>
+                                    <p>Vous êtes au terme de l'exercice. Voulez-vous passer au décaissement?</p>
                                     <div class="mt-3">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Non
                                         </button>
                                         <a href="<?= Yii::getAlias("@administrator.cloture_exercise") . "?q=" . $session->id ?>"
-                                           class="btn btn-primary">Continuer</a>
+                                           class="btn btn-primary">Oui</a>
                                     </div>
                                 </div>
                             </div>
@@ -368,24 +362,26 @@ Accueil
                 <?php
                 foreach ($borrowings as $borrowing):
                     $member = $borrowing->member();
-                $user = $member->user();
+                    $user = $member->user();
 
-                $intendedAmount = $borrowing->intendedAmount();
-                $refundedAmount = $borrowing->refundedAmount();
-                $rest = $intendedAmount-$refundedAmount;
+                    $intendedAmount = $borrowing->intendedAmount();
+                    $refundedAmount = $borrowing->refundedAmount();
+                    $rest = $intendedAmount-$refundedAmount;
 
-                    ?>
+                ?>
                     <div class="media">
                         <img class="d-flex mr-3" width="50" height="50" src="<?= \app\managers\FileManager::loadAvatar($user) ?>" alt="Generic placeholder image">
                         <div class="media-body">
                             <h5 class="mt-0 font-weight-bold"><?= $user->name.' '.$user->first_name ?></h5>
-                            Emprunt : <span class="blue-text"><?= $borrowing->amount ?> XAF</span>
+                            Date : <span class="blue-text"><?= $borrowing->created_at ?> </span>
                             <br>
                             Dette : <span class="blue-text"><?= $intendedAmount ?> XAF</span>
                             <br>
                             Total remboursé : <span class="blue-text"><?= $borrowing->refundedAmount() ?> XAF</span>
                             <br>
                             Reste : <span class="text-secondary"><?= $rest ?> XAF</span>
+                            <br>
+
 
                         </div>
                     </div>

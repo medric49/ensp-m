@@ -25,6 +25,7 @@ use app\models\Administrator;
 use app\models\Help_type;
 use app\models\Contribution;
 use app\models\Session;
+use app\models\Help;
 use app\models\Exercise;
 use app\models\Borrowing;
 use yii\web\Controller;
@@ -140,6 +141,7 @@ class MemberController extends Controller
             'first_name' => $this->user->first_name,
             'tel' => $this->user->tel,
             'email' => $this->user->email,
+            'address' => $this->user->address,
         ];
 
         return $this->render('modifier_profil',compact('socialModel','passwordModel'));
@@ -157,6 +159,7 @@ class MemberController extends Controller
                 $this->user->first_name = $socialModel->first_name;
                 $this->user->tel = $socialModel->tel;
                 $this->user->email = $socialModel->email;
+                $this->user->address = $socialModel->address;
                 if (UploadedFile::getInstance($socialModel,"avatar"))
                     $this->user->avatar = FileManager::storeAvatar( UploadedFile::getInstance($socialModel,"avatar"),$socialModel->username,"MEMBER");
 
@@ -186,6 +189,7 @@ class MemberController extends Controller
                 'first_name' => $this->user->first_name,
                 'tel' => $this->user->tel,
                 'email' => $this->user->email,
+                'address' => $this->user->address,
             ];
 
             $passwordModel = new UpdatePasswordForm();
@@ -196,7 +200,7 @@ class MemberController extends Controller
                     return $this->redirect("@member.profil");
                 }
                 else {
-                    $passwordModel->addError('password','Le mot de passe ne correspond pas.');
+                    $passwordModel->addError('password','Le mot de passe ne correspond pas');
                     return $this->render('modifier_profil',compact('socialModel','passwordModel'));
                 }
 
@@ -236,11 +240,11 @@ class MemberController extends Controller
         $member = Member::findOne(['user_id'=> $user->id]);
         $query = Exercise::find();
         $pagination = new Pagination([
-            'defaultPageSize' => 5,
+            'defaultPageSize' => 1,
             'totalCount' => $query->count(),
         ]);
 
-        $exercises = $query->orderBy(['created_at'=> SORT_ASC])
+        $exercises = $query->orderBy(['created_at'=> SORT_DESC])
             ->offset($pagination->offset)
             ->limit($pagination->limit)
             ->all();
@@ -256,11 +260,11 @@ class MemberController extends Controller
 
         $query = Exercise::find();
         $pagination = new Pagination([
-            'defaultPageSize' => 5,
+            'defaultPageSize' => 1,
             'totalCount' => $query->count(),
         ]);
 
-        $exercises = $query->orderBy(['created_at'=> SORT_ASC])
+        $exercises = $query->orderBy(['created_at'=> SORT_DESC])
             ->offset($pagination->offset)
             ->limit($pagination->limit)
             ->all();
@@ -316,11 +320,44 @@ class MemberController extends Controller
             'defaultPageSize' => 1,
             'totalCount' => $query->count(),
         ]);
-        $exercises = $query->orderBy(['created_at'=> SORT_ASC])
+        $exercises = $query->orderBy(['created_at'=> SORT_DESC])
             ->offset($pagination->offset)
             ->limit($pagination->limit)
             ->all();
         return $this->render("exercises",compact('exercises','pagination',"member"));
+    }
+
+    public function actionAides() {
+        MemberSessionManager::setHome("helps");
+
+        $activeHelps = Help::findAll(['state' => true]);
+
+        $query = Help::find()->where(['state' => false])->orderBy('created_at',SORT_DESC);
+
+        $pagination = new Pagination([
+            'defaultPageSize' => 9,
+            'totalCount' => $query->count(),
+        ]);
+
+        $helps = $query
+            ->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+
+        return $this->render("helps",compact("helps",'pagination',"activeHelps"));
+    }
+    public function actionDetailAide($q=0) {
+        if ($q) {
+            $help = Help::findOne($q);
+            if ($help) {
+
+                return $this->render("help_details",compact("help"));
+            }
+            else
+                return RedirectionManager::abort($this);
+        }
+        else
+            return RedirectionManager::abort($this);
     }
 
 }

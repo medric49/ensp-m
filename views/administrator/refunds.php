@@ -68,7 +68,7 @@ Remboursements
 
                                 <?php else: ?>
                                     <div class="modal-body p-5">
-                                        <h3 class="text-muted text-center">Aucun prêt n'est actif</h3>
+                                        <h3 class="text-muted text-center">Aucun emprunt non remboursé</h3>
                                     </div>
 
                                 <?php endif; ?>
@@ -131,7 +131,7 @@ Remboursements
                                         <div class="modal-content">
                                             <div class="modal-body">
                                                 <p class="p-1 text-center">
-                                                    Voulez-vous supprimer ce remboursement ?
+                                                    Êtes-vous sûr(e) de vouloir supprimer ce remboursement ?
                                                 </p>
                                                 <div class="text-center">
                                                     <button data-dismiss="modal" class="btn btn-secondary">non</button>
@@ -188,7 +188,7 @@ Remboursements
 
         <?php else: ?>
             <div class="col-12 white-block">
-                <h1 class="text-muted text-center">Aucune session créée.</h1>
+                <h1 class="text-muted text-center">Aucune session créée</h1>
             </div>
 
         <?php endif; ?>

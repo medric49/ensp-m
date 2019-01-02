@@ -89,7 +89,7 @@ $this->beginBlock('title') ?>
                 </table>
 
             <?php else: ?>
-                <h3 class="text-center text-muted">Aucune épargne à cette session</h3>
+                <h3 class="text-center text-muted">Aucun remboursement à cette session</h3>
             <?php endif; ?>
 
         </div>

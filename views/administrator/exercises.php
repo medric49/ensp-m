@@ -20,6 +20,7 @@ Exercices
         color: dodgerblue;
         background-color: rgba(30, 144, 255, 0.17);
     }
+    
     .b-saved {
         border-color: blueviolet;
         color: blueviolet;
@@ -87,6 +88,7 @@ Exercices
                                 <h5>Fond total</h5>
                                 <h2><?= ($t=$exercise->exerciseAmount())?$t:0 ?> XAF</h2>
                             </div>
+                            
                             <div class="bl b-saved">
                                 <h5>Montant épargné</h5>
                                 <h2><?= ($t=$exercise->totalSavedAmount())?$t:0 ?> XAF</h2>
@@ -199,7 +201,7 @@ Exercices
 
         foreach ($sessions as $index => $session) {
             $lLabels[] = "Session ".($index+1);
-            $lData[] = ($sum += $session->totalAmount());
+            $lData[] = ($session->totalAmount());
         }
     }
 

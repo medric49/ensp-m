@@ -61,6 +61,18 @@ Mon profil
                 <div class="col-7">
                     <?= $this->params['user']->email ?>
                 </div>
+                <div class="col-5">
+                    Adresse
+                </div>
+                <div class="col-7">
+                    <?= $this->params['user']->address ?>
+                </div>
+                <div class="col-5">
+                    Date d'inscription
+                </div>
+                <div class="col-7">
+                    <?= $this->params['user']->created_at ?>
+                </div>
             </div>
             <div class="row mt-5">
                 <div class="col-12 text-center">

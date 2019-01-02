@@ -25,6 +25,10 @@ class FinanceManager
         return self::totalSavedAmount()+self::totalRefundedAmount()-self::totalBorrowedAmount();
     }
 
+    public function totalInscriptionAmount() {
+        return Member::find()->sum('inscription') ;
+    }
+
     public static function totalSavedAmount() {
         $exercise = Exercise::findOne(['active' => true]);
         if ($exercise) {
@@ -111,7 +115,7 @@ class FinanceManager
             $r -= $help->amount;
         }
 
-        return $r;
+        return $r + self::totalInscriptionAmount();
     }
 
 
