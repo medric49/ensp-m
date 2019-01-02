@@ -14,7 +14,7 @@ class m181222_180915_create_refund_table extends Migration
     {
         $this->createTable('refund', [
             'id' => $this->primaryKey()->unsigned(),
-            'amount' => $this->integer()->unsigned(),
+            'amount' => $this->double()->unsigned(),
             'borrowing_id' => $this->integer()->unsigned(),
             'administrator_id' => $this->integer()->unsigned(),
             'exercise_id' => $this->integer()->unsigned(),

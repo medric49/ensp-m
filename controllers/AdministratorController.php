@@ -552,6 +552,7 @@ class AdministratorController extends Controller
                     $refundedAmount = FinanceManager::borrowingRefundedAmount($borrowing);
 
                     $intendedAmount = FinanceManager::intendedAmountFromBorrowing($borrowing);
+                    $q = floor($intendedAmount) + 1;
 
                     if ( $model->amount+$refundedAmount <  $intendedAmount){
                         $refund = new Refund();
@@ -564,11 +565,11 @@ class AdministratorController extends Controller
                         return $this->redirect("@administrator.refunds");
 
                     }
-                    elseif ($model->amount+$refundedAmount ==  $intendedAmount) {
+                    elseif ($model->amount+$refundedAmount == $q ) {
                         $refund = new Refund();
                         $refund->borrowing_id = $borrowing->id;
                         $refund->session_id = $model->session_id;
-                        $refund->amount = $model->amount;
+                        $refund->amount = $intendedAmount - $refundedAmount;
                         $refund->administrator_id = $this->administrator->id;
                         $refund->save();
 

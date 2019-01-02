@@ -115,12 +115,13 @@ Remboursements
                                 ?>
                             <?php
                             if ($session->active && $session->state == "REFUNDS"):
+                                $r = $borrowing->intendedAmount()-$borrowing->refundedAmount();
                             ?>
                                 <tr data-target="#modalS<?= $refund->id?>" data-toggle="modal">
                                     <th scope="row"><?= $index + 1 ?></th>
                                     <td class="text-capitalize"><?= $memberUser->name . " " . $memberUser->first_name ?></td>
                                     <td class="blue-text"><?= $refund->amount ?> XAF</td>
-                                    <th><?= $borrowing->intendedAmount()-$borrowing->refundedAmount() ?> XAF</th>
+                                    <th><?= ($r > 0)? $r:0  ?> XAF</th>
                                     <td class="text-capitalize"><?= $administratorUser->name . " " . $administratorUser->first_name ?></td>
                                 </tr>
 
