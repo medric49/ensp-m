@@ -485,11 +485,18 @@ class AdministratorController extends Controller
                 if ($member && $session && ($session->state =="SAVING")) {
                     $saving = new Saving();
 
-                    $saving->member_id = $model->member_id;
-                    $saving->session_id = $model->session_id;
-                    $saving->amount = $model->amount;
-                    $saving->administrator_id = $this->administrator->id;
-                    $saving->save();
+                    $savi = Saving::findOne(['session_id' => $session->id,'member_id' => $member->id]);
+                    if($savi){
+                        $savi->amount += $model->amount;
+                        $savi->save();
+                    }
+                    else{
+                        $saving->member_id = $model->member_id;
+                        $saving->session_id = $model->session_id;
+                        $saving->amount = $model->amount;
+                        $saving->administrator_id = $this->administrator->id;
+                        $saving->save();
+                    }
 
                     return $this->redirect("@administrator.savings");
                 }
