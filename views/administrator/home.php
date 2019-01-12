@@ -274,7 +274,7 @@ Accueil
             <div class="row">
                 <div class="col-12 white-block">
                     <h3 class="text-center text-muted">Fond social</h3>
-                    <h1 id="social-crown" class="blue-text text-center"><?= ($t=\app\managers\FinanceManager::socialCrown())?$t:0 ?> XAF</h1>
+                    <h1 id="social-crown" class="blue-text text-center"><?= ($t=\app\managers\FinanceManager::socialCrown())? ($t>0?$t:0) :0 ?> XAF</h1>
 
                     <h3 class="text-center text-muted">Evènements de la mutuelle</h3>
                     <?php
