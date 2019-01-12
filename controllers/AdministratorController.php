@@ -12,6 +12,7 @@ namespace app\controllers;
 use app\managers\AdministratorSessionManager;
 use app\managers\FileManager;
 use app\managers\FinanceManager;
+use app\managers\MailManager;
 use app\managers\RedirectionManager;
 use app\managers\SettingManager;
 use app\models\Administrator;
@@ -126,6 +127,10 @@ class AdministratorController extends Controller
                 $session->exercise_id = $exercise->id;
                 $session->date = $model->date;
                 $session->save();
+
+                foreach (Member::find()->all() as $member) {
+                    MailManager::alert_new_session($member->user(),$session);
+                }
 
                 return $this->redirect("@administrator.home");
             }
@@ -422,6 +427,8 @@ class AdministratorController extends Controller
                     $member->username = $model->username;
                     $member->inscription = SettingManager::getInscription();
                     $member->save();
+
+                    MailManager::alert_new_member($user,$member);
                     return $this->redirect('@administrator.members');
                 }
                 $model->addError('username','Ce nom d\'utilisateur est déjà pris');
@@ -779,6 +786,10 @@ class AdministratorController extends Controller
                 ])->execute();
 
 
+                foreach (Member::find()->all() as $member) {
+                    MailManager::alert_end_session($member->user(),$member,$session);
+                }
+
                 return $this->redirect("@administrator.home");
             }
             else
@@ -822,6 +833,9 @@ class AdministratorController extends Controller
                         $exercise->active = false;
 
                         $exercise->save();
+                        foreach (Member::find()->all() as $member) {
+                            MailManager::alert_end_exercise($member->user(),$member,$exercise);
+                        }
                         return $this->redirect("@administrator.exercises");
                     }
                     else
@@ -1019,6 +1033,7 @@ class AdministratorController extends Controller
                             $contribution->member_id  = $member->id;
                             $contribution->help_id = $help->id;
                             $contribution->save();
+                            MailManager::alert_new_help($member->user(),$member,$help,$help_type);
                         }
 
                         return $this->redirect("@administrator.helps");

@@ -14,9 +14,9 @@ Aides
 <?php $this->beginBlock('style') ?>
 <style>
     .card {
-        height: 23rem;
+        height: 21rem;
         width: 18rem;
-        background-size: 18rem 23rem;
+        background-size: 18rem 21rem;
         border-radius: 5px !important;
         overflow: hidden;
         margin-bottom: 10px;
@@ -61,10 +61,11 @@ Aides
                                     <!-- Content -->
                                     <div class="text-white text-center justify-content-center align-items-center rgba-black-strong py-3 px-4">
                                         <div>
-                                            <h6>Créée le : <?= $help->created_at ?></h6>
+                                            <h6>Objectif</h6>
                                             <h2><?= $help->amount ?> XAF</h2>
-                                            <p >Contribution : <?= $help->unit_amount ?> XAF / membre</p>
+                                            <h6><b>Contribution : <?= $help->unit_amount ?> XAF / membre</b></h6>
                                             <hr class="bg-white p-0 m-0 my-1">
+                                            <h6>Contribution</h6>
                                             <h2><?= $help->contributedAmount() ?> XAF</h2>
                                             <h5 class="blue-text"><i class="fas fa-user"></i> <?= $user->name." ".$user->first_name ?></h5>
                                             <p class="card-title"><strong><?= $helpType->title ?></strong></p>
@@ -111,7 +112,7 @@ Aides
                             <div>
                                 <h3>Objectif</h3>
                                 <h1><?= $help->amount ?> XAF</h1>
-                                <p  class="mb-5"><?= $help->unit_amount ?> XAF / membre</p>
+                                <p  class="mb-3"><?= $help->unit_amount ?> XAF / membre</p>
                                 <h5 class="blue-text"><i class="fas fa-user"></i> <?= $user->name." ".$user->first_name ?></h5>
                                 <p class="card-title pt-2"><strong><?= $helpType->title ?></strong></p>
                                 <a class="btn btn-primary" href="<?= Yii::getAlias("@administrator.help_details")."?q=".$help->id ?>"><i class="fas fa-clone left"></i> Details</a>

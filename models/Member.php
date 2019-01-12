@@ -65,4 +65,8 @@ class Member extends ActiveRecord
         }
         return $sum;
     }
+
+    public function administrator() {
+        return Administrator::findOne($this->administrator_id);
+    }
 }

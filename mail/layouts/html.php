@@ -11,6 +11,12 @@ use yii\helpers\Html;
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=<?= Yii::$app->charset ?>" />
     <title><?= Html::encode($this->title) ?></title>
+
+
+    <?php if (isset($this->blocks['style'])): ?>
+        <?= $this->blocks['style'] ?>
+    <?php endif; ?>
+
     <?php $this->head() ?>
 </head>
 <body>
