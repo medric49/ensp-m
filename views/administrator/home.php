@@ -234,7 +234,12 @@ Accueil
 
                 <h3 class="mb-3 text-white">Aucune session en activité</h3>
                 <button class="btn btn-primary <?= $model->hasErrors() ? 'in' : '' ?>" data-toggle="modal"
-                        data-target="#modalLRFormDemo">Commencer une nouvelle session
+                        data-target="#modalLRFormDemo">
+                    <?php if($exercise): ?>
+                        Commencer une nouvelle session
+                    <?php else: ?>
+                        Commencer un nouvel exercice
+                    <?php endif; ?>
                 </button>
 
                 <div class="modal fade" id="modalLRFormDemo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -248,11 +253,21 @@ Accueil
                                 'options' => ['class' => 'modal-body']
                             ]) ?>
 
-                            <?= $form->field($model, 'date')->input('date', ['required' => 'required'])->label("Date de la rencontre") ?>
+                            <?php if(!$exercise): ?>
+                                <?= $form->field($model, 'year')->input('number', ['required' => 'required'])->label("Année de l'exercice") ?>
+                            <?php endif; ?>
+
+                            <?= $form->field($model, 'date')->input('date', ['required' => 'required'])->label("Date de la rencontre de la première session") ?>
 
                             <div class="form-group text-right">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-                                <button type="submit" class="btn btn-primary">Créer la session</button>
+                                <button type="submit" class="btn btn-primary">
+                                    <?php if($exercise): ?>
+                                        Créer la session
+                                    <?php else: ?>
+                                        Créer l'exercice
+                                    <?php endif; ?>
+                                </button>
                             </div>
                             <?php \yii\widgets\ActiveForm::end(); ?>
 

@@ -103,9 +103,8 @@ class AdministratorController extends Controller
                 $exercise = Exercise::findOne(['active' => true]);
                 if ($exercise){
                     // S'il y a un exercice en cours
-
                     if (  count( Session::findAll(['exercise_id'=> $exercise->id]))>=12 ) {
-                        // S'il ya deja 12 exercise pour cette exercice
+                        // S'il ya deja 12 sessions pour cet exercice
                         $exercise->active == false;
                         $exercise->save();
 
@@ -117,8 +116,8 @@ class AdministratorController extends Controller
                 else {
                     // S'il n'y a pas, on le crée
                     $exercise = new Exercise();
+                    $exercise->year = $model->year;
                     $exercise->administrator_id = $this->administrator->id;
-                    $exercise->year = (int) (new DateTime())->format("Y");
                     $exercise->save();
                 }
 

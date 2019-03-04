@@ -76,10 +76,10 @@ $this->title = "Mutuelle - ENSP";
                             <a class="nav-link waves-effect <?= AdministratorSessionManager::isHeadBorrowing()?'blue-text':'' ?>" href="<?= Yii::getAlias("@administrator.borrowings")?>">Emprunts</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link waves-effect <?= AdministratorSessionManager::isHeadSession()?'blue-text':'' ?>" href="<?= Yii::getAlias("@administrator.sessions")?>">Sessions</a>
+                            <a class="nav-link waves-effect <?= AdministratorSessionManager::isHeadSession()?'blue-text':'' ?>" href="<?= Yii::getAlias("@administrator.sessions")?>">Détails sessions</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link waves-effect <?= AdministratorSessionManager::isHeadExercise()?'blue-text':'' ?>" href="<?= Yii::getAlias("@administrator.exercises")?>">Exercices</a>
+                            <a class="nav-link waves-effect <?= AdministratorSessionManager::isHeadExercise()?'blue-text':'' ?>" href="<?= Yii::getAlias("@administrator.exercises")?>">Détails exercices</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link waves-effect <?= AdministratorSessionManager::isHeadExerciseDebt()?'blue-text':'' ?>" href="<?= Yii::getAlias("@administrator.exercise_debts")?>">Dettes</a>

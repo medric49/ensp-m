@@ -73,10 +73,10 @@ $this->title = "Mutuelle - ENSP";
                             <a href="<?= Yii::getAlias("@member.contributions") ?>" class="nav-link waves-effect  <?= MemberSessionManager::isContributions()?'blue-text':''?>" >Mes contributions</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link waves-effect  <?= MemberSessionManager::isSessions()?'blue-text':''?>" href="<?= Yii::getAlias("@member.sessions") ?>">Sessions</a>
+                            <a class="nav-link waves-effect  <?= MemberSessionManager::isSessions()?'blue-text':''?>" href="<?= Yii::getAlias("@member.sessions") ?>">Détails sessions</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link waves-effect  <?= MemberSessionManager::isExercices()?'blue-text':''?>" href="<?= Yii::getAlias("@member.exercises") ?>">Exercices</a>
+                            <a class="nav-link waves-effect  <?= MemberSessionManager::isExercices()?'blue-text':''?>" href="<?= Yii::getAlias("@member.exercises") ?>">Détails exercices</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link waves-effect  <?= MemberSessionManager::isAides()?'blue-text':''?>" href="<?= Yii::getAlias("@member.helps") ?>">Aides</a>
